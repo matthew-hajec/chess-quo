@@ -17,7 +17,7 @@ defmodule ChessQuoWeb.Router do
   scope "/", ChessQuoWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/", HomeController, :home
   end
 
   # Other scopes may use custom stacks.
