@@ -9,7 +9,9 @@ defmodule ChessQuo.Application do
   def start(_type, _args) do
     children = [
       ChessQuoWeb.Telemetry,
-      ChessQuo.Repo,
+
+      # Database is disabled, uncomment here and in `config/config.exs` to enable.
+      # ChessQuo.Repo,
       {DNSCluster, query: Application.get_env(:chess_quo, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ChessQuo.PubSub},
       # Start a worker by calling: ChessQuo.Worker.start_link(arg)

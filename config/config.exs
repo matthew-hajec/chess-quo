@@ -8,7 +8,7 @@
 import Config
 
 config :chess_quo,
-  ecto_repos: [ChessQuo.Repo],
+  # ecto_repos: [ChessQuo.Repo], # Uncomment here and in `lib/chess_quo/application.ex` to enable the database.
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
