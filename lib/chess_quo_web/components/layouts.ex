@@ -45,7 +45,7 @@ defmodule ChessQuoWeb.Layouts do
       <div class="flex-none">
         <ul class="flex flex-column px-1 space-x-4 items-center">
           <li>
-            <a href="https://github.com/matthew-hajec/chess-quo" target="_blank" class="btn btn-ghost">Source on GitHub</a>
+            <a href="https://github.com/matthew-hajec/chess-quo" target="_blank" class="btn btn-ghost">GitHub</a>
           </li>
           <li>
             <.theme_toggle />
