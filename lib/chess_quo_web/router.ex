@@ -19,7 +19,7 @@ defmodule ChessQuoWeb.Router do
 
     get "/", HomeController, :home
 
-    live "/game/:id", ChessLive.GameLive, :show
+    live "/game/:code", ChessLive.GameLive, :show
   end
 
   # Other scopes may use custom stacks.
