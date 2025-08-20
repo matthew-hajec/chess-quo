@@ -26,7 +26,9 @@ defmodule ChessQuoWeb.ChessLive.GameLive do
   #   """
   # end
 
-  def mount(_params, _session, socket) do
+  def mount(%{"code" => code}, _session, socket) do
+    socket = assign(socket, :code, code)
+
     {:ok, socket}
   end
 end
