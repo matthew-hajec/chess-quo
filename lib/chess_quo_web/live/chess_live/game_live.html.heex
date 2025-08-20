@@ -1,0 +1,44 @@
+<ChessQuoWeb.Layouts.app flash={@flash}>
+  <div class="mx-auto px-4">
+    <h1 class="text-3xl font-bold mb-6">Chess Game</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <!-- Your chess board here -->
+        <div class="w-full mx-auto">
+          <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
+            <%= for rank <- 8..1//-1 do %>
+              <%= for file <- ?a..?h do %>
+                <% square = <<file>> <> Integer.to_string(rank) %>
+                <% is_light_square = rem(file - ?a + rank, 2) == 0 %>
+                <div
+                  id={square}
+                  class={[
+                    "aspect-square flex items-center justify-center text-xs sm:text-sm font-bold",
+                    if(is_light_square, do: "bg-amber-100", else: "bg-amber-700")
+                  ]}
+                  data-square={square}
+                  data-square-index={file - ?a + (8 - rank) * 8}
+                >
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="bg-white p-4 rounded shadow">
+          <h2 class="font-bold mb-2">Game Info</h2>
+          <p>Player: White</p>
+          <p>Time: 10:00</p>
+        </div>
+        
+        <div class="bg-white p-4 rounded shadow">
+          <h2 class="font-bold mb-2">Move History</h2>
+          <!-- Move list here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</ChessQuoWeb.Layouts.app>
