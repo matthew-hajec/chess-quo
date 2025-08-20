@@ -86,6 +86,8 @@ defmodule ChessQuoWeb do
       import Phoenix.HTML
       # Core UI components
       import ChessQuoWeb.CoreComponents
+      # Chess Components
+      import ChessQuoWeb.ChessComponents
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
