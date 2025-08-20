@@ -39,7 +39,7 @@ defmodule ChessQuoWeb.Layouts do
       <div class="flex-1">
         <a href="/" class="flex-1 flex w-fit items-center gap-2">
           <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
+          <span class="text-sm font-semibold">ChessQuo</span>
         </a>
       </div>
       <div class="flex-none">
@@ -53,6 +53,8 @@ defmodule ChessQuoWeb.Layouts do
         </ul>
       </div>
     </header>
+
+    <hr class="opacity-10" />
 
     <main class="px-4 py-20 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl space-y-4">
