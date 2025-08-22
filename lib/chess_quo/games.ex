@@ -39,4 +39,12 @@ defmodule ChessQuo.Games do
   def get_game!(code) do
     Repo.get_by!(Game, code: code)
   end
+
+  def validate_player(game, player_color, player_secret) do
+    case player_color do
+      "white" when game.white_secret == player_secret -> {:ok, "white"}
+      "black" when game.black_secret == player_secret -> {:ok, "black"}
+      _ -> {:error, :invalid_credentials}
+    end
+  end
 end
