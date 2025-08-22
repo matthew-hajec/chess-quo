@@ -11,15 +11,12 @@ defmodule ChessQuoWeb.BoardComponent do
 
         <%= for rank <- rank_range do %>
           <%= for file <- file_range do %>
-            <% square = <<file>> <> Integer.to_string(rank) %>
             <% is_light_square = rem(file - ?a + rank, 2) == 1 %>
             <div
-              id={square}
               class={[
                 "aspect-square flex items-center justify-center text-xs sm:text-sm font-bold",
                 if(is_light_square, do: "bg-amber-100", else: "bg-amber-700")
               ]}
-              data-square={square}
               data-square-index={file - ?a + (8 - rank) * 8}
             >
             </div>
