@@ -28,6 +28,7 @@ defmodule ChessQuo.Games.Game do
     |> change(attrs)
     |> cast(attrs, [:code, :white_secret, :black_secret, :turn, :board, :state, :winner, :white_joined, :black_joined, :moves, :started_at])
     |> validate_required([:code, :white_secret, :black_secret, :turn, :board, :state, :white_joined, :black_joined, :moves])
+    |> unique_constraint(:code)
     |> optimistic_lock(:lock_version)
   end
 end
