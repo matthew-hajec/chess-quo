@@ -36,7 +36,8 @@ defmodule ChessQuoWeb.GameLive do
   end
 
   # Triggered when the user clicks the "Copy Join Link" button
-  def handle_event("link_copied", _params, socket) do
+  def handle_info(:link_was_copied, socket) do
+    # Show a flash message indicating the link was copied
     {:noreply, put_flash(socket, :info, "Game link copied to clipboard!")}
   end
 end
