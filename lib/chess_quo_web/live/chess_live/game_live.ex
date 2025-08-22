@@ -1,14 +1,38 @@
 defmodule ChessQuoWeb.ChessLive.GameLive do
   use ChessQuoWeb, :live_view
 
-  def mount(%{"code" => code}, _session, socket) do
-    socket = assign(socket, :code, code)
+  alias ChessQuo.Games
 
-    # Use the current URL to generate a link for the game
-    link = ChessQuoWeb.Endpoint.url() <> ~p"/game/#{code}"
-    socket = assign(socket, :game_link, link)
+  def mount(%{"code" => code}, session, socket) do
+    # Attempt to fetch the game by code
+    case Games.get_game(code) do
+      {:ok, game} ->
+        player_color = session["player_color"]
+        player_secret = session["player_secret"]
 
-    {:ok, socket}
+        case Games.validate_player(game, player_color, player_secret) do
+          {:ok, _} ->
+            link = ChessQuoWeb.Endpoint.url() <> ~p"/game/#{code}"
+
+            # Assign the game to the socket
+            {:ok,
+              socket
+              |> assign(:game, game)
+              |> assign(:player_color, player_color)
+              |> assign(:game_link, link)
+            }
+          {:error, :invalid_credentials} ->
+            {:ok,
+              socket
+              |> put_flash(:error, "Invalid credentials.")
+              |> redirect(to: ~p"/")}
+        end
+      {:error, :not_found} ->
+        {:ok,
+          socket
+          |> put_flash(:error, "Game not found.")
+          |> redirect(to: ~p"/")}
+    end
   end
 
   # Triggered when the user clicks the "Copy Join Link" button
