@@ -91,8 +91,6 @@ defmodule ChessQuoWeb.BoardComponent do
       }
     }
 
-    # Based on your file path, the SVGs are in priv/static/images/chess-pieces/
-    # But for URLs, we need to use /images/chess-pieces/
     assigns = %{
       svg_path: "/images/chess-pieces/" <> piece_svgs[piece.type][piece.color],
       piece_type: piece.type,
