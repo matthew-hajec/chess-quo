@@ -1,4 +1,4 @@
-defmodule ChessQuoWeb.ChessBoardComponent do
+defmodule ChessQuoWeb.BoardComponent do
   use ChessQuoWeb, :live_component
 
   def render(assigns) do
