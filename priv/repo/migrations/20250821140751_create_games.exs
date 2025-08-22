@@ -7,7 +7,7 @@ defmodule ChessQuo.Repo.Migrations.CreateGames do
       add :white_secret, :string
       add :black_secret, :string
       add :turn, :string, default: "white"
-      add :board, :map, default: %{}
+      add :board, {:array, :map}, default: []
       add :state, :string, default: "waiting"
       add :winner, :string
       add :white_joined, :boolean, default: false

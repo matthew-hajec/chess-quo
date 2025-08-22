@@ -7,8 +7,9 @@
         <.live_component
           module={ChessQuoWeb.BoardComponent}
           id="chess_board"
-          game={@game}
           perspective={@player_color}
+          game_type="chess"
+          board_state={@game.board}
         />
       </div>
       
