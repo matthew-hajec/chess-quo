@@ -16,7 +16,7 @@ defmodule ChessQuo.Games do
     attrs = %{
       code: Tokens.game_code(),
       white_secret: Tokens.secret(),
-      black_secret: Tokens.secret(),
+      black_secret: Tokens.secret()
     }
 
     changeset = Game.system_changeset(%Game{}, attrs)
@@ -25,7 +25,8 @@ defmodule ChessQuo.Games do
       {:ok, game} ->
         {:ok, game}
 
-      {:error, %Ecto.Changeset{errors: [code: {"has already been taken", _}]}} when attempts > 1 ->
+      {:error, %Ecto.Changeset{errors: [code: {"has already been taken", _}]}}
+      when attempts > 1 ->
         create_game(attempts - 1)
 
       {:error, changeset} ->
@@ -51,7 +52,6 @@ defmodule ChessQuo.Games do
       game -> {:ok, game}
     end
   end
-
 
   def validate_player(game, player_color, player_secret) do
     case player_color do

@@ -10,9 +10,7 @@ defmodule ChessQuo.GamesFixtures do
   def game_fixture(attrs \\ %{}) do
     {:ok, game} =
       attrs
-      |> Enum.into(%{
-
-      })
+      |> Enum.into(%{})
       |> ChessQuo.Games.create_game()
 
     game

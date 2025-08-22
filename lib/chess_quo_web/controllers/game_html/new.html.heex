@@ -5,39 +5,55 @@
     <div class="card bg-base-200 shadow-xl">
       <div class="card-body">
         <form action={~p"/game/create"} method="post">
-          <input type="hidden" name="_csrf_token" value={get_csrf_token()}>
-          
+          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+
           <h3 class="font-medium text-center mb-6">Choose your side</h3>
-          
+
           <div class="grid grid-cols-3 gap-4">
             <!-- White option -->
             <div class="form-control">
               <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
                 <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">♔</div>
-                <input type="radio" name="color_preference" value="white" class="radio radio-primary" checked />
+                <input
+                  type="radio"
+                  name="color_preference"
+                  value="white"
+                  class="radio radio-primary"
+                  checked
+                />
                 <span class="label-text mt-2">White</span>
               </label>
             </div>
             
-            <!-- Black option -->
+<!-- Black option -->
             <div class="form-control">
               <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
                 <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">♚</div>
-                <input type="radio" name="color_preference" value="black" class="radio radio-primary" />
+                <input
+                  type="radio"
+                  name="color_preference"
+                  value="black"
+                  class="radio radio-primary"
+                />
                 <span class="label-text mt-2">Black</span>
               </label>
             </div>
             
-            <!-- Random option -->
+<!-- Random option -->
             <div class="form-control">
               <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
                 <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">⚄</div>
-                <input type="radio" name="color_preference" value="random" class="radio radio-primary" />
+                <input
+                  type="radio"
+                  name="color_preference"
+                  value="random"
+                  class="radio radio-primary"
+                />
                 <span class="label-text mt-2">Random</span>
               </label>
             </div>
           </div>
-          
+
           <div class="mt-8">
             <button class="btn btn-primary w-full">Create Game</button>
           </div>

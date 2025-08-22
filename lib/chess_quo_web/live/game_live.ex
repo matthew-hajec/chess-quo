@@ -16,22 +16,23 @@ defmodule ChessQuoWeb.GameLive do
 
             # Assign the game to the socket
             {:ok,
-              socket
-              |> assign(:game, game)
-              |> assign(:player_color, player_color)
-              |> assign(:game_link, link)
-            }
+             socket
+             |> assign(:game, game)
+             |> assign(:player_color, player_color)
+             |> assign(:game_link, link)}
+
           {:error, :invalid_credentials} ->
             {:ok,
-              socket
-              |> put_flash(:error, "Invalid credentials.")
-              |> redirect(to: ~p"/")}
+             socket
+             |> put_flash(:error, "Invalid credentials.")
+             |> redirect(to: ~p"/")}
         end
+
       {:error, :not_found} ->
         {:ok,
-          socket
-          |> put_flash(:error, "Game not found.")
-          |> redirect(to: ~p"/")}
+         socket
+         |> put_flash(:error, "Game not found.")
+         |> redirect(to: ~p"/")}
     end
   end
 

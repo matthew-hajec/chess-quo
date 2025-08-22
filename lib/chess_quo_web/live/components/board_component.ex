@@ -22,8 +22,18 @@ defmodule ChessQuoWeb.BoardComponent do
     ~H"""
     <div class="w-full mx-auto">
       <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
-        <% rank_range = if @perspective == "white" do 1..8 else 8..1//-1 end %>
-        <% file_range = if @perspective == "white" do ?a..?h else ?h..?a//-1 end %>
+        <% rank_range =
+          if @perspective == "white" do
+            1..8
+          else
+            8..1//-1
+          end %>
+        <% file_range =
+          if @perspective == "white" do
+            ?a..?h
+          else
+            ?h..?a//-1
+          end %>
 
         <%= for rank <- rank_range do %>
           <%= for file <- file_range do %>
@@ -38,7 +48,7 @@ defmodule ChessQuoWeb.BoardComponent do
               data-square-index={file - ?a + (8 - rank) * 8}
             >
               <%= if piece do %>
-                <%= render_piece(@game_type, piece) %>
+                {render_piece(@game_type, piece)}
               <% end %>
             </div>
           <% end %>
