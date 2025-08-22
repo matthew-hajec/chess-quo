@@ -33,4 +33,10 @@ defmodule ChessQuo.Games do
     end
   end
 
+  @doc """
+  Retrieves a game by its code, raising an error if not found.
+  """
+  def get_game!(code) do
+    Repo.get_by!(Game, code: code)
+  end
 end
