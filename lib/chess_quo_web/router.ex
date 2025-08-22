@@ -19,7 +19,7 @@ defmodule ChessQuoWeb.Router do
 
     get "/", HomeController, :home
 
-    get "/game/create", GameController, :create
+    get "/game/create", GameController, :new
     live "/game/:code", ChessLive.GameLive, :show
   end
 
