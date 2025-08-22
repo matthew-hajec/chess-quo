@@ -1,6 +1,5 @@
-defmodule ChessQuo.Game do
+defmodule ChessQuo.Games.Game do
   @moduledoc """
-  The Game context.
   """
 
   use Ecto.Schema
