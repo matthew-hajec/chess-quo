@@ -15,8 +15,8 @@ defmodule ChessQuoWeb.GameController do
         player_secret = if color == "white", do: game.white_secret, else: game.black_secret
 
         conn
-        |> put_resp_cookie("player_secret", player_secret, max_age: 60 * 60 * 24 * 30) # 30 days
-        |> put_resp_cookie("player_color", color, max_age: 60 * 60 * 24 * 30) # 30 days
+        |> put_resp_cookie("player_secret", player_secret, http_only: true, max_age: 60 * 60 * 24 * 30) # 30 days
+        |> put_resp_cookie("player_color", color, http_only: true, max_age: 60 * 60 * 24 * 30) # 30 days
         |> redirect(to: ~p"/game/#{game.code}")
 
       {:error, _changeset} ->
