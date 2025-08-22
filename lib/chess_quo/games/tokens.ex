@@ -5,7 +5,7 @@ defmodule ChessQuo.Games.Tokens do
   There are 36^6 (2,176,782,336) possible codes.
   "
   def game_code do
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    alphabet = ~c"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     length = 6
 
     for _ <- 1..length, into: "" do
