@@ -53,22 +53,45 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   defp render_piece("chess", piece) do
-    piece_symbols = %{
-      "pawn" => "♟",
-      "rook" => "♖",
-      "knight" => "♘",
-      "bishop" => "♗",
-      "queen" => "♕",
-      "king" => "♔"
+    # Fix the path construction
+    piece_svgs = %{
+      "pawn" => %{
+        "black" => "wikimedia/pawn-black.svg",
+        "white" => "wikimedia/pawn-white.svg"
+      },
+      "rook" => %{
+        "black" => "wikimedia/rook-black.svg",
+        "white" => "wikimedia/rook-white.svg"
+      },
+      "knight" => %{
+        "black" => "wikimedia/knight-black.svg",
+        "white" => "wikimedia/knight-white.svg"
+      },
+      "bishop" => %{
+        "black" => "wikimedia/bishop-black.svg",
+        "white" => "wikimedia/bishop-white.svg"
+      },
+      "queen" => %{
+        "black" => "wikimedia/queen-black.svg",
+        "white" => "wikimedia/queen-white.svg"
+      },
+      "king" => %{
+        "black" => "wikimedia/king-black.svg",
+        "white" => "wikimedia/king-white.svg"
+      }
     }
+
+    # Based on your file path, the SVGs are in priv/static/images/chess-pieces/
+    # But for URLs, we need to use /images/chess-pieces/
     assigns = %{
-      color_class: if(piece.color == "white", do: "text-white", else: "text-black"),
-      symbol: piece_symbols[piece.type]
+      svg_path: "/images/chess-pieces/" <> piece_svgs[piece.type][piece.color],
+      piece_type: piece.type,
+      piece_color: piece.color
     }
 
     ~H"""
-    <div class="w-full h-full flex items-center justify-center text-5xl">
-      <span class={@color_class}><%= @symbol %></span>
+    <div class="w-full h-full flex items-center justify-center">
+      <img src={@svg_path} alt={"#{@piece_color} #{@piece_type}"} class="w-3/4 h-3/4" />
     </div>
     """
   end
