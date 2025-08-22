@@ -11,10 +11,7 @@ defmodule ChessQuoWeb.BoardComponent do
   ## Parameters
     * `perspective` - The perspective from which to render the board ("white" or "black").
     * `game_type` - The name of the game being played (e.g., "chess").
-    * `board_state` - List of piece maps, each containing at least:
-      - `type` - The type of the piece as an atom (e.g., "pawn", "rook", etc.).
-      - `color` - The color of the piece ("white" or "black").
-      - `position` - The index of the piece on the board (0-63).
+    * `board_state` - Board state of type `ChessQuo.Games.board()`
   """
 
   def render(assigns) do
