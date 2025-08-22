@@ -1,8 +1,6 @@
 defmodule ChessQuoWeb.HomeHTML do
   @moduledoc """
-  This module contains pages rendered by PageController.
-
-  See the `home_html` directory for all templates available.
+  The Home HTML controller.
   """
   use ChessQuoWeb, :html
 
