@@ -40,6 +40,19 @@ defmodule ChessQuo.Games do
     Repo.get_by!(Game, code: code)
   end
 
+  @doc """
+  Gets a game by its code, returning {:ok, game} if found or {:error, :not_found} if not found.
+
+  Raises an error if the database query fails.
+  """
+  def get_game(code) do
+    case Repo.get_by(Game, code: code) do
+      nil -> {:error, :not_found}
+      game -> {:ok, game}
+    end
+  end
+
+
   def validate_player(game, player_color, player_secret) do
     case player_color do
       "white" when game.white_secret == player_secret -> {:ok, "white"}
