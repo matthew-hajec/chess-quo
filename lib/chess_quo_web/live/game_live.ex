@@ -1,4 +1,4 @@
-defmodule ChessQuoWeb.ChessLive.GameLive do
+defmodule ChessQuoWeb.GameLive do
   use ChessQuoWeb, :live_view
 
   alias ChessQuo.Games

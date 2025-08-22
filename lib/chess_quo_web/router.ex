@@ -22,7 +22,7 @@ defmodule ChessQuoWeb.Router do
     get "/game/create", GameController, :new
     post "/game/create", GameController, :create
 
-    live "/game/:code", ChessLive.GameLive, :show
+    live "/game/:code", GameLive, :show
   end
 
   # Other scopes may use custom stacks.
