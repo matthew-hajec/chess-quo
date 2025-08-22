@@ -63,7 +63,6 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   defp render_piece("chess", piece) do
-    # Fix the path construction
     piece_svgs = %{
       "pawn" => %{
         "black" => "wikimedia/pawn-black.svg",
