@@ -10,7 +10,7 @@ defmodule ChessQuoWeb.GameController do
   def create(conn, %{"color_preference" => color}) when color in ["white", "black", "random"] do
     color = if color == "random", do: Enum.random(["white", "black"]), else: color
 
-    case ChessQuo.Games.create_game do
+    case Games.create_game do
       {:ok, game} ->
         player_secret = if color == "white", do: game.white_secret, else: game.black_secret
 
