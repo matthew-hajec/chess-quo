@@ -18,6 +18,8 @@ defmodule ChessQuo.Games.Game do
       - a7=8, b7=9, ..., h7=15
       - ...
       - a1=56, b1=57, ..., h1=63
+
+  ## NOTE: At runtime, these keys are strings because of Ecto's serialization. This means they can not be accessed as atoms (e.g., `piece.type`), but must be accessed as strings (e.g., `piece["type"]`).
   """
   @type piece :: %{
           type: String.t(),
@@ -35,6 +37,8 @@ defmodule ChessQuo.Games.Game do
 
   @typedoc """
   Represents a move in the game.
+
+  ## NOTE: At runtime, these keys are strings because of Ecto's serialization. This means they can not be accessed as atoms (e.g., `piece.type`), but must be accessed as strings (e.g., `piece["type"]`).
   """
   @type move :: %{
           before: piece(),
