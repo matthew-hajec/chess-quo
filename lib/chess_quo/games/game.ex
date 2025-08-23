@@ -33,6 +33,21 @@ defmodule ChessQuo.Games.Game do
   """
   @type board :: [piece()]
 
+  @typedoc """
+  Represents a move in the game.
+  """
+  @type move :: %{
+          before: piece(),
+          after: piece(),
+          # Color of the player making the move
+          by: String.t()
+        }
+
+  @typedoc """
+  Represents the history of moves in the game.
+  """
+  @type history :: [move()]
+
   schema "games" do
     field :code, :string
     # Secret shared with the white player to verify their moves
@@ -48,6 +63,7 @@ defmodule ChessQuo.Games.Game do
     field :winner, :string, default: nil
     field :white_joined, :boolean, default: false
     field :black_joined, :boolean, default: false
+    # Type `history`
     field :moves, {:array, :map}, default: []
 
     # This is the time when the game actually started (not record creation time, this is when "state" becomes "playing")
