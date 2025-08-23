@@ -56,7 +56,7 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   defp find_piece_at(index, board_state) do
-    Enum.find(board_state, fn piece -> piece.position == index end)
+    Enum.find(board_state, fn piece -> piece["position"] == index end)
   end
 
   defp render_piece("chess", piece) do
@@ -88,9 +88,9 @@ defmodule ChessQuoWeb.BoardComponent do
     }
 
     assigns = %{
-      svg_path: "/images/chess-pieces/" <> piece_svgs[piece.type][piece.color],
-      piece_type: piece.type,
-      piece_color: piece.color
+      svg_path: "/images/chess-pieces/" <> piece_svgs[piece["type"]][piece["color"]],
+      piece_type: piece["type"],
+      piece_color: piece["color"]
     }
 
     ~H"""
