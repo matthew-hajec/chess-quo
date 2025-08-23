@@ -56,7 +56,7 @@ defmodule ChessQuoWeb.BoardComponent do
                 if(is_light_square, do: "bg-amber-100", else: "bg-amber-700"),
                 if(is_selected, do: "ring-4 ring-blue-400 ring-inset"),
                 if(is_selectable, do: "cursor-pointer hover:opacity-80"),
-                if(is_valid_move, do: "bg-green-100")
+                if(is_valid_move, do: "cursor-pointer bg-green-100")
               ]}
               data-square-index={file - ?a + (8 - rank) * 8}
               phx-click={if is_selectable, do: "select_square"}
