@@ -17,12 +17,12 @@ defmodule ChessQuoWeb.GameController do
         conn
         |> put_session(:player_secret, player_secret)
         |> put_session(:player_color, color)
-        |> redirect(to: ~p"/game/#{game.code}")
+        |> redirect(to: ~p"/play/#{game.code}")
 
       {:error, _changeset} ->
         conn
         |> put_flash(:error, "Failed to create game. Please try again.")
-        |> redirect(to: ~p"/game/create")
+        |> redirect(to: ~p"/lobby/create")
     end
   end
 end

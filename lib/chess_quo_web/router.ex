@@ -19,10 +19,10 @@ defmodule ChessQuoWeb.Router do
 
     get "/", HomeController, :home
 
-    get "/game/create", GameController, :new
-    post "/game/create", GameController, :create
+    get "/lobby/create", GameController, :new
+    post "/lobby/create", GameController, :create
 
-    live "/game/:code", GameLive, :show
+    live "/play/:code", GameLive, :show
   end
 
   # Other scopes may use custom stacks.

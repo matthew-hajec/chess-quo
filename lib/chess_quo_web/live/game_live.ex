@@ -12,7 +12,7 @@ defmodule ChessQuoWeb.GameLive do
 
         case Games.validate_player(game, player_color, player_secret) do
           {:ok, _} ->
-            link = ChessQuoWeb.Endpoint.url() <> ~p"/game/#{code}"
+            link = ChessQuoWeb.Endpoint.url() <> ~p"/play/#{code}"
 
             # Assign the game to the socket
             {:ok,
