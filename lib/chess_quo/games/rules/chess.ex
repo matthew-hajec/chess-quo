@@ -1,6 +1,9 @@
 defmodule ChessQuo.Games.Rules.Chess do
   @behaviour ChessQuo.Games.Rules
 
+  # Keys in the game data are strings, not atoms (see the documentation for `ChessQuo.Games.Game` for details)
+  @dialyzer {:nowarn_function, [{:initial_board, 0}]}
+
   @impl true
   def initial_board do
     [

@@ -1,6 +1,10 @@
 defmodule ChessQuo.Games.Game do
   @moduledoc """
   The Game schema and changeset logic.
+
+  ## String Keys
+  All game data uses string keys (e.g., piece["type"]) not atom keys (piece.type).
+  This is consistent with how Ecto serializes the data to/from the database.
   """
 
   use Ecto.Schema
