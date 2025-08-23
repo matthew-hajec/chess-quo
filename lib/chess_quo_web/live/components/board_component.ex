@@ -1,6 +1,8 @@
 defmodule ChessQuoWeb.BoardComponent do
   use ChessQuoWeb, :live_component
 
+  alias ChessQuo.Games
+
   @doc """
   Renders a generic extensible board component.
 
@@ -11,11 +13,16 @@ defmodule ChessQuoWeb.BoardComponent do
   ## Parameters
     * `perspective` - The perspective from which to render the board ("white" or "black").
     * `game` - The game state, including the board and pieces.
+
+  ## System Managed Parameters
+    * `selected_square` - The currently selected square on the board, if any, otherwise `nil`.
+    * `valid_moves` - The list of valid moves for the currently selected piece, if any, otherwise an empty list.
   """
 
   def render(assigns) do
-    # Initialize the selected square as nil
+    # Initialize system managed parameters
     assigns = assign_new(assigns, :selected_square, fn -> nil end)
+    assigns = assign_new(assigns, :valid_moves, fn -> [] end)
 
     # Index 0 = a1, index 1 = b1... index 8 = a2
     ~H"""
@@ -41,13 +48,15 @@ defmodule ChessQuoWeb.BoardComponent do
             <% piece = find_piece_at(index, @game.board) %>
             <% is_selected = @selected_square == index %>
             <% is_selectable = piece && piece["color"] == @perspective %>
+            <% is_valid_move = Enum.any?(@valid_moves, fn move -> move["to"]["position"] == index end) %>
 
             <div
               class={[
                 "aspect-square flex items-center justify-center text-xs sm:text-sm font-bold",
                 if(is_light_square, do: "bg-amber-100", else: "bg-amber-700"),
                 if(is_selected, do: "ring-4 ring-blue-400 ring-inset"),
-                if(is_selectable, do: "cursor-pointer hover:opacity-80")
+                if(is_selectable, do: "cursor-pointer hover:opacity-80"),
+                if(is_valid_move, do: "bg-green-100")
               ]}
               data-square-index={file - ?a + (8 - rank) * 8}
               phx-click={if is_selectable, do: "select_square"}
@@ -72,7 +81,19 @@ defmodule ChessQuoWeb.BoardComponent do
     # If the square is already selected, deselect it
     new_selected = if socket.assigns[:selected_square] == index, do: nil, else: index
 
-    {:noreply, assign(socket, :selected_square, new_selected)}
+    if new_selected do
+      valid_moves = Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
+
+      IO.puts("Valid moves: #{inspect(valid_moves)}")
+
+      { :noreply,
+        socket
+        |> assign(:selected_square, new_selected)
+        |> assign(:valid_moves, valid_moves)
+      }
+    else
+      {:noreply, assign(socket, :selected_square, new_selected)}
+    end
   end
 
   defp find_piece_at(index, board_state) do
