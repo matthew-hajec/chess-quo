@@ -72,4 +72,16 @@ defmodule ChessQuo.Games do
       _ -> {:error, :invalid_credentials}
     end
   end
+
+  def valid_moves(game, player_color) do
+    ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
+    board = game.board
+
+    ruleset_impl.valid_moves(board, color: player_color)
+  end
+
+  def valid_moves_from_position(game, player_color, position) do
+    valid_moves = valid_moves(game, player_color)
+    Enum.filter(valid_moves, fn move -> move["from"]["position"] == position end)
+  end
 end
