@@ -81,19 +81,19 @@ defmodule ChessQuoWeb.BoardComponent do
     # If the square is already selected, deselect it
     new_selected = if socket.assigns[:selected_square] == index, do: nil, else: index
 
-    if new_selected do
-      valid_moves = Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
+    # Only calculate valid moves if this is a selection and not a deselection
+    valid_moves =
+      if new_selected do
+        Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
+      else
+        []
+      end
 
-      IO.puts("Valid moves: #{inspect(valid_moves)}")
 
-      { :noreply,
-        socket
-        |> assign(:selected_square, new_selected)
-        |> assign(:valid_moves, valid_moves)
-      }
-    else
-      {:noreply, assign(socket, :selected_square, new_selected)}
-    end
+    {:noreply,
+     socket
+     |> assign(:selected_square, new_selected)
+     |> assign(:valid_moves, valid_moves)}
   end
 
   defp find_piece_at(index, board_state) do
