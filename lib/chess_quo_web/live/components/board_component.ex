@@ -10,8 +10,7 @@ defmodule ChessQuoWeb.BoardComponent do
 
   ## Parameters
     * `perspective` - The perspective from which to render the board ("white" or "black").
-    * `game_type` - The name of the ruleset being used (e.g., "chess").
-    * `board_state` - Board state of type `ChessQuo.Games.board()`
+    * `game` - The game state, including the board and pieces.
   """
 
   def render(assigns) do
@@ -39,7 +38,7 @@ defmodule ChessQuoWeb.BoardComponent do
           <%= for file <- file_range do %>
             <% index = file - ?a + (8 - rank) * 8 %>
             <% is_light_square = rem(file - ?a + rank, 2) == 1 %>
-            <% piece = find_piece_at(index, @board_state) %>
+            <% piece = find_piece_at(index, @game.board) %>
             <% is_selected = @selected_square == index %>
             <% is_selectable = piece && piece["color"] == @perspective %>
 
@@ -56,7 +55,7 @@ defmodule ChessQuoWeb.BoardComponent do
               phx-target={@myself}
             >
               <%= if piece do %>
-                {render_piece(@game_type, piece)}
+                {render_piece(@game.ruleset, piece)}
               <% end %>
             </div>
           <% end %>
