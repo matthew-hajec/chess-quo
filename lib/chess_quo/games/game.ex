@@ -14,10 +14,10 @@ defmodule ChessQuo.Games.Game do
     * `color` - The color of the piece ("white" or "black")
     * `position` - The index of the piece on the board (0-63)
       - Board indices are left-to-right, top-to-bottom:
-      - a8=0, b8=1, ..., h8=7
-      - a7=8, b7=9, ..., h7=15
+      - a1=0, b1=1, ..., h1=7
+      - a2=8, b2=9, ..., h2=15
       - ...
-      - a1=56, b1=57, ..., h1=63
+      - a8=56, b8=57, ..., h8=63
 
   ## NOTE: At runtime, these keys are strings because of Ecto's serialization. This means they can not be accessed as atoms (e.g., `piece.type`), but must be accessed as strings (e.g., `piece["type"]`).
   """
