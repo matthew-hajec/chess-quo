@@ -10,7 +10,7 @@ defmodule ChessQuoWeb.BoardComponent do
 
   ## Parameters
     * `perspective` - The perspective from which to render the board ("white" or "black").
-    * `game_type` - The name of the game being played (e.g., "chess").
+    * `game_type` - The name of the ruleset being used (e.g., "chess").
     * `board_state` - Board state of type `ChessQuo.Games.board()`
   """
 
