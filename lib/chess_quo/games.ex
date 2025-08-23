@@ -12,8 +12,9 @@ defmodule ChessQuo.Games do
 
   Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
   """
-  def create_game(attempts \\ 5) do
+  def create_game(ruleset, attempts \\ 5) do
     attrs = %{
+      ruleset: ruleset,
       code: Tokens.game_code(),
       white_secret: Tokens.secret(),
       black_secret: Tokens.secret()

@@ -49,6 +49,9 @@ defmodule ChessQuo.Games.Game do
   @type history :: [move()]
 
   schema "games" do
+    field :ruleset, :string, default: "chess"
+
+    # Ruleset to use, check `ChessQuo.Games.Rules` (can be `chess`, `checkers`, etc., if there is a valid implementation)
     field :code, :string
     # Secret shared with the white player to verify their moves
     field :white_secret, :string
