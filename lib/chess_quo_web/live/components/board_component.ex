@@ -26,7 +26,7 @@ defmodule ChessQuoWeb.BoardComponent do
 
     # Index 0 = a1, index 1 = b1... index 8 = a2
     ~H"""
-    <div class="w-full mx-auto">
+    <div class="w-full mx-auto select-none">
       <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
         <% rank_range =
           if @perspective == "white" do
