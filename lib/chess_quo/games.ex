@@ -62,6 +62,9 @@ defmodule ChessQuo.Games do
     end
   end
 
+  @doc """
+  Validates a player's credentials by checking the provided color and secret against the game's secrets.
+  """
   def validate_player(game, player_color, player_secret) do
     case player_color do
       "white" when game.white_secret == player_secret -> {:ok, "white"}
