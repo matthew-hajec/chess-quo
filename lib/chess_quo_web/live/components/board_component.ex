@@ -15,6 +15,9 @@ defmodule ChessQuoWeb.BoardComponent do
   """
 
   def render(assigns) do
+    # Initialize the selected square as nil
+    assigns = assign_new(assigns, :selected_square, fn -> nil end)
+
     # Index 0 = a1, index 1 = b1... index 8 = a2
     ~H"""
     <div class="w-full mx-auto">
@@ -37,12 +40,20 @@ defmodule ChessQuoWeb.BoardComponent do
             <% index = file - ?a + (8 - rank) * 8 %>
             <% is_light_square = rem(file - ?a + rank, 2) == 1 %>
             <% piece = find_piece_at(index, @board_state) %>
+            <% is_selected = @selected_square == index %>
+            <% is_selectable = piece && piece["color"] == @perspective %>
+
             <div
               class={[
                 "aspect-square flex items-center justify-center text-xs sm:text-sm font-bold",
-                if(is_light_square, do: "bg-amber-100", else: "bg-amber-700")
+                if(is_light_square, do: "bg-amber-100", else: "bg-amber-700"),
+                if(is_selected, do: "ring-4 ring-blue-400 ring-inset"),
+                if(is_selectable, do: "cursor-pointer hover:opacity-80")
               ]}
               data-square-index={file - ?a + (8 - rank) * 8}
+              phx-click={if is_selectable, do: "select_square"}
+              phx-value-index={index}
+              phx-target={@myself}
             >
               <%= if piece do %>
                 {render_piece(@game_type, piece)}
@@ -53,6 +64,16 @@ defmodule ChessQuoWeb.BoardComponent do
       </div>
     </div>
     """
+  end
+
+  def handle_event("select_square", %{"index" => index}, socket) do
+    # Convert the index to an integer
+    index = String.to_integer(index)
+
+    # If the square is already selected, deselect it
+    new_selected = if socket.assigns[:selected_square] == index, do: nil, else: index
+
+    {:noreply, assign(socket, :selected_square, new_selected)}
   end
 
   defp find_piece_at(index, board_state) do
