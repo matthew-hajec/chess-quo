@@ -7,17 +7,26 @@ defmodule ChessQuo.Games do
   alias ChessQuo.Games.Game
   alias ChessQuo.Games.Tokens
 
+  # Map of rulesets to the implementation modules
+  @ruleset_mods %{
+    "chess" => ChessQuo.Games.Rules.Chess
+  }
+
+
   @doc """
   Creates a new game with a unique code and secrets for both players.
 
   Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
   """
-  def create_game(ruleset, attempts \\ 5) do
+  def create_game(ruleset, attempts \\ 5) when is_map_key(@ruleset_mods, ruleset) do
+    ruleset_impl = Map.get(@ruleset_mods, ruleset)
+
     attrs = %{
       ruleset: ruleset,
       code: Tokens.game_code(),
       white_secret: Tokens.secret(),
-      black_secret: Tokens.secret()
+      black_secret: Tokens.secret(),
+      board: ruleset_impl.initial_board()
     }
 
     changeset = Game.system_changeset(%Game{}, attrs)
