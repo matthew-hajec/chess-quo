@@ -12,7 +12,6 @@ defmodule ChessQuo.Games do
     "chess" => ChessQuo.Games.Rules.Chess
   }
 
-
   @doc """
   Creates a new game with a unique code and secrets for both players.
 

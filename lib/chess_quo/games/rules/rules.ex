@@ -9,7 +9,6 @@ defmodule ChessQuo.Games.Rules do
 
   alias ChessQuo.Games.Game
 
-
   @callback initial_board() :: Game.board()
 
   @callback valid_moves(board :: Game.board(), color: String.t()) :: [Game.move()]
