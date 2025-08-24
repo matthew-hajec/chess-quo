@@ -77,6 +77,9 @@ defmodule ChessQuo.Games.Game do
     # Type `history`
     field :moves, {:array, :map}, default: []
 
+    # Meta information to be used for any purpose (e.g., ruleset state, other additional data)
+    field :meta, :map, default: %{}
+
     # This is the time when the game actually started (not record creation time, this is when "state" becomes "playing")
     field :started_at, :utc_datetime
     # Used for optimistic locking
