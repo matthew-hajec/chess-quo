@@ -82,7 +82,7 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
-  def valid_moves(_board, _color) do
+  def valid_moves(_game, _color) do
     [
       %{
         "from" => %{"type" => "pawn", "color" => "white", "position" => 8},

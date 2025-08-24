@@ -75,9 +75,8 @@ defmodule ChessQuo.Games do
 
   def valid_moves(game, player_color) do
     ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
-    board = game.board
 
-    ruleset_impl.valid_moves(board, color: player_color)
+    ruleset_impl.valid_moves(game, color: player_color)
   end
 
   def valid_moves_from_position(game, player_color, position) do
