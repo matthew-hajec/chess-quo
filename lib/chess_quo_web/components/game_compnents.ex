@@ -43,6 +43,7 @@ defmodule ChessQuoWeb.GameComponents do
         "aspect-square flex items-center justify-center text-xs sm:text-sm font-bold",
         if(@light?, do: "bg-amber-100", else: "bg-amber-700"),
         if(@selected?, do: "ring-4 ring-blue-400 ring-inset"),
+        if(@valid_move?, do: "ring-4 ring-green-400 ring-inset"),
         if(@selectable? or @valid_move?, do: "cursor-pointer hover:opacity-80")
       ]}
       role="button"
