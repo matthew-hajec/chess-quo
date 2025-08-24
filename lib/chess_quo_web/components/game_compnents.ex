@@ -29,7 +29,7 @@ defmodule ChessQuoWeb.GameComponents do
       |> Map.put(:alt, "#{assigns.piece["color"]} #{assigns.piece["type"]}")
 
     ~H"""
-    <img src={@svg_path} alt={@alt} class="w-3/4 h-3/4" />
+    <img src={@svg_path} alt={@alt} class="w-3/4 h-3/4" draggable="false" />
     """
   end
 
