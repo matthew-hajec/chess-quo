@@ -93,11 +93,6 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
-  def valid_move?(_board, _move) do
-    false
-  end
-
-  @impl true
   def apply_move(board, _move) do
     board
   end

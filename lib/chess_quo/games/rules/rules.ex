@@ -13,7 +13,5 @@ defmodule ChessQuo.Games.Rules do
 
   @callback valid_moves(board :: Game.board(), color: String.t()) :: [Game.move()]
 
-  @callback valid_move?(board :: Game.board(), move :: Game.move()) :: boolean()
-
   @callback apply_move(board :: Game.board(), move :: Game.move()) :: Game.board()
 end
