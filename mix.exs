@@ -40,6 +40,7 @@ defmodule ChessQuo.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:binbo, "~> 4.0.3"},
       {:phoenix, "~> 1.8.0"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
