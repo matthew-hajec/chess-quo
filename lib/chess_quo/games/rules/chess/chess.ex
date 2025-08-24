@@ -93,7 +93,17 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
-  def apply_move(board, _move) do
-    board
+  def apply_move(board, move) do
+    # Find the piece being moved
+    piece = Enum.find(board, fn p -> p["position"] == move["from"]["position"] end)
+
+    # If the piece is found, update the board
+    if piece do
+      board
+      |> List.replace_at(piece["position"], nil)
+      |> List.replace_at(move["to"]["position"], Map.put(piece, "position", move["to"]["position"]))
+    else
+      board
+    end
   end
 end
