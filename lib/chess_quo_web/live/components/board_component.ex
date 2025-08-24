@@ -2,6 +2,7 @@ defmodule ChessQuoWeb.BoardComponent do
   use ChessQuoWeb, :live_component
 
   alias ChessQuo.Games
+  alias ChessQuoWeb.Components.Piece
 
   @doc """
   Renders a generic extensible board component.
@@ -64,7 +65,7 @@ defmodule ChessQuoWeb.BoardComponent do
               phx-target={@myself}
             >
               <%= if piece do %>
-                {render_piece(@game.ruleset, piece)}
+                <Piece.icon piece={piece} ruleset={@game.ruleset} />
               <% end %>
             </div>
           <% end %>
@@ -101,46 +102,5 @@ defmodule ChessQuoWeb.BoardComponent do
 
   defp find_piece_at(index, board_state) do
     Enum.find(board_state, fn piece -> piece["position"] == index end)
-  end
-
-  defp render_piece("chess", piece) do
-    piece_svgs = %{
-      "pawn" => %{
-        "black" => "wikimedia/pawn-black.svg",
-        "white" => "wikimedia/pawn-white.svg"
-      },
-      "rook" => %{
-        "black" => "wikimedia/rook-black.svg",
-        "white" => "wikimedia/rook-white.svg"
-      },
-      "knight" => %{
-        "black" => "wikimedia/knight-black.svg",
-        "white" => "wikimedia/knight-white.svg"
-      },
-      "bishop" => %{
-        "black" => "wikimedia/bishop-black.svg",
-        "white" => "wikimedia/bishop-white.svg"
-      },
-      "queen" => %{
-        "black" => "wikimedia/queen-black.svg",
-        "white" => "wikimedia/queen-white.svg"
-      },
-      "king" => %{
-        "black" => "wikimedia/king-black.svg",
-        "white" => "wikimedia/king-white.svg"
-      }
-    }
-
-    assigns = %{
-      svg_path: "/images/chess-pieces/" <> piece_svgs[piece["type"]][piece["color"]],
-      piece_type: piece["type"],
-      piece_color: piece["color"]
-    }
-
-    ~H"""
-    <div class="w-full h-full flex items-center justify-center">
-      <img src={@svg_path} alt={"#{@piece_color} #{@piece_type}"} class="w-3/4 h-3/4" />
-    </div>
-    """
   end
 end
