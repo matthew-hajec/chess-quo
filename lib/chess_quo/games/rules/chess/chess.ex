@@ -101,7 +101,10 @@ defmodule ChessQuo.Games.Rules.Chess do
     if piece do
       board
       |> List.replace_at(piece["position"], nil)
-      |> List.replace_at(move["to"]["position"], Map.put(piece, "position", move["to"]["position"]))
+      |> List.replace_at(
+        move["to"]["position"],
+        Map.put(piece, "position", move["to"]["position"])
+      )
     else
       board
     end
