@@ -1,8 +1,8 @@
 defmodule ChessQuoWeb.Components.Piece do
-  use ChessQuoWeb, :live_component
+  use Phoenix.Component
 
   attr :piece, :map
-  attr :ruleset, :string, default: "chess"
+  attr :ruleset, :string
 
   def icon(%{ruleset: "chess"} = assigns) do
     piece_svgs = %{
