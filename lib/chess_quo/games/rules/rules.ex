@@ -14,9 +14,10 @@ defmodule ChessQuo.Games.Rules do
   @callback valid_moves(game :: Game, color :: String.t()) :: [Game.move()]
 
   @doc """
-  Applies a move to the board.
+  Applies a move to the board and returns updated board and meta.
 
-  Does not ensure the move is legal.
+  Implementations can update the meta field for variant-specific data (e.g., castling rights, en passant, etc.)
   """
-  @callback apply_move(board :: Game.board(), move :: Game.move()) :: Game.board()
+  @callback apply_move(board :: Game.board(), move :: Game.move(), meta :: map()) ::
+              {Game.board(), map()}
 end
