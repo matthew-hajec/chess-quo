@@ -1,8 +1,9 @@
 defmodule ChessQuoWeb.BoardComponent do
+alias ChessQuoWeb.GameComponents
   use ChessQuoWeb, :live_component
 
   alias ChessQuo.Games
-  alias ChessQuoWeb.Components.Piece
+  alias ChessQuoWeb.GameComponents
 
   @doc """
   Renders a generic extensible board component.
@@ -65,7 +66,7 @@ defmodule ChessQuoWeb.BoardComponent do
               phx-target={@myself}
             >
               <%= if piece do %>
-                <Piece.icon piece={piece} ruleset={@game.ruleset} />
+                <GameComponents.icon piece={piece} ruleset={@game.ruleset} />
               <% end %>
             </div>
           <% end %>

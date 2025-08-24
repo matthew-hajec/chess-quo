@@ -1,4 +1,4 @@
-defmodule ChessQuoWeb.Components.Piece do
+defmodule ChessQuoWeb.GameComponents do
   use Phoenix.Component
 
   attr :piece, :map
