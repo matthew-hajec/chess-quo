@@ -46,29 +46,23 @@ alias ChessQuoWeb.GameComponents
         <%= for rank <- rank_range do %>
           <%= for file <- file_range do %>
             <% index = file - ?a + (8 - rank) * 8 %>
-            <% is_light_square = rem(file - ?a + rank, 2) == 1 %>
+            <% light? = rem(file - ?a + rank, 2) == 1  %>
             <% piece = find_piece_at(index, @game.board) %>
-            <% is_selected = @selected_square == index %>
-            <% is_selectable = piece && piece["color"] == @perspective %>
-            <% is_valid_move = Enum.any?(@valid_moves, fn move -> move["to"]["position"] == index end) %>
+            <% selected? = @selected_square == index %>
+            <% selectable? = is_map(piece) and piece["color"] == @perspective %>
+            <% valid_move? = Enum.any?(@valid_moves, fn move -> move["to"]["position"] == index end) %>
 
-            <div
-              class={[
-                "aspect-square flex items-center justify-center text-xs sm:text-sm font-bold",
-                if(is_light_square, do: "bg-amber-100", else: "bg-amber-700"),
-                if(is_selected, do: "ring-4 ring-blue-400 ring-inset"),
-                if(is_selectable, do: "cursor-pointer hover:opacity-80"),
-                if(is_valid_move, do: "cursor-pointer bg-green-100")
-              ]}
-              data-square-index={file - ?a + (8 - rank) * 8}
-              phx-click={if is_selectable, do: "select_square"}
-              phx-value-index={index}
-              phx-target={@myself}
-            >
-              <%= if piece do %>
-                <GameComponents.icon piece={piece} ruleset={@game.ruleset} />
-              <% end %>
-            </div>
+            <GameComponents.square
+                ruleset="chess"
+                target={@myself}
+                on_click="select_square"
+                index={index}
+                light?={light?}
+                piece={piece}
+                selected?={selected?}
+                selectable?={selectable?}
+                valid_move?={valid_move?}
+            />
           <% end %>
         <% end %>
       </div>
@@ -80,8 +74,12 @@ alias ChessQuoWeb.GameComponents
     # Convert the index to an integer
     index = String.to_integer(index)
 
+    # Find the piece at the selected square
+    piece = find_piece_at(index, socket.assigns[:game].board)
+    players_piece? = piece && piece["color"] == socket.assigns[:perspective]
+
     # If the square is already selected, deselect it
-    new_selected = if socket.assigns[:selected_square] == index, do: nil, else: index
+    new_selected = if socket.assigns[:selected_square] == index or !players_piece?, do: nil, else: index
 
     # Only calculate valid moves if this is a selection and not a deselection
     valid_moves =
