@@ -82,6 +82,17 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
+  def initial_meta do
+    %{
+      # Defines whether the castling is available for each player
+      "castling" => %{
+        "white" => %{"kingside" => true, "queenside" => true},
+        "black" => %{"kingside" => true, "queenside" => true}
+      }
+    }
+  end
+
+  @impl true
   def valid_moves(_game, _color) do
     [
       %{
@@ -100,11 +111,11 @@ defmodule ChessQuo.Games.Rules.Chess do
     # If the piece is found, update the board
     if piece do
       {board
-      |> List.replace_at(piece["position"], nil)
-      |> List.replace_at(
-        move["to"]["position"],
-        Map.put(piece, "position", move["to"]["position"])
-      ), meta}
+       |> List.replace_at(piece["position"], nil)
+       |> List.replace_at(
+         move["to"]["position"],
+         Map.put(piece, "position", move["to"]["position"])
+       ), meta}
     else
       {board, meta}
     end
