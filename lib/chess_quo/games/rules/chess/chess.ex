@@ -88,7 +88,11 @@ defmodule ChessQuo.Games.Rules.Chess do
       "castling" => %{
         "white" => %{"kingside" => true, "queenside" => true},
         "black" => %{"kingside" => true, "queenside" => true}
-      }
+      },
+      # Defines the en-passant target square index (0-63)
+      "en-passant" => nil,
+      # Defines the half-move clock (for fifty-move rule)
+      "half-move-clock" => 0
     }
   end
 
