@@ -25,7 +25,8 @@ defmodule ChessQuo.Games do
       code: Tokens.game_code(),
       white_secret: Tokens.secret(),
       black_secret: Tokens.secret(),
-      board: ruleset_impl.initial_board()
+      board: ruleset_impl.initial_board(),
+      meta: ruleset_impl.initial_meta()
     }
 
     changeset = Game.system_changeset(%Game{}, attrs)

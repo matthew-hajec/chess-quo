@@ -9,8 +9,19 @@ defmodule ChessQuo.Games.Rules do
 
   alias ChessQuo.Games.Game
 
+  @doc """
+  Returns the initial board configuration for the game.
+  """
   @callback initial_board() :: Game.board()
 
+  @doc """
+  Returns the initial metadata for the game.
+  """
+  @callback initial_meta() :: map()
+
+  @doc """
+  Returns a list of valid moves for the given game state and player color.
+  """
   @callback valid_moves(game :: Game, color :: String.t()) :: [Game.move()]
 
   @doc """
