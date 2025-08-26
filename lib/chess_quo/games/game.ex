@@ -47,8 +47,6 @@ defmodule ChessQuo.Games.Game do
   @type move :: %{
           before: piece(),
           after: piece(),
-          # Color of the player making the move
-          by: String.t()
         }
 
   @typedoc """
