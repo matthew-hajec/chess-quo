@@ -102,7 +102,6 @@ defmodule ChessQuo.Games.Rules.Chess do
       %{
         "from" => %{"type" => "pawn", "color" => "white", "position" => 8},
         "to" => %{"type" => "pawn", "color" => "white", "position" => 16},
-        "by" => "white"
       }
     ]
   end
