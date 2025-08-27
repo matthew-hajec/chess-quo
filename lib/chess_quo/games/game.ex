@@ -46,7 +46,7 @@ defmodule ChessQuo.Games.Game do
   """
   @type move :: %{
           before: piece(),
-          after: piece(),
+          after: piece()
         }
 
   @typedoc """
