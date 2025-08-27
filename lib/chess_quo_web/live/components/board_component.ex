@@ -85,7 +85,7 @@ defmodule ChessQuoWeb.BoardComponent do
     # Only calculate valid moves if this is a selection and not a deselection
     valid_moves =
       if new_selected do
-        Games.valid_moves_from_position(
+        moves = Games.valid_moves_from_position(
           socket.assigns[:game],
           socket.assigns[:perspective],
           index

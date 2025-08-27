@@ -1,6 +1,8 @@
 defmodule ChessQuo.Games.Rules.Chess do
   @behaviour ChessQuo.Games.Rules
 
+  alias ChessQuo.Games.Rules.Chess.MoveFinder
+
   # Keys in the game data are strings, not atoms (see the documentation for `ChessQuo.Games.Game` for details)
   @dialyzer {:nowarn_function, [{:initial_board, 0}, {:valid_moves, 2}]}
 
@@ -97,13 +99,8 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
-  def valid_moves(_game, _color) do
-    [
-      %{
-        "from" => %{"type" => "pawn", "color" => "white", "position" => 8},
-        "to" => %{"type" => "pawn", "color" => "white", "position" => 16}
-      }
-    ]
+  def valid_moves(game, _color) do
+    MoveFinder.all_valid_moves(game)
   end
 
   @impl true
