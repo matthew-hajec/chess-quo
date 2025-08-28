@@ -9,8 +9,6 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
   Considers the current player to move, so will only return moves that can be made on the current turn.
   """
   def all_valid_moves(game) do
-    IO.puts("Finding valid moves")
-
     # Convert the game into FEN to pass into chess_logic
     fen = FEN.game_to_fen(game)
 
