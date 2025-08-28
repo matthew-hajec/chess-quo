@@ -77,30 +77,39 @@ defmodule ChessQuoWeb.BoardComponent do
     # Find the piece at the selected square
     piece = find_piece_at(index, socket.assigns[:game].board)
     players_piece? = piece && piece["color"] == socket.assigns[:perspective]
+    valid_move? = is_valid_move?(socket.assigns[:valid_moves], index)
 
-    # If the square is already selected, deselect it
-    new_selected =
-      if socket.assigns[:selected_square] == index or !players_piece?, do: nil, else: index
+    if valid_move? do
+      IO.puts("User clicked a valid move!")
+    end
 
-    # Only calculate valid moves if this is a selection and not a deselection
-    valid_moves =
-      if new_selected do
-        Games.valid_moves_from_position(
-          socket.assigns[:game],
-          socket.assigns[:perspective],
-          index
-        )
-      else
-        []
-      end
+    if socket.assigns[:selected_square] == index or !players_piece? do
+      handle_deselection(socket)
+    else
+      handle_selection(index, socket)
+    end
+  end
+
+  defp handle_selection(index, socket) do
+    valid_moves = Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
 
     {:noreply,
      socket
-     |> assign(:selected_square, new_selected)
+     |> assign(:selected_square, index)
      |> assign(:valid_moves, valid_moves)}
+  end
+
+  defp handle_deselection(socket) do
+    {:noreply,
+     socket
+     |> assign(:selected_square, nil)
+     |> assign(:valid_moves, [])}
   end
 
   defp find_piece_at(index, board_state) do
     Enum.find(board_state, fn piece -> piece["position"] == index end)
   end
+
+  defp is_valid_move?(valid_moves, _to_index) when is_nil(valid_moves), do: false
+  defp is_valid_move?(valid_moves, to_index), do: to_index in Enum.map(valid_moves, fn move -> move["to"]["position"] end)
 end
