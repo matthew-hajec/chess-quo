@@ -59,6 +59,9 @@ defmodule ChessQuo.Games.Game do
 
     # Ruleset to use, check `ChessQuo.Games.Rules` (can be `chess`, `checkers`, etc., if there is a valid implementation)
     field :code, :string
+    # Password to use for joining a game
+    field :password, :string, default: ""
+
     # Secret shared with the white player to verify their moves
     field :white_secret, :string
     # Secret shared with the black player to verify their moves
@@ -92,6 +95,7 @@ defmodule ChessQuo.Games.Game do
     |> change(attrs)
     |> cast(attrs, [
       :code,
+      :password,
       :white_secret,
       :black_secret,
       :turn,
@@ -114,6 +118,7 @@ defmodule ChessQuo.Games.Game do
       :black_joined,
       :moves
     ])
+    |> validate_length(:password, max: 30)
     |> unique_constraint(:code)
     |> optimistic_lock(:lock_version)
   end
