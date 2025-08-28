@@ -17,7 +17,7 @@ defmodule ChessQuo.Games do
 
   Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
   """
-  def create_game(ruleset, password \\ "", attempts \\ 5) when is_map_key(@ruleset_mods, ruleset) do
+  def create_game(ruleset, host_color, password \\ "", attempts \\ 5) when is_map_key(@ruleset_mods, ruleset) do
     ruleset_impl = Map.get(@ruleset_mods, ruleset)
 
     attrs = %{
@@ -30,6 +30,13 @@ defmodule ChessQuo.Games do
       meta: ruleset_impl.initial_meta()
     }
 
+    # Add the joined property the attrs based on the host color
+    attrs = if host_color == "white" do
+      Map.put(attrs, :white_joined, true)
+    else
+      Map.put(attrs, :black_joined, true)
+    end
+
     changeset = Game.system_changeset(%Game{}, attrs)
 
     case Repo.insert(changeset) do
@@ -38,7 +45,7 @@ defmodule ChessQuo.Games do
 
       {:error, %Ecto.Changeset{errors: [code: {"has already been taken", _}]}}
       when attempts > 1 ->
-        create_game(ruleset, password, attempts - 1)
+        create_game(ruleset, host_color, password, attempts - 1)
 
       {:error, changeset} ->
         {:error, changeset}

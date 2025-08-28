@@ -11,7 +11,7 @@ defmodule ChessQuoWeb.GameController do
     color = if color == "random", do: Enum.random(["white", "black"]), else: color
     password = Map.get(conn.params, "password", "") |> String.trim()
 
-    case Games.create_game("chess", password) do
+    case Games.create_game("chess", color, password) do
       {:ok, game} ->
         player_secret = if color == "white", do: game.white_secret, else: game.black_secret
 
