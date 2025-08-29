@@ -30,12 +30,14 @@ defmodule ChessQuoWeb.GameController do
   def join(conn, %{"code" => code}) do
     code = String.trim(code) |> String.upcase()
 
-    if Games.possible_code(code) do
-      render(conn, :join, code: code)
+    with true <- Games.possible_code(code),
+         {:ok, _game} <- Games.get_game(code) do
+          render(conn, :join, code: code)
     else
-      conn
-      |> put_flash(:error, "Invalid game code.")
-      |> redirect(to: ~p"/")
+      _ ->
+        conn
+        |> put_flash(:error, "Game not found.")
+        |> redirect(to: ~p"/")
     end
   end
 
