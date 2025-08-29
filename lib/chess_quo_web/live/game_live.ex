@@ -10,7 +10,7 @@ defmodule ChessQuoWeb.GameLive do
         player_color = session["player_color"]
         player_secret = session["player_secret"]
 
-        case Games.validate_player(game, player_color, player_secret) do
+        case Games.validate_secret(game, player_color, player_secret) do
           {:ok, _} ->
             link = ChessQuoWeb.Endpoint.url() <> ~p"/play/#{code}"
 
