@@ -1,0 +1,28 @@
+<Layouts.app flash={@flash}>
+  <div class="max-w-md mx-auto">
+    <h2 class="text-2xl font-bold text-center mb-8">Join Game <%= @code %></h2>
+
+    <div class="card bg-base-200 shadow-xl">
+      <div class="card-body">
+        <form action={~p"/lobby/join/#{@code}"} method="post">
+          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Password</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              class="input input-bordered w-full focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/60"
+            />
+          </div>
+
+          <div class="mt-6">
+            <button class="btn btn-primary w-full">Join Game</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</Layouts.app>

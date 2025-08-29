@@ -22,6 +22,9 @@ defmodule ChessQuoWeb.Router do
     get "/lobby/create", GameController, :new
     post "/lobby/create", GameController, :create
 
+    get "/lobby/join/:code", GameController, :join
+    post "/lobby/join/:code", GameController, :post_join
+
     live "/play/:code", GameLive, :show
   end
 

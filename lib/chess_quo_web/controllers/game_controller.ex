@@ -26,4 +26,49 @@ defmodule ChessQuoWeb.GameController do
         |> redirect(to: ~p"/lobby/create")
     end
   end
+
+  def join(conn, %{"code" => code}) do
+    code = String.trim(code) |> String.upcase()
+
+    if Games.possible_code(code) do
+      render(conn, :join, code: code)
+    else
+      conn
+      |> put_flash(:error, "Invalid game code.")
+      |> redirect(to: ~p"/")
+    end
+  end
+
+  def post_join(conn, %{"code" => code, "password" => password}) do
+    code = String.trim(code) |> String.upcase()
+
+    if Games.possible_code(code) do
+      case Games.join_by_password(code, password) do
+        {:ok, color, secret} ->
+          conn
+          |> put_session(:player_secret, secret)
+          |> put_session(:player_color, color)
+          |> redirect(to: ~p"/play/#{code}")
+
+        {:error, :not_found} ->
+          conn
+          |> put_flash(:error, "Game not found.")
+          |> redirect(to: ~p"/")
+
+        {:error, :invalid_password} ->
+          conn
+          |> put_flash(:error, "Invalid password.")
+          |> redirect(to: ~p"/lobby/join/#{code}")
+
+        {:error, :full} ->
+          conn
+          |> put_flash(:error, "Game is full.")
+          |> redirect(to: ~p"/")
+      end
+    else
+      conn
+      |> put_flash(:error, "Invalid game code.")
+      |> redirect(to: ~p"/")
+    end
+  end
 end
