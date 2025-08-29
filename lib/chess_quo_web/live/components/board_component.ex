@@ -91,7 +91,8 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   defp handle_selection(index, socket) do
-    valid_moves = Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
+    valid_moves =
+      Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
 
     {:noreply,
      socket
@@ -111,5 +112,7 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   defp is_valid_move?(valid_moves, _to_index) when is_nil(valid_moves), do: false
-  defp is_valid_move?(valid_moves, to_index), do: to_index in Enum.map(valid_moves, fn move -> move["to"]["position"] end)
+
+  defp is_valid_move?(valid_moves, to_index),
+    do: to_index in Enum.map(valid_moves, fn move -> move["to"]["position"] end)
 end
