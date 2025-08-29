@@ -108,6 +108,11 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
+  def current_turn(game) do
+    if rem(length(game.moves), 2) == 0, do: "white", else: "black"
+  end
+
+  @impl true
   def apply_move(board, move, meta) do
     # Find the piece being moved
     piece = Enum.find(board, fn p -> p["position"] == move["from"]["position"] end)

@@ -120,6 +120,12 @@ defmodule ChessQuo.Games do
     Enum.filter(valid_moves, fn move -> move["from"]["position"] == position end)
   end
 
+  def current_turn(game) do
+    ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
+
+    ruleset_impl.current_turn(game)
+  end
+
   @doc """
   Check if a game code is possibly valid. (correct length and character set)
   """
