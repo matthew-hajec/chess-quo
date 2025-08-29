@@ -115,6 +115,13 @@ defmodule ChessQuo.Games do
     Enum.filter(valid_moves, fn move -> move["from"]["position"] == position end)
   end
 
+  @doc """
+  Check if a game code is possibly valid. (correct length and character set)
+  """
+  def possible_code(code) do
+    Tokens.possible_code?(code)
+  end
+
   defp validate_password(game, password) do
     if game.password == password do
       :ok
