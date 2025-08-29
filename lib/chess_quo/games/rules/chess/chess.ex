@@ -99,8 +99,12 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
-  def valid_moves(game, _color) do
-    MoveFinder.all_valid_moves(game)
+  def valid_moves(game, color) do
+    all_moves = MoveFinder.all_valid_moves(game) ++ MoveFinder.all_valid_next_moves(game)
+
+    Enum.filter(all_moves, fn move ->
+      move["from"]["color"] == color
+    end)
   end
 
   @impl true

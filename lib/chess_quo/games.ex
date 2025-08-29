@@ -104,10 +104,15 @@ defmodule ChessQuo.Games do
     end
   end
 
+  @doc """
+  Returns all valid moves for a player in a game.
+
+  If it is not the current player's turn, the valid moves should be returned as if it is.
+  """
   def valid_moves(game, player_color) do
     ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
 
-    ruleset_impl.valid_moves(game, color: player_color)
+    ruleset_impl.valid_moves(game, player_color)
   end
 
   def valid_moves_from_position(game, player_color, position) do

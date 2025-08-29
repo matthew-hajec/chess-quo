@@ -16,6 +16,17 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
       full_move_clock_string(game)
   end
 
+  @doc """
+  Flips the side to move and clears the en passant target square in a FEN string.
+  """
+  def flip_side_clear_ep(fen) do
+    case String.split(fen, " ", parts: 6) do
+      [a, side, c, _ep, e, f] ->
+        new_side = if side == "w", do: "b", else: "w"
+        Enum.join([a, new_side, c, "-", e, f], " ")
+    end
+  end
+
   # Generate the piece placement part of the FEN string
   defp piece_placement_string(game) do
     board = game.board
