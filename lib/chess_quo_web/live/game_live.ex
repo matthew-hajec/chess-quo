@@ -24,8 +24,7 @@ defmodule ChessQuoWeb.GameLive do
           {:error, :invalid_credentials} ->
             {:ok,
              socket
-             |> put_flash(:error, "Invalid credentials.")
-             |> redirect(to: ~p"/")}
+             |> redirect(to: ~p"/lobby/join/#{code}")}
         end
 
       {:error, :not_found} ->
