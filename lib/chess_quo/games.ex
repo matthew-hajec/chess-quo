@@ -17,7 +17,8 @@ defmodule ChessQuo.Games do
 
   Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
   """
-  def create_game(ruleset, host_color, password \\ "", attempts \\ 5) when is_map_key(@ruleset_mods, ruleset) do
+  def create_game(ruleset, host_color, password \\ "", attempts \\ 5)
+      when is_map_key(@ruleset_mods, ruleset) do
     ruleset_impl = Map.get(@ruleset_mods, ruleset)
 
     attrs = %{
@@ -31,11 +32,12 @@ defmodule ChessQuo.Games do
     }
 
     # Add the joined property the attrs based on the host color
-    attrs = if host_color == "white" do
-      Map.put(attrs, :white_joined, true)
-    else
-      Map.put(attrs, :black_joined, true)
-    end
+    attrs =
+      if host_color == "white" do
+        Map.put(attrs, :white_joined, true)
+      else
+        Map.put(attrs, :black_joined, true)
+      end
 
     changeset = Game.system_changeset(%Game{}, attrs)
 
@@ -72,6 +74,26 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
+  Allows a player to join a game by providing the game code and password.
+
+  Returns {:error, :not_found} is the lobby isn't found.
+  Returns {:error, :invalid_password} if the password is incorrect.
+  Returns {:error, :full} if the lobby is full.
+  Returns {:ok, color, secret} if the player successfully joins the game, where color is the player's color and secret is the player's secret.
+
+  Raises an error if database queries fail.
+  """
+  def join_by_password(code, password) do
+    # Returns {:error, :not_found} if not found
+    with {:ok, game} <- get_game(code),
+         # Returns {:error, :invalid_password} if the password is incorrect
+         :ok <- validate_password(game, password) do
+      # Returns {:error, :full} if the lobby is full, or {:ok, color, secret} if successful
+      try_join(game)
+    end
+  end
+
+  @doc """
   Validates a player's credentials by checking the provided color and secret against the game's secrets.
   """
   def validate_secret(game, player_color, player_secret) do
@@ -92,4 +114,40 @@ defmodule ChessQuo.Games do
     valid_moves = valid_moves(game, player_color)
     Enum.filter(valid_moves, fn move -> move["from"]["position"] == position end)
   end
+
+  defp validate_password(game, password) do
+    if game.password == password do
+      :ok
+    else
+      {:error, :invalid_password}
+    end
+  end
+
+  # Returns {:ok, color, secret} if successful, or {:error, :full} if the game is full.
+  # Raises an error if the database query fails.
+  defp try_join(game) do
+    case pick_slot(game) do
+      {:ok, color} ->
+        secret = if color == "white", do: game.white_secret, else: game.black_secret
+
+        attrs = %{
+          state: "playing",
+          # Both players can be set to have joined, because the host joins the game when they create it
+          white_joined: true,
+          black_joined: true,
+          started_at: DateTime.utc_now()
+        }
+
+        Repo.update!(Game.system_changeset(game, attrs))
+
+        {:ok, color, secret}
+
+      {:error, :full} = err ->
+        err
+    end
+  end
+
+  defp pick_slot(%{white_joined: true, black_joined: true}), do: {:error, :full}
+  defp pick_slot(%{white_joined: true}), do: {:ok, "black"}
+  defp pick_slot(%{black_joined: true}), do: {:ok, "white"}
 end
