@@ -32,7 +32,7 @@ defmodule ChessQuoWeb.GameController do
 
     with true <- Games.possible_code(code),
          {:ok, _game} <- Games.get_game(code) do
-          render(conn, :join, code: code)
+      render(conn, :join, code: code)
     else
       _ ->
         conn
