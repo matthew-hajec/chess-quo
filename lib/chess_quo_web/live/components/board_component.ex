@@ -105,9 +105,4 @@ defmodule ChessQuoWeb.BoardComponent do
   defp find_piece_at(index, board_state) do
     Enum.find(board_state, fn piece -> piece["position"] == index end)
   end
-
-  defp is_valid_move?(valid_moves, _to_index) when is_nil(valid_moves), do: false
-
-  defp is_valid_move?(valid_moves, to_index),
-    do: to_index in Enum.map(valid_moves, fn move -> move["to"]["position"] end)
 end
