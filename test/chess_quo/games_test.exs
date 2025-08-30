@@ -5,6 +5,8 @@ defmodule ChessQuo.GamesTest do
   alias ChessQuo.GamesFixtures
   alias ChessQuo.Games.Game
 
+  setup :verify_on_exit!
+
   test "can insert and fetch a game" do
     game = GamesFixtures.game_fixture()
     assert game == Repo.get(Game, game.id)
@@ -20,5 +22,19 @@ defmodule ChessQuo.GamesTest do
     assert game.code == "TESTCODE"
     assert "SECRETONE" in [game.white_secret, game.black_secret]
     assert "SECRETTWO" in [game.white_secret, game.black_secret]
+  end
+
+  test "create_game raises when all attempts yield duplicate codes" do
+    # Create a game with a duplicate code
+    GamesFixtures.game_fixture(%{code: "COPY00"})
+
+    ChessQuo.Games.MockTokens
+    |> expect(:game_code, 3, fn -> "COPY00" end) # ATTEMPT ONE
+    |> stub(:secret, fn -> "DEFAULTSECRET" end)
+
+    # Should raise an error
+    assert_raise RuntimeError, fn ->
+      ChessQuo.Games.create_game("chess", "white", "", 3)
+    end
   end
 end
