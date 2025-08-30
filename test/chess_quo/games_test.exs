@@ -27,6 +27,26 @@ defmodule ChessQuo.GamesTest do
     assert game == Repo.get(Game, game.id)
   end
 
+  test "create_game initializes in the waiting state" do
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+    assert game.state == "waiting"
+  end
+
+  test "create_game initializes white as the current turn" do
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+    assert game.turn == "white"
+  end
+
+  test "create_game initializes the winner as nil" do
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+    assert game.winner == nil
+  end
+
+  test "create_game initializes started at as nil" do
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+    assert game.started_at == nil
+  end
+
   test "create_game sets code and secrets from tokens module" do
     ChessQuo.Games.MockTokens
     |> expect(:game_code, fn -> "TESTCODE" end)
