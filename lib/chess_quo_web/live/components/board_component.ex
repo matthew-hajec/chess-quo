@@ -77,11 +77,6 @@ defmodule ChessQuoWeb.BoardComponent do
     # Find the piece at the selected square
     piece = find_piece_at(index, socket.assigns[:game].board)
     players_piece? = piece && piece["color"] == socket.assigns[:perspective]
-    valid_move? = is_valid_move?(socket.assigns[:valid_moves], index)
-
-    if valid_move? do
-      IO.puts("User clicked a valid move!")
-    end
 
     if socket.assigns[:selected_square] == index or !players_piece? do
       handle_deselection(socket)
