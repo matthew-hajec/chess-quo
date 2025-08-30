@@ -1,4 +1,4 @@
-defmodule ChessQuo.Games.Rules do
+defmodule ChessQuo.Games.RulesBehaviour do
   @moduledoc """
   This module defines the rules for the chess game.
 

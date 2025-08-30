@@ -1,5 +1,5 @@
 defmodule ChessQuo.Games.Rules.Chess do
-  @behaviour ChessQuo.Games.Rules
+  @behaviour ChessQuo.Games.RulesBehaviour
 
   alias ChessQuo.Games.Game
   alias ChessQuo.Games.Rules.Chess.MoveFinder
