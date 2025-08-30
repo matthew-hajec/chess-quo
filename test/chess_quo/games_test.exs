@@ -24,7 +24,7 @@ defmodule ChessQuo.GamesTest do
     assert "SECRETTWO" in [game.white_secret, game.black_secret]
   end
 
-  test "create_game raises when all attempts yield duplicate codes" do
+  test "create_game returns an error tuple when all attempts yield duplicate codes" do
     # Create a game with a duplicate code
     GamesFixtures.game_fixture(%{code: "COPY00"})
 
@@ -33,10 +33,8 @@ defmodule ChessQuo.GamesTest do
     |> expect(:game_code, 3, fn -> "COPY00" end)
     |> stub(:secret, fn -> "DEFAULTSECRET" end)
 
-    # Should raise an error
-    assert_raise RuntimeError, fn ->
-      ChessQuo.Games.create_game("chess", "white", "", 3)
-    end
+    # Should return an error tuple
+    assert {:error, _changeset} = ChessQuo.Games.create_game("chess", "white", "", 3)
   end
 
   test "create_game sets the host color as joined" do
