@@ -5,12 +5,13 @@ defmodule ChessQuo.Games do
 
   alias ChessQuo.Repo
   alias ChessQuo.Games.Game
-  alias ChessQuo.Games.Tokens
 
   # Map of rulesets to the implementation modules
   @ruleset_mods %{
     "chess" => ChessQuo.Games.Rules.Chess
   }
+
+  defp tokens_mod, do: Application.get_env(:chess_quo, :tokens, ChessQuo.Games.Tokens)
 
   @doc """
   Creates a new game with a unique code and secrets for both players.
@@ -23,10 +24,10 @@ defmodule ChessQuo.Games do
 
     attrs = %{
       ruleset: ruleset,
-      code: Tokens.game_code(),
+      code: tokens_mod().game_code(),
       password: password,
-      white_secret: Tokens.secret(),
-      black_secret: Tokens.secret(),
+      white_secret: tokens_mod().secret(),
+      black_secret: tokens_mod().secret(),
       board: ruleset_impl.initial_board(),
       meta: ruleset_impl.initial_meta()
     }
@@ -154,7 +155,7 @@ defmodule ChessQuo.Games do
   Check if a game code is possibly valid. (correct length and character set)
   """
   def possible_code(code) do
-    Tokens.possible_code?(code)
+    tokens_mod().possible_code?(code)
   end
 
   defp validate_password(game, password) do

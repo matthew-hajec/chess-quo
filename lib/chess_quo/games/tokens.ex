@@ -1,4 +1,6 @@
 defmodule ChessQuo.Games.Tokens do
+  @behaviour ChessQuo.Games.TokenBehaviour
+
   @doc "
   Generate a 6-character game code (A–Z0–9 only)
 
