@@ -29,7 +29,8 @@ defmodule ChessQuo.GamesTest do
     GamesFixtures.game_fixture(%{code: "COPY00"})
 
     ChessQuo.Games.MockTokens
-    |> expect(:game_code, 3, fn -> "COPY00" end) # ATTEMPT ONE
+    # ATTEMPT ONE
+    |> expect(:game_code, 3, fn -> "COPY00" end)
     |> stub(:secret, fn -> "DEFAULTSECRET" end)
 
     # Should raise an error

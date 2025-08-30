@@ -14,11 +14,14 @@ defmodule ChessQuo.Games do
   defp ruleset_mod!(ruleset) do
     mods = Application.get_env(:chess_quo, :ruleset_mods, @ruleset_mods)
     rs = Map.get(mods, ruleset)
+
     if is_nil(rs) do
       raise "Unknown ruleset: #{inspect(ruleset)}"
     end
+
     rs
   end
+
   defp tokens_mod, do: Application.get_env(:chess_quo, :tokens, ChessQuo.Games.Tokens)
 
   @doc """

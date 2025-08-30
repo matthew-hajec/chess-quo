@@ -133,8 +133,8 @@ defmodule ChessQuo.Games.Rules.Chess do
     board = board ++ [move["to"]]
 
     %Game{
-      game |
-      board: board
+      game
+      | board: board
     }
   end
 end
