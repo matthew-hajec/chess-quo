@@ -37,4 +37,19 @@ defmodule ChessQuo.GamesTest do
       ChessQuo.Games.create_game("chess", "white", "", 3)
     end
   end
+
+  test "create_game sets the host color as joined" do
+    ChessQuo.Games.MockTokens
+    |> expect(:game_code, fn -> "111111" end)
+    |> expect(:game_code, fn -> "222222" end)
+    |> stub(:secret, fn -> "DEFAULTSECRET" end)
+
+    assert {:ok, game} = ChessQuo.Games.create_game("chess", "white")
+    assert game.white_joined
+    refute game.black_joined
+
+    assert {:ok, game} = ChessQuo.Games.create_game("chess", "black")
+    assert game.black_joined
+    refute game.white_joined
+  end
 end
