@@ -51,4 +51,21 @@ defmodule ChessQuo.GamesTest do
     assert game.black_joined
     refute game.white_joined
   end
+
+  test "create_game initializes the game using the provided ruleset" do
+    mock_board = [%{"piece" => "pawn", "color" => "white", "position" => 1}]
+    mock_meta = %{"initial" => "meta"}
+
+    ChessQuo.Games.MockTokens
+    |> expect(:game_code, fn -> "BOARD01" end)
+    |> stub(:secret, fn -> "DEFAULTSECRET" end)
+
+    ChessQuo.Games.Rules.MockRules
+    |> expect(:initial_board, fn -> mock_board end)
+    |> expect(:initial_meta, fn -> mock_meta end)
+
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+    assert game.board == mock_board
+    assert game.meta == mock_meta
+  end
 end
