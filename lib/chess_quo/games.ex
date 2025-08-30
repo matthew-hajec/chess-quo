@@ -130,7 +130,6 @@ defmodule ChessQuo.Games do
   """
 
   def apply_move(game, player_color, move) do
-
     ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
 
     if game.turn != player_color do
