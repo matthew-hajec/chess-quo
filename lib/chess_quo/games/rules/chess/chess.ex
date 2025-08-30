@@ -1,10 +1,11 @@
 defmodule ChessQuo.Games.Rules.Chess do
   @behaviour ChessQuo.Games.Rules
 
+  alias ChessQuo.Games.Game
   alias ChessQuo.Games.Rules.Chess.MoveFinder
 
   # Keys in the game data are strings, not atoms (see the documentation for `ChessQuo.Games.Game` for details)
-  @dialyzer {:nowarn_function, [{:initial_board, 0}, {:valid_moves, 2}]}
+  @dialyzer {:nowarn_function, [{:initial_board, 0}, {:valid_moves, 2}, {:apply_move, 2}]}
 
   @impl true
   def initial_board do
@@ -107,8 +108,33 @@ defmodule ChessQuo.Games.Rules.Chess do
     end)
   end
 
+  # Apply_move is incomplete, it only changes the turn and moves the piece, but doesn't handle captures or even validation.
   @impl true
-  def apply_move(game, _move) do
+  def apply_move(game, move) do
+    # Change the turn
+    game = update_turn(game)
+
+    # Delete the piece at `from`, and update the piece at `to`
+    game = update_board(game, move)
+
     {:ok, game}
+  end
+
+  defp update_turn(%Game{turn: "white"} = game), do: %Game{game | turn: "black"}
+  defp update_turn(%Game{turn: "black"} = game), do: %Game{game | turn: "white"}
+
+  defp update_board(game, move) do
+    board = game.board
+
+    # Delete the piece `from`
+    board = List.delete(board, move["from"])
+
+    # Append the piece at `to`
+    board = board ++ [move["to"]]
+
+    %Game{
+      game |
+      board: board
+    }
   end
 end
