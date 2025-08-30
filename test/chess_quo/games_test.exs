@@ -7,6 +7,21 @@ defmodule ChessQuo.GamesTest do
 
   setup :verify_on_exit!
 
+  # SSetup mock stubs
+  setup do
+    ChessQuo.Games.MockTokens
+    |> stub(:game_code, fn -> "DEFAULTCODE" end)
+    |> stub(:secret, fn -> "DEFAULTSECRET" end)
+
+    ChessQuo.Games.Rules.MockRules
+    |> stub(:initial_board, fn ->
+      [%{"piece" => "defaultpiece", "color" => "white", "position" => 1}]
+    end)
+    |> stub(:initial_meta, fn -> %{"initial" => "meta"} end)
+
+    :ok
+  end
+
   test "can insert and fetch a game" do
     game = GamesFixtures.game_fixture()
     assert game == Repo.get(Game, game.id)
@@ -29,9 +44,7 @@ defmodule ChessQuo.GamesTest do
     GamesFixtures.game_fixture(%{code: "COPY00"})
 
     ChessQuo.Games.MockTokens
-    # ATTEMPT ONE
     |> expect(:game_code, 3, fn -> "COPY00" end)
-    |> stub(:secret, fn -> "DEFAULTSECRET" end)
 
     # Should return an error tuple
     assert {:error, _changeset} = ChessQuo.Games.create_game("chess", "white", "", 3)
@@ -41,7 +54,6 @@ defmodule ChessQuo.GamesTest do
     ChessQuo.Games.MockTokens
     |> expect(:game_code, fn -> "111111" end)
     |> expect(:game_code, fn -> "222222" end)
-    |> stub(:secret, fn -> "DEFAULTSECRET" end)
 
     assert {:ok, game} = ChessQuo.Games.create_game("chess", "white")
     assert game.white_joined
@@ -55,10 +67,6 @@ defmodule ChessQuo.GamesTest do
   test "create_game initializes the game using the provided ruleset" do
     mock_board = [%{"piece" => "pawn", "color" => "white", "position" => 1}]
     mock_meta = %{"initial" => "meta"}
-
-    ChessQuo.Games.MockTokens
-    |> expect(:game_code, fn -> "BOARD01" end)
-    |> stub(:secret, fn -> "DEFAULTSECRET" end)
 
     ChessQuo.Games.Rules.MockRules
     |> expect(:initial_board, fn -> mock_board end)
