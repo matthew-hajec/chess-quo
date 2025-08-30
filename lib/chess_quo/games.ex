@@ -11,16 +11,26 @@ defmodule ChessQuo.Games do
     "chess" => ChessQuo.Games.Rules.Chess
   }
 
+  defp ruleset_mod!(ruleset) do
+    mods = Application.get_env(:chess_quo, :ruleset_mods, @ruleset_mods)
+    rs = Map.get(mods, ruleset)
+    if is_nil(rs) do
+      raise "Unknown ruleset: #{inspect(ruleset)}"
+    end
+    rs
+  end
   defp tokens_mod, do: Application.get_env(:chess_quo, :tokens, ChessQuo.Games.Tokens)
 
   @doc """
   Creates a new game with a unique code and secrets for both players.
 
   Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
+
+  Raises an error if the game cannot be created after all retries.
+  Raises an error if the changeset is invalid for any reason other than a duplicate code.
   """
-  def create_game(ruleset, host_color, password \\ "", attempts \\ 5)
-      when is_map_key(@ruleset_mods, ruleset) do
-    ruleset_impl = Map.get(@ruleset_mods, ruleset)
+  def create_game(ruleset, host_color, password \\ "", attempts \\ 5) do
+    ruleset_impl = ruleset_mod!(ruleset)
 
     attrs = %{
       ruleset: ruleset,
@@ -112,7 +122,7 @@ defmodule ChessQuo.Games do
   If it is not the current player's turn, the valid moves should be returned as if it is.
   """
   def valid_moves(game, player_color) do
-    ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
+    ruleset_impl = ruleset_mod!(game.ruleset)
 
     ruleset_impl.valid_moves(game, player_color)
   end
@@ -132,7 +142,7 @@ defmodule ChessQuo.Games do
   """
 
   def apply_move(game, player_color, move) do
-    ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
+    ruleset_impl = ruleset_mod!(game.ruleset)
 
     if game.turn != player_color do
       {:error, :not_your_turn}
