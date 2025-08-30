@@ -51,7 +51,8 @@ defmodule ChessQuo.Games do
         create_game(ruleset, host_color, password, attempts - 1)
 
       {:error, changeset} ->
-        {:error, changeset}
+        # Raise an error if the changeset is invalid
+        raise "Failed to create game: #{inspect(changeset)}"
     end
   end
 
