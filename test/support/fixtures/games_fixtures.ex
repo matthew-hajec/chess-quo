@@ -1,18 +1,18 @@
 defmodule ChessQuo.GamesFixtures do
-  @moduledoc """
-  This module defines test helpers for creating
-  entities via the `ChessQuo.Games` context.
-  """
+  alias ChessQuo.Repo
+  alias ChessQuo.Games.Game
 
-  @doc """
-  Generate a game.
-  """
   def game_fixture(attrs \\ %{}) do
-    {:ok, game} =
-      attrs
-      |> Enum.into(%{})
-      |> ChessQuo.Games.create_game()
+    defaults = %{
+      ruleset: "chess",
+      code: "TEST12",
+      password: "testpassword",
+      white_secret: "white_secret",
+      black_secret: "black_secret",
+    }
 
+    merged_attrs = Map.merge(defaults, attrs)
+    {:ok, game} = Repo.insert(Game.system_changeset(%Game{}, merged_attrs))
     game
   end
 end
