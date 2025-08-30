@@ -120,10 +120,35 @@ defmodule ChessQuo.Games do
     Enum.filter(valid_moves, fn move -> move["from"]["position"] == position end)
   end
 
-  def current_turn(game) do
+  @doc """
+  Validates and applies a move to the game state.
+
+  Returns:
+  - {:ok, game} if the move is valid and applied successfully
+  - {:error, :not_your_turn} if it's not the player's turn.
+  - {:error, :invalid_move} if the move is not valid for the current game state.
+  """
+
+  def apply_move(game, player_color, move) do
+
     ruleset_impl = Map.get(@ruleset_mods, game.ruleset)
 
-    ruleset_impl.current_turn(game)
+    if game.turn != player_color do
+      {:error, :not_your_turn}
+    else
+      with {:ok, new_game} <- ruleset_impl.apply_move(game, player_color, move) do
+        attrs = %{
+          turn: new_game.turn,
+          board: new_game.board,
+          state: new_game.state,
+          winner: new_game.winner,
+          meta: new_game.meta,
+          moves: game.moves ++ [move]
+        }
+
+        Repo.update!(Game.system_changeset(game, attrs))
+      end
+    end
   end
 
   @doc """

@@ -108,25 +108,7 @@ defmodule ChessQuo.Games.Rules.Chess do
   end
 
   @impl true
-  def current_turn(game) do
-    if rem(length(game.moves), 2) == 0, do: "white", else: "black"
-  end
-
-  @impl true
-  def apply_move(board, move, meta) do
-    # Find the piece being moved
-    piece = Enum.find(board, fn p -> p["position"] == move["from"]["position"] end)
-
-    # If the piece is found, update the board
-    if piece do
-      {board
-       |> List.replace_at(piece["position"], nil)
-       |> List.replace_at(
-         move["to"]["position"],
-         Map.put(piece, "position", move["to"]["position"])
-       ), meta}
-    else
-      {board, meta}
-    end
+  def apply_move(game, _move) do
+    {:ok, game}
   end
 end

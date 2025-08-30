@@ -27,15 +27,18 @@ defmodule ChessQuo.Games.Rules do
   @callback valid_moves(game :: Game, color :: String.t()) :: [Game.move()]
 
   @doc """
-  The color of the current player to move.
-  """
-  @callback current_turn(game :: Game) :: String.t()
+  Applies a move to the board and returns updated game.
 
-  @doc """
-  Applies a move to the board and returns updated board and meta.
+  This function is responsible for updating the following fields:
+  - turn
+  - board
+  - state
+  - winner
+  - meta
 
-  Implementations can update the meta field for variant-specific data (e.g., castling rights, en passant, etc.)
+  Any field can be left as-is if the implementation does not need to change them.
+  Changes to any other fields are ignored.
   """
-  @callback apply_move(board :: Game.board(), move :: Game.move(), meta :: map()) ::
-              {Game.board(), map()}
+  @callback apply_move(game :: Game, move :: Game.move()) ::
+              {:ok, Game} | {:error, :invalid_move}
 end
