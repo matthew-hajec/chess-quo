@@ -33,7 +33,7 @@ defmodule ChessQuo.GamesTest do
     |> expect(:secret, fn -> "SECRETONE" end)
     |> expect(:secret, fn -> "SECRETTWO" end)
 
-    assert {:ok, game} = ChessQuo.Games.create_game("chess", "white")
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
     assert game.code == "TESTCODE"
     assert "SECRETONE" in [game.white_secret, game.black_secret]
     assert "SECRETTWO" in [game.white_secret, game.black_secret]
@@ -47,7 +47,7 @@ defmodule ChessQuo.GamesTest do
     |> expect(:game_code, 3, fn -> "COPY00" end)
 
     # Should return an error tuple
-    assert {:error, _changeset} = ChessQuo.Games.create_game("chess", "white", "", 3)
+    assert {:error, _changeset} = ChessQuo.Games.create_game("mock", "white", "", 3)
   end
 
   test "create_game sets the host color as joined" do
@@ -55,11 +55,11 @@ defmodule ChessQuo.GamesTest do
     |> expect(:game_code, fn -> "111111" end)
     |> expect(:game_code, fn -> "222222" end)
 
-    assert {:ok, game} = ChessQuo.Games.create_game("chess", "white")
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
     assert game.white_joined
     refute game.black_joined
 
-    assert {:ok, game} = ChessQuo.Games.create_game("chess", "black")
+    assert {:ok, game} = ChessQuo.Games.create_game("mock", "black")
     assert game.black_joined
     refute game.white_joined
   end
