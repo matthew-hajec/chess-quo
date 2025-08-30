@@ -29,8 +29,7 @@ defmodule ChessQuo.Games do
 
   Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
 
-  Raises an error if the game cannot be created after all retries.
-  Raises an error if the changeset is invalid for any reason other than a duplicate code.
+  Raises an error if the ruleset is invalid.
   """
   def create_game(ruleset, host_color, password \\ "", attempts \\ 5) do
     ruleset_impl = ruleset_mod!(ruleset)
@@ -64,8 +63,7 @@ defmodule ChessQuo.Games do
         create_game(ruleset, host_color, password, attempts - 1)
 
       {:error, changeset} ->
-        # Raise an error if the changeset is invalid
-        raise "Failed to create game: #{inspect(changeset)}"
+        {:error, changeset}
     end
   end
 
