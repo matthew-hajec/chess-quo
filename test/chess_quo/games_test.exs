@@ -1,5 +1,5 @@
 defmodule ChessQuo.GamesTest do
-  use ChessQuo.DataCase
+  use ChessQuo.DataCase, async: true
   import Mox
 
   alias ChessQuo.GamesFixtures
