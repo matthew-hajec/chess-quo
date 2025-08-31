@@ -57,5 +57,39 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
       assert FEN.game_to_fen(game) == "8/8/8/8/8/8/8/8 w KQkq - 0 1"
     end
+
+    test "full board" do
+      {:ok, game} = Games.create_game("chess", "white")
+
+      game = %{
+        game
+        | board:
+            Enum.map(0..63, fn pos ->
+              %{"type" => "pawn", "color" => "white", "position" => pos}
+            end)
+      }
+
+      assert FEN.game_to_fen(game) ==
+               "PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP/PPPPPPPP w KQkq - 0 1"
+    end
+
+    test "gaps in piece placement" do
+      {:ok, game} = Games.create_game("chess", "white")
+
+      test_board = [
+        %{"type" => "rook", "color" => "black", "position" => 0},
+        %{"type" => "bishop", "color" => "white", "position" => 1},
+        %{"type" => "king", "color" => "white", "position" => 4},
+        %{"type" => "pawn", "color" => "black", "position" => 37}
+      ]
+
+      game = %{
+        game
+        | board: test_board
+      }
+
+      assert FEN.game_to_fen(game) ==
+               "8/8/8/5p2/8/8/8/rB2K3 w KQkq - 0 1"
+    end
   end
 end
