@@ -13,6 +13,30 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     :ok
   end
 
+  def fen_parts(fen) do
+    split = String.split(fen, " ")
+
+    %{
+      "placement" => split |> List.first(),
+      "turn" => split |> Enum.at(1),
+      "castling" => split |> Enum.at(2),
+      "en_passant" => split |> Enum.at(3),
+      "halfmove" => split |> Enum.at(4),
+      "fullmove" => split |> Enum.at(5)
+    }
+  end
+
+  def castling_rights_meta(wks, wqs, bks, bqs) do
+    %{
+      "castling" => %{
+        "white" => %{"kingside" => wks, "queenside" => wqs},
+        "black" => %{"kingside" => bks, "queenside" => bqs}
+      },
+      "en-passant" => nil,
+      "half-move-clock" => 0
+    }
+  end
+
   describe "flip_side_clear_ep/1" do
     test "flips the side to move" do
       fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -97,6 +121,55 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
       {:ok, game} = Games.create_game("chess", "white")
       game = %{game | turn: "black"}
       assert FEN.game_to_fen(game) =~ ~r/ b /
+    end
+  end
+
+  describe "game_to_fen/1 - castling string" do
+    test "initial castling rights" do
+      {:ok, game} = Games.create_game("chess", "white")
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["castling"] == "KQkq"
+    end
+
+    test "loses white kingside castling rights" do
+      {:ok, game} = Games.create_game("chess", "white")
+      # Loses kingside castling rights
+      game = %{game | meta: castling_rights_meta(false, true, true, true)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["castling"] == "Qkq"
+    end
+
+    test "loses white queenside castling rights" do
+      {:ok, game} = Games.create_game("chess", "white")
+      # Loses queenside castling rights
+      game = %{game | meta: castling_rights_meta(true, false, true, true)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["castling"] == "Kkq"
+    end
+
+    test "loses black kingside castling rights" do
+      {:ok, game} = Games.create_game("chess", "white")
+      # Loses kingside castling rights
+      game = %{game | meta: castling_rights_meta(true, true, false, true)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["castling"] == "KQq"
+    end
+
+    test "loses black queenside castling rights" do
+      {:ok, game} = Games.create_game("chess", "white")
+      # Loses queenside castling rights
+      game = %{game | meta: castling_rights_meta(true, true, true, false)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["castling"] == "KQk"
+    end
+
+
+    test "loses all castling rights" do
+      {:ok, game} = Games.create_game("chess", "white")
+      # Loses all castling rights
+      game = %{game | meta: castling_rights_meta(false, false, false, false)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["castling"] == "-"
     end
   end
 end
