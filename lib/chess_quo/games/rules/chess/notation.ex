@@ -41,7 +41,6 @@ defmodule ChessQuo.Games.Rules.Chess.Notation do
     rank_index * 8 + file_index
   end
 
-
   @doc """
   Converts a 0–63 index into 0x88 encoding.
 
