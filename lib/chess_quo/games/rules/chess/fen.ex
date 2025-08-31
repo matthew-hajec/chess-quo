@@ -1,6 +1,14 @@
 defmodule ChessQuo.Games.Rules.Chess.FEN do
   alias ChessQuo.Games.Rules.Chess.Notation
 
+  @doc """
+  Converts a game state to a FEN string.
+
+  Relies on the meta defining the following fields:
+  - Castling Rights: %{"white" => %{"kingside" => boolean, "queenside" => boolean}, "black" => %{"kingside" => boolean, "queenside" => boolean}}
+  - En Passant Target Square: 0..63 index or nil
+  - Halfmove Clock: 0..n integer
+  """
   # A fen: "<Piece Placement> <Side to move> <Castling rights> <En passant> <Halfmove clock> <Fullmove number>"
   def game_to_fen(game) do
     piece_placement_string(game) <>
@@ -52,7 +60,7 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
 
   # Generate the side to move part of the FEN string
   defp side_to_move_string(game) do
-    if rem(length(game.moves), 2) == 0, do: "w", else: "b"
+    if game.turn == "white", do: "w", else: "b"
   end
 
   defp castling_string(game) do

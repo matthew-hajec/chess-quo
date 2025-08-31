@@ -37,10 +37,18 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     end
   end
 
-  describe "game_to_fen/1 - piece placement" do
+  describe "game_to_fen/1" do
     test "initializes FEN correctly" do
       {:ok, game} = Games.create_game("chess", "white")
       assert FEN.game_to_fen(game) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    end
+  end
+
+  describe "game_to_fen/1 - piece placement" do
+    test "empty board" do
+      {:ok, game} = Games.create_game("chess", "white")
+      game = %{game | board: []}
+      assert FEN.game_to_fen(game) == "8/8/8/8/8/8/8/8 w KQkq - 0 1"
     end
   end
 end
