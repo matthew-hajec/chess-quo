@@ -13,12 +13,6 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     :ok
   end
 
-  def parts(fen) do
-    fen
-    |> String.split(" ")
-    |> List.to_tuple()
-  end
-
   describe "flip_side_clear_ep/1" do
     test "flips the side to move" do
       fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -90,6 +84,19 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
       assert FEN.game_to_fen(game) ==
                "8/8/8/5p2/8/8/8/rB2K3 w KQkq - 0 1"
+    end
+  end
+
+  describe "game_to_fen/1 - side to move string" do
+    test "white to move" do
+      {:ok, game} = Games.create_game("chess", "white")
+      assert FEN.game_to_fen(game) =~ ~r/ w /
+    end
+
+    test "black to move" do
+      {:ok, game} = Games.create_game("chess", "white")
+      game = %{game | turn: "black"}
+      assert FEN.game_to_fen(game) =~ ~r/ b /
     end
   end
 end
