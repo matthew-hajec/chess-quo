@@ -1,8 +1,25 @@
 defmodule ChessQuo.Games.Rules.Chess.FENTest do
-  use ExUnit.Case, async: true
+  use ChessQuo.DataCase, async: true
+  import Mox
   alias ChessQuo.Games.Rules.Chess.FEN
+  alias ChessQuo.Games
 
-  describe "flip_side_clear_ep" do
+  # # SSetup mock stubs
+  setup do
+    ChessQuo.Games.MockTokens
+    |> stub(:game_code, fn -> "DEFAULTCODE" end)
+    |> stub(:secret, fn -> "DEFAULTSECRET" end)
+
+    :ok
+  end
+
+  def parts(fen) do
+    fen
+    |> String.split(" ")
+    |> List.to_tuple()
+  end
+
+  describe "flip_side_clear_ep/1" do
     test "flips the side to move" do
       fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
       assert FEN.flip_side_clear_ep(fen) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
@@ -17,6 +34,13 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
       fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq b4 0 1"
       flipped = FEN.flip_side_clear_ep(fen)
       assert FEN.flip_side_clear_ep(flipped) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
+    end
+  end
+
+  describe "game_to_fen/1 - piece placement" do
+    test "initializes FEN correctly" do
+      {:ok, game} = Games.create_game("chess", "white")
+      assert FEN.game_to_fen(game) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     end
   end
 end
