@@ -42,7 +42,7 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
     fen_board =
       Enum.reduce(board, List.duplicate(nil, 64), fn piece, acc ->
         symbol = piece_to_fen_symbol(piece)
-        List.replace_at(acc, piece["position"], symbol)
+        List.replace_at(acc, piece.position, symbol)
       end)
 
     8..1//-1
@@ -140,9 +140,9 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
       "king" => "k"
     }
 
-    symbol = Map.get(map, piece["type"])
+    symbol = Map.get(map, piece.type)
 
-    if piece["color"] == "white" do
+    if piece.color == :white do
       String.upcase(symbol)
     else
       symbol
