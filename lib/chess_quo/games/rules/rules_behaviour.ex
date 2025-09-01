@@ -8,11 +8,13 @@ defmodule ChessQuo.Games.RulesBehaviour do
   """
 
   alias ChessQuo.Games.Game
+  alias ChessQuo.Embeds.Move
+  alias ChessQuo.Embeds.Piece
 
   @doc """
   Returns the initial board configuration for the game.
   """
-  @callback initial_board() :: Game.board()
+  @callback initial_board() :: [Piece.t()]
 
   @doc """
   Returns the initial metadata for the game.
@@ -24,7 +26,7 @@ defmodule ChessQuo.Games.RulesBehaviour do
 
   If it is not the current player's turn, the valid moves should be returned as if it is.
   """
-  @callback valid_moves(game :: Game, color :: String.t()) :: [Game.move()]
+  @callback valid_moves(game :: Game.t(), color :: String.t()) :: [Move.t()]
 
   @doc """
   Applies a move to the board and returns updated game.
@@ -39,6 +41,6 @@ defmodule ChessQuo.Games.RulesBehaviour do
   Any field can be left as-is if the implementation does not need to change them.
   Changes to any other fields are ignored.
   """
-  @callback apply_move(game :: Game, move :: Game.move()) ::
-              {:ok, Game} | {:error, :invalid_move}
+  @callback apply_move(game :: Game.t(), move :: Move.t()) ::
+              {:ok, Game.t()} | {:error, :invalid_move}
 end
