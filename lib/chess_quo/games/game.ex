@@ -1,61 +1,33 @@
 defmodule ChessQuo.Games.Game do
   @moduledoc """
   The Game schema and changeset logic.
-
-  ## String Keys
-  All game data uses string keys (e.g., piece["type"]) not atom keys (piece.type).
-  This is consistent with how Ecto serializes the data to/from the database.
   """
 
   use Ecto.Schema
   import Ecto.Changeset
+  alias ChessQuo.Embeds.Piece
+  alias ChessQuo.Embeds.Move
 
-  @typedoc """
-  A chess piece on the board.
-
-  ## Fields
-    * `type` - The type of the piece (e.g., "pawn", "rook", "knight", etc.)
-    * `color` - The color of the piece ("white" or "black")
-    * `position` - The index of the piece on the board (0-63)
-      - Board indices are left-to-right, top-to-bottom:
-      - a1=0, b1=1, ..., h1=7
-      - a2=8, b2=9, ..., h2=15
-      - ...
-      - a8=56, b8=57, ..., h8=63
-
-  ## NOTE: At runtime, these keys are strings because of Ecto's serialization. This means they can not be accessed as atoms (e.g., `piece.type`), but must be accessed as strings (e.g., `piece["type"]`).
-  """
-  @type piece :: %{
-          type: String.t(),
-          color: String.t(),
-          position: integer()
+  @type t :: %__MODULE__{
+          ruleset: String.t(),
+          code: String.t(),
+          password: String.t(),
+          white_secret: String.t(),
+          black_secret: String.t(),
+          turn: String.t(),
+          state: String.t(),
+          winner: String.t(),
+          white_joined: boolean(),
+          black_joined: boolean(),
+          moves: [Move.t()],
+          board: [Piece.t()],
+          meta: map(),
+          started_at: DateTime.t(),
+          lock_version: integer()
         }
-
-  @typedoc """
-  The board is a list of pieces.
-
-  Each piece has a type, color, and position index.
-  The board represents the current state of a chess game.
-  """
-  @type board :: [piece()]
-
-  @typedoc """
-  Represents a move in the game.
-
-  ## NOTE: At runtime, these keys are strings because of Ecto's serialization. This means they can not be accessed as atoms (e.g., `piece.type`), but must be accessed as strings (e.g., `piece["type"]`).
-  """
-  @type move :: %{
-          from: piece(),
-          to: piece()
-        }
-
-  @typedoc """
-  Represents the history of moves in the game.
-  """
-  @type history :: [move()]
 
   schema "games" do
-    field :ruleset, :string, default: "chess"
+    field :ruleset, :string
 
     # Ruleset to use, check `ChessQuo.Games.Rules` (can be `chess`, `checkers`, etc., if there is a valid implementation)
     field :code, :string
@@ -66,17 +38,17 @@ defmodule ChessQuo.Games.Game do
     field :white_secret, :string
     # Secret shared with the black player to verify their moves
     field :black_secret, :string
+
     field :turn, :string, default: "white"
-    # Type of `board`
-    field :board, {:array, :map}, default: []
     # Possible states: waiting, playing, finished
     field :state, :string, default: "waiting"
     # Possible values: "white", "black", or nil if no winner yet
     field :winner, :string, default: nil
     field :white_joined, :boolean, default: false
     field :black_joined, :boolean, default: false
-    # Type `history`
-    field :moves, {:array, :map}, default: []
+
+    embeds_many :moves, Move, on_replace: :delete
+    embeds_many :board, Piece, on_replace: :delete
 
     # Meta information to be used for any purpose (e.g., ruleset state, other additional data)
     field :meta, :map, default: %{}
@@ -90,36 +62,33 @@ defmodule ChessQuo.Games.Game do
   end
 
   @doc false
-  def system_changeset(game, attrs) do
+  def changeset(game, attrs) do
     game
-    |> change(attrs)
     |> cast(attrs, [
+      :ruleset,
       :code,
       :password,
       :white_secret,
       :black_secret,
       :turn,
-      :board,
       :state,
       :winner,
       :white_joined,
       :black_joined,
-      :moves,
+      :meta,
       :started_at
     ])
-    |> validate_required([
-      :code,
-      :white_secret,
-      :black_secret,
-      :turn,
-      :board,
-      :state,
-      :white_joined,
-      :black_joined,
-      :moves
-    ])
+    # Cast embeds
+    |> cast_embed(:board, with: &Piece.changeset/2)
+    |> cast_embed(:moves, with: &Move.changeset/2)
+    # Required fields
+    |> validate_required([:ruleset, :code, :white_secret, :black_secret])
+    # Basic validations
     |> validate_length(:password, max: 30)
+    |> validate_inclusion(:turn, ["white", "black"])
+    |> validate_inclusion(:state, ["waiting", "playing", "finished"])
     |> unique_constraint(:code)
+    # Optimistic locking
     |> optimistic_lock(:lock_version)
   end
 end
