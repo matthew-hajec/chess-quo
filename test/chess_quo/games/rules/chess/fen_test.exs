@@ -83,7 +83,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
         game
         | board:
             Enum.map(0..63, fn pos ->
-              %{"type" => "pawn", "color" => "white", "position" => pos}
+              %{type: "pawn", color: :white, position: pos}
             end)
       }
 
@@ -95,10 +95,10 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
       {:ok, game} = Games.create_game("chess", "white")
 
       test_board = [
-        %{"type" => "rook", "color" => "black", "position" => 0},
-        %{"type" => "bishop", "color" => "white", "position" => 1},
-        %{"type" => "king", "color" => "white", "position" => 4},
-        %{"type" => "pawn", "color" => "black", "position" => 37}
+        %{type: "rook", color: :black, position: 0},
+        %{type: "bishop", color: :white, position: 1},
+        %{type: "king", color: :white, position: 4},
+        %{type: "pawn", color: :black, position: 37}
       ]
 
       game = %{
