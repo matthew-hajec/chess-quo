@@ -1,10 +1,6 @@
 defmodule ChessQuo.Games.RulesBehaviour do
   @moduledoc """
   This module defines the rules for the chess game.
-
-  ## String Keys
-  All game data uses string keys (e.g., piece["type"]) not atom keys (piece.type).
-  This is consistent with how Ecto serializes the data to/from the database.
   """
 
   alias ChessQuo.Games.Game
