@@ -3,79 +3,84 @@ defmodule ChessQuo.Games.Rules.Chess do
 
   alias ChessQuo.Games.Game
   alias ChessQuo.Games.Rules.Chess.MoveFinder
-  alias ChessQuo.Embeds.Piece
+
+  # Keys in the game data are strings, not atoms (see the documentation for `ChessQuo.Games.Game` for details)
+  @dialyzer {:nowarn_function, [{:initial_board, 0}, {:valid_moves, 2}, {:apply_move, 2}]}
 
   @impl true
   def initial_board do
     [
-      %Piece{type: "rook", color: :white, position: 0},
-      %Piece{type: "knight", color: :white, position: 1},
+      # White pieces (back rank a1–h1, indices 0–7)
+      # a1
+      %{"type" => "rook", "color" => "white", "position" => 0},
+      # b1
+      %{"type" => "knight", "color" => "white", "position" => 1},
       # c1
-      %Piece{type: "bishop", color: :white, position: 2},
+      %{"type" => "bishop", "color" => "white", "position" => 2},
       # d1
-      %Piece{type: "queen", color: :white, position: 3},
+      %{"type" => "queen", "color" => "white", "position" => 3},
       # e1
-      %Piece{type: "king", color: :white, position: 4},
+      %{"type" => "king", "color" => "white", "position" => 4},
       # f1
-      %Piece{type: "bishop", color: :white, position: 5},
+      %{"type" => "bishop", "color" => "white", "position" => 5},
       # g1
-      %Piece{type: "knight", color: :white, position: 6},
+      %{"type" => "knight", "color" => "white", "position" => 6},
       # h1
-      %Piece{type: "rook", color: :white, position: 7},
+      %{"type" => "rook", "color" => "white", "position" => 7},
 
       # White pawns (a2–h2, indices 8–15)
       # a2
-      %Piece{type: "pawn", color: :white, position: 8},
+      %{"type" => "pawn", "color" => "white", "position" => 8},
       # b2
-      %Piece{type: "pawn", color: :white, position: 9},
+      %{"type" => "pawn", "color" => "white", "position" => 9},
       # c2
-      %Piece{type: "pawn", color: :white, position: 10},
+      %{"type" => "pawn", "color" => "white", "position" => 10},
       # d2
-      %Piece{type: "pawn", color: :white, position: 11},
+      %{"type" => "pawn", "color" => "white", "position" => 11},
       # e2
-      %Piece{type: "pawn", color: :white, position: 12},
+      %{"type" => "pawn", "color" => "white", "position" => 12},
       # f2
-      %Piece{type: "pawn", color: :white, position: 13},
+      %{"type" => "pawn", "color" => "white", "position" => 13},
       # g2
-      %Piece{type: "pawn", color: :white, position: 14},
+      %{"type" => "pawn", "color" => "white", "position" => 14},
       # h2
-      %Piece{type: "pawn", color: :white, position: 15},
+      %{"type" => "pawn", "color" => "white", "position" => 15},
 
       # Black pawns (a7–h7, indices 48–55)
       # a7
-      %Piece{type: "pawn", color: :black, position: 48},
+      %{"type" => "pawn", "color" => "black", "position" => 48},
       # b7
-      %Piece{type: "pawn", color: :black, position: 49},
+      %{"type" => "pawn", "color" => "black", "position" => 49},
       # c7
-      %Piece{type: "pawn", color: :black, position: 50},
+      %{"type" => "pawn", "color" => "black", "position" => 50},
       # d7
-      %Piece{type: "pawn", color: :black, position: 51},
+      %{"type" => "pawn", "color" => "black", "position" => 51},
       # e7
-      %Piece{type: "pawn", color: :black, position: 52},
+      %{"type" => "pawn", "color" => "black", "position" => 52},
       # f7
-      %Piece{type: "pawn", color: :black, position: 53},
+      %{"type" => "pawn", "color" => "black", "position" => 53},
       # g7
-      %Piece{type: "pawn", color: :black, position: 54},
+      %{"type" => "pawn", "color" => "black", "position" => 54},
       # h7
-      %Piece{type: "pawn", color: :black, position: 55},
+      %{"type" => "pawn", "color" => "black", "position" => 55},
 
       # Black pieces (back rank a8–h8, indices 56–63)
       # a8
-      %Piece{type: "rook", color: :black, position: 56},
+      %{"type" => "rook", "color" => "black", "position" => 56},
       # b8
-      %Piece{type: "knight", color: :black, position: 57},
+      %{"type" => "knight", "color" => "black", "position" => 57},
       # c8
-      %Piece{type: "bishop", color: :black, position: 58},
+      %{"type" => "bishop", "color" => "black", "position" => 58},
       # d8
-      %Piece{type: "queen", color: :black, position: 59},
+      %{"type" => "queen", "color" => "black", "position" => 59},
       # e8
-      %Piece{type: "king", color: :black, position: 60},
+      %{"type" => "king", "color" => "black", "position" => 60},
       # f8
-      %Piece{type: "bishop", color: :black, position: 61},
+      %{"type" => "bishop", "color" => "black", "position" => 61},
       # g8
-      %Piece{type: "knight", color: :black, position: 62},
+      %{"type" => "knight", "color" => "black", "position" => 62},
       # h8
-      %Piece{type: "rook", color: :black, position: 63}
+      %{"type" => "rook", "color" => "black", "position" => 63}
     ]
   end
 
