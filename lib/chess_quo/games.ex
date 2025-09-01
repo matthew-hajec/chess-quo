@@ -52,7 +52,7 @@ defmodule ChessQuo.Games do
         Map.put(attrs, :black_joined, true)
       end
 
-    changeset = Game.system_changeset(%Game{}, attrs)
+    changeset = Game.changeset(%Game{}, attrs)
 
     case Repo.insert(changeset) do
       {:ok, game} ->
@@ -158,7 +158,7 @@ defmodule ChessQuo.Games do
           moves: game.moves ++ [move]
         }
 
-        Repo.update!(Game.system_changeset(game, attrs))
+        Repo.update!(Game.changeset(game, attrs))
       end
     end
   end
@@ -193,7 +193,7 @@ defmodule ChessQuo.Games do
           started_at: DateTime.utc_now()
         }
 
-        Repo.update!(Game.system_changeset(game, attrs))
+        Repo.update!(Game.changeset(game, attrs))
 
         {:ok, color, secret}
 

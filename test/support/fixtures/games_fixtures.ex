@@ -12,7 +12,7 @@ defmodule ChessQuo.GamesFixtures do
     }
 
     merged_attrs = Map.merge(defaults, attrs)
-    {:ok, game} = Repo.insert(Game.system_changeset(%Game{}, merged_attrs))
+    {:ok, game} = Repo.insert(Game.changeset(%Game{}, merged_attrs))
     game
   end
 end
