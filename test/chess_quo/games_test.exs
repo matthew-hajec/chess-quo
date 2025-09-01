@@ -4,6 +4,7 @@ defmodule ChessQuo.GamesTest do
 
   alias ChessQuo.GamesFixtures
   alias ChessQuo.Games.Game
+  alias ChessQuo.Games.Piece
 
   setup :verify_on_exit!
 
@@ -15,7 +16,7 @@ defmodule ChessQuo.GamesTest do
 
     ChessQuo.Games.Rules.MockRules
     |> stub(:initial_board, fn ->
-      [%{"piece" => "defaultpiece", "color" => "white", "position" => 1}]
+      [%{type: "defaultpiece", color: :white, position: 1}]
     end)
     |> stub(:initial_meta, fn -> %{"initial" => "meta"} end)
 
@@ -86,7 +87,7 @@ defmodule ChessQuo.GamesTest do
     end
 
     test "create_game initializes the game using the provided ruleset" do
-      mock_board = [%{"piece" => "pawn", "color" => "white", "position" => 1}]
+      mock_board = [%{type: "pawn", color: :white, position: 1}]
       mock_meta = %{"initial" => "meta"}
 
       ChessQuo.Games.Rules.MockRules
@@ -94,7 +95,7 @@ defmodule ChessQuo.GamesTest do
       |> expect(:initial_meta, fn -> mock_meta end)
 
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
-      assert game.board == mock_board
+      assert game.board == [%Piece{type: "pawn", color: :white, position: 1}]
       assert game.meta == mock_meta
     end
   end
