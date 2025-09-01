@@ -44,15 +44,15 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
       }) do
     # Convert the move from chess_logic format to chess_quo format
     %{
-      "from" => %{
-        "type" => Atom.to_string(from_type),
-        "color" => Atom.to_string(from_color),
-        "position" => Notation.hex_0x88_to_index(from_sq)
+      from: %{
+        type: Atom.to_string(from_type),
+        color: from_color,
+        position: Notation.hex_0x88_to_index(from_sq)
       },
-      "to" => %{
-        "type" => Atom.to_string(to_type),
-        "color" => Atom.to_string(to_color),
-        "position" => Notation.hex_0x88_to_index(to_sq)
+      to: %{
+        type: Atom.to_string(to_type),
+        color: to_color,
+        position: Notation.hex_0x88_to_index(to_sq)
       }
     }
   end
