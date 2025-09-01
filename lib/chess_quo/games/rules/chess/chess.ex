@@ -99,7 +99,7 @@ defmodule ChessQuo.Games.Rules.Chess do
     all_moves = MoveFinder.all_valid_moves(game) ++ MoveFinder.all_valid_next_moves(game)
 
     Enum.filter(all_moves, fn move ->
-      move["from"]["color"] == color
+      move.from.color == color
     end)
   end
 
@@ -122,10 +122,10 @@ defmodule ChessQuo.Games.Rules.Chess do
     board = game.board
 
     # Delete the piece `from`
-    board = List.delete(board, move["from"])
+    board = List.delete(board, move.from)
 
     # Append the piece at `to`
-    board = board ++ [move["to"]]
+    board = board ++ [move.to]
 
     %Game{
       game
