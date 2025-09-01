@@ -26,14 +26,14 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     }
   end
 
-  def castling_rights_meta(wks, wqs, bks, bqs) do
+  def create_meta(wks \\ true, wqs \\ true, bks \\ true, bqs \\ true, ep \\ nil, hmc \\ 0) do
     %{
       "castling" => %{
         "white" => %{"kingside" => wks, "queenside" => wqs},
         "black" => %{"kingside" => bks, "queenside" => bqs}
       },
-      "en-passant" => nil,
-      "half-move-clock" => 0
+      "en-passant" => ep,
+      "half-move-clock" => hmc
     }
   end
 
@@ -134,7 +134,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     test "loses white kingside castling rights" do
       {:ok, game} = Games.create_game("chess", "white")
       # Loses kingside castling rights
-      game = %{game | meta: castling_rights_meta(false, true, true, true)}
+      game = %{game | meta: create_meta(false, true, true, true)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["castling"] == "Qkq"
     end
@@ -142,7 +142,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     test "loses white queenside castling rights" do
       {:ok, game} = Games.create_game("chess", "white")
       # Loses queenside castling rights
-      game = %{game | meta: castling_rights_meta(true, false, true, true)}
+      game = %{game | meta: create_meta(true, false, true, true)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["castling"] == "Kkq"
     end
@@ -150,7 +150,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     test "loses black kingside castling rights" do
       {:ok, game} = Games.create_game("chess", "white")
       # Loses kingside castling rights
-      game = %{game | meta: castling_rights_meta(true, true, false, true)}
+      game = %{game | meta: create_meta(true, true, false, true)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["castling"] == "KQq"
     end
@@ -158,7 +158,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     test "loses black queenside castling rights" do
       {:ok, game} = Games.create_game("chess", "white")
       # Loses queenside castling rights
-      game = %{game | meta: castling_rights_meta(true, true, true, false)}
+      game = %{game | meta: create_meta(true, true, true, false)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["castling"] == "KQk"
     end
@@ -167,9 +167,61 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     test "loses all castling rights" do
       {:ok, game} = Games.create_game("chess", "white")
       # Loses all castling rights
-      game = %{game | meta: castling_rights_meta(false, false, false, false)}
+      game = %{game | meta: create_meta(false, false, false, false)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["castling"] == "-"
+    end
+  end
+
+  describe "game_to_fen/1 - en passant string" do
+    test "initializes with no en passant target square" do
+      {:ok, game} = Games.create_game("chess", "white")
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["en_passant"] == "-"
+    end
+
+    test "with en passant target square" do
+      {:ok, game} = Games.create_game("chess", "white")
+      game = %{game | meta: create_meta(false, false, false, false, 16)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["en_passant"] == "a3"
+
+      game = %{game | meta: create_meta(false, false, false, false, 63)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["en_passant"] == "h8"
+    end
+  end
+
+  describe "game_to_fen/1 - half-move clock" do
+    test "initializes with half-move clock of 0" do
+      {:ok, game} = Games.create_game("chess", "white")
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["halfmove"] == "0"
+    end
+
+    test "with non-zero half-move clock" do
+      {:ok, game} = Games.create_game("chess", "white")
+      game = %{game | meta: create_meta(false, false, false, false, nil, 17)}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["halfmove"] == "17"
+    end
+  end
+
+  describe "game_to_fen/1 - full-move clock" do
+    test "initializes with full-move clock of 1" do
+      {:ok, game} = Games.create_game("chess", "white")
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["fullmove"] == "1"
+    end
+
+    test "doesn't increment on white's first move" do
+      {:ok, game} = Games.create_game("chess", "white")
+      game = %{game | moves: [%{
+        "from" => %{"type" => "pawn", "color" => "white", "position" => 52},
+        "to" => %{"type" => "pawn", "color" => "white", "position" => 36}
+      }]}
+      parts = fen_parts(FEN.game_to_fen(game))
+      assert parts["fullmove"] == "1"
     end
   end
 end
