@@ -130,7 +130,7 @@ defmodule ChessQuo.Games do
 
   def valid_moves_from_position(game, player_color, position) do
     valid_moves = valid_moves(game, player_color)
-    Enum.filter(valid_moves, fn move -> move["from"]["position"] == position end)
+    Enum.filter(valid_moves, fn move -> move.from.position == position end)
   end
 
   @doc """
