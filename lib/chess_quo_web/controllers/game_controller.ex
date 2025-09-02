@@ -30,7 +30,7 @@ defmodule ChessQuoWeb.GameController do
   def join(conn, %{"code" => code}) do
     code = String.trim(code) |> String.upcase()
 
-    with true <- Games.possible_code(code),
+    with true <- Games.possible_code?(code),
          {:ok, _game} <- Games.get_game(code) do
       render(conn, :join, code: code)
     else
@@ -44,7 +44,7 @@ defmodule ChessQuoWeb.GameController do
   def post_join(conn, %{"code" => code, "password" => password}) do
     code = String.trim(code) |> String.upcase()
 
-    if Games.possible_code(code) do
+    if Games.possible_code?(code) do
       case Games.join_by_password(code, password) do
         {:ok, color, secret} ->
           conn

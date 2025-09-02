@@ -166,7 +166,7 @@ defmodule ChessQuo.Games do
   @doc """
   Check if a game code is possibly valid. (correct length and character set)
   """
-  def possible_code(code) do
+  def possible_code?(code) do
     tokens_mod().possible_code?(code)
   end
 
