@@ -141,14 +141,13 @@ defmodule ChessQuo.Games do
   - {:error, :not_your_turn} if it's not the player's turn.
   - {:error, :invalid_move} if the move is not valid for the current game state.
   """
-
-  def apply_move(game, player_color, move) do
+  def apply_move(game, player_color, move) when is_binary(player_color) do
     ruleset_impl = ruleset_mod!(game.ruleset)
 
     if game.turn != player_color do
       {:error, :not_your_turn}
     else
-      with {:ok, new_game} <- ruleset_impl.apply_move(game, player_color, move) do
+      with {:ok, new_game} <- ruleset_impl.apply_move(game, move) do
         attrs = %{
           turn: new_game.turn,
           board: new_game.board,
@@ -161,6 +160,10 @@ defmodule ChessQuo.Games do
         Repo.update!(Game.changeset(game, attrs))
       end
     end
+  end
+
+  def apply_move(game, player_color, move) when is_atom(player_color) do
+    apply_move(game, Atom.to_string(player_color), move)
   end
 
   @doc """
