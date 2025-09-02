@@ -25,6 +25,19 @@ defmodule ChessQuo.Embeds.Piece do
     |> validate_required([:type, :color, :position])
   end
 
+  @doc """
+  Builds a piece from the given attributes.
+
+  ## Examples
+    iex> ChessQuo.Embeds.Piece.build!(%{type: "pawn", color: :white, position: 12})
+    %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12}
+
+    iex> ChessQuo.Embeds.Piece.build!(%ChessQuo.Embeds.Piece{type: "rook", color: :black, position: 0})
+    %ChessQuo.Embeds.Piece{type: "rook", color: :black, position: 0}
+
+    iex> ChessQuo.Embeds.Piece.build!(%{"type" => "bishop", "color" => :white, "position" => 35})
+    %ChessQuo.Embeds.Piece{type: "bishop", color: :white, position: 35}
+  """
   def build!(%__MODULE__{} = m), do: m
   def build!(attrs) when is_map(attrs) do
     %__MODULE__{}
@@ -32,6 +45,14 @@ defmodule ChessQuo.Embeds.Piece do
     |> Ecto.Changeset.apply_action!(:insert)
   end
 
+  @doc """
+  Converts the piece to a map.
+
+  ## Examples
+    iex> piece = %ChessQuo.Embeds.Piece{type: "queen", color: :black, position: 59}
+    iex> ChessQuo.Embeds.Piece.to_map(piece)
+    %{type: "queen", color: :black, position: 59}
+  """
   def to_map(%__MODULE__{type: type, color: color, position: position}) do
     %{
       type: type,

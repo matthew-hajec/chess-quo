@@ -18,6 +18,28 @@ defmodule ChessQuo.Embeds.Move do
     |> cast_embed(:to, with: &Piece.changeset/2)
   end
 
+  @doc """
+  Builds a move from the given attributes.
+
+  ## Examples
+    iex> ChessQuo.Embeds.Move.build!(%{from: %{type: "pawn", color: :white, position: 12}, to: %{type: "pawn", color: :white, position: 20}})
+    %ChessQuo.Embeds.Move{
+      from: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12},
+      to: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 20}
+    }
+
+    iex> ChessQuo.Embeds.Move.build!(%{"from" => %{"type" => "pawn", "color" => :white, "position" => 12}, "to" => %{"type" => "pawn", "color" => :white, "position" => 20}})
+    %ChessQuo.Embeds.Move{
+      from: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12},
+      to: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 20}
+    }
+
+    iex> ChessQuo.Embeds.Move.build!(%ChessQuo.Embeds.Move{from: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12}, to: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 20}})
+    %ChessQuo.Embeds.Move{
+      from: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12},
+      to: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 20}
+    }
+  """
   def build!(%__MODULE__{} = m), do: m
   def build!(attrs) when is_map(attrs) do
     %__MODULE__{}
@@ -25,6 +47,25 @@ defmodule ChessQuo.Embeds.Move do
     |> Ecto.Changeset.apply_action!(:insert)
   end
 
+  @doc """
+  Converts a move to a map.
+
+  ## Examples
+    iex> move = %ChessQuo.Embeds.Move{from: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12}, to: %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 20}}
+    iex> ChessQuo.Embeds.Move.to_map(move)
+    %{
+      from: %{
+        type: "pawn",
+        color: :white,
+        position: 12
+      },
+      to: %{
+        type: "pawn",
+        color: :white,
+        position: 20
+      }
+    }
+  """
   def to_map(%__MODULE__{from: from, to: to}) do
     %{
       from: Piece.to_map(from),
