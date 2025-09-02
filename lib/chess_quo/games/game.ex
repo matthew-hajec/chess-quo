@@ -91,4 +91,31 @@ defmodule ChessQuo.Games.Game do
     # Optimistic locking
     |> optimistic_lock(:lock_version)
   end
+
+  def build!(%__MODULE__{} = m), do: m
+  def build!(attrs) when is_map(attrs) do
+    %__MODULE__{}
+    |> changeset(attrs)
+    |> Ecto.Changeset.apply_action!(:insert)
+  end
+
+  def to_map(%__MODULE__{} = game) do
+    %{
+      ruleset: game.ruleset,
+      code: game.code,
+      password: game.password,
+      white_secret: game.white_secret,
+      black_secret: game.black_secret,
+      turn: game.turn,
+      state: game.state,
+      winner: game.winner,
+      white_joined: game.white_joined,
+      black_joined: game.black_joined,
+      moves: Enum.map(game.moves, &Move.to_map/1),
+      board: Enum.map(game.board, &Piece.to_map/1),
+      meta: game.meta,
+      started_at: game.started_at,
+      lock_version: game.lock_version
+    }
+  end
 end
