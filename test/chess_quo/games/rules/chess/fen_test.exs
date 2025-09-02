@@ -163,7 +163,6 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
       assert parts["castling"] == "KQk"
     end
 
-
     test "loses all castling rights" do
       {:ok, game} = Games.create_game("chess", "white")
       # Loses all castling rights
@@ -216,10 +215,17 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
     test "doesn't increment on white's first move" do
       {:ok, game} = Games.create_game("chess", "white")
-      game = %{game | moves: [%{
-        "from" => %{"type" => "pawn", "color" => "white", "position" => 52},
-        "to" => %{"type" => "pawn", "color" => "white", "position" => 36}
-      }]}
+
+      game = %{
+        game
+        | moves: [
+            %{
+              "from" => %{"type" => "pawn", "color" => "white", "position" => 52},
+              "to" => %{"type" => "pawn", "color" => "white", "position" => 36}
+            }
+          ]
+      }
+
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["fullmove"] == "1"
     end
