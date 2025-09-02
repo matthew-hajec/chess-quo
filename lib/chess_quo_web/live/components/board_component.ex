@@ -50,7 +50,7 @@ defmodule ChessQuoWeb.BoardComponent do
             <% piece = find_piece_at(index, @game.board) %>
             <% selected? = @selected_square == index %>
             <% selectable? = is_map(piece) and piece.color == @perspective %>
-            <% valid_move? = Enum.any?(@valid_moves, fn move -> move.to.position == index end) %>
+            <% valid_move = Enum.find(@valid_moves, fn move -> move.to.position == index end) %>
 
             <GameComponents.square
               ruleset="chess"
@@ -62,8 +62,7 @@ defmodule ChessQuoWeb.BoardComponent do
               piece={piece}
               selected?={selected?}
               selectable?={selectable?}
-              valid_move?={valid_move?}
-              move_source={@selected_square}
+              move={valid_move}
             />
           <% end %>
         <% end %>
@@ -73,9 +72,6 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   def handle_event("on_select", %{"index" => index}, socket) do
-    # Convert the index to an integer
-    index = String.to_integer(index)
-
     # Find the piece at the selected square
     piece = find_piece_at(index, socket.assigns[:game].board)
     players_piece? = piece && piece.color == socket.assigns[:perspective]
@@ -87,8 +83,8 @@ defmodule ChessQuoWeb.BoardComponent do
     end
   end
 
-  def handle_event("on_move", %{"index" => index, "move_source" => move_source}, socket) do
-    IO.puts("Moving piece to #{index} from #{move_source}")
+  def handle_event("on_move", %{"move" => move}, socket) do
+    IO.inspect(move, label: "Move event received")
     {:noreply, socket}
   end
 

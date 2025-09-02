@@ -1,5 +1,6 @@
 defmodule ChessQuoWeb.GameComponents do
   use Phoenix.Component
+  alias Phoenix.LiveView.JS
 
   attr :piece, :map
   attr :ruleset, :string
@@ -46,10 +47,11 @@ defmodule ChessQuoWeb.GameComponents do
   attr :piece, :map, default: nil
   attr :selected?, :boolean, default: false
   attr :selectable?, :boolean, default: false
-  attr :valid_move?, :boolean, default: false
-  attr :move_source, :integer, default: nil
+  attr :move, :any, default: nil
 
   def square(assigns) do
+    assigns = Map.put_new(assigns, :valid_move?, assigns.move != nil)
+
     ~H"""
     <div
       class={[
@@ -61,10 +63,14 @@ defmodule ChessQuoWeb.GameComponents do
       ]}
       role="button"
       aria-pressed={to_string(@selected?)}
-      phx-click={if @valid_move?, do: @on_move, else: @on_select}
+      phx-click={
+        if @move do
+          JS.push("on_move", target: @target, value: %{move: @move, index: @index})
+        else
+          JS.push("on_select", target: @target, value: %{index: @index})
+        end
+      }
       phx-target={@target}
-      phx-value-index={@index}
-      phx-value-move_source={if @valid_move?, do: @move_source, else: nil}
     >
       <%= if @piece do %>
         <ChessQuoWeb.GameComponents.icon piece={@piece} ruleset={@ruleset} />
