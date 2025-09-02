@@ -13,7 +13,7 @@ defmodule ChessQuoWeb.BoardComponent do
   Piece rendering logic can be extended by modifying the `render_piece/3` function.
 
   ## Parameters
-    * `perspective` - The perspective from which to render the board ("white" or "black").
+    * `perspective` - The perspective from which to render the board (:white or :black).
     * `game` - The game state, including the board and pieces.
 
   ## System Managed Parameters
@@ -31,13 +31,13 @@ defmodule ChessQuoWeb.BoardComponent do
     <div class="w-full mx-auto select-none">
       <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
         <% rank_range =
-          if @perspective == "white" do
+          if @perspective == :white do
             1..8
           else
             8..1//-1
           end %>
         <% file_range =
-          if @perspective == "white" do
+          if @perspective == :white do
             ?a..?h
           else
             ?h..?a//-1

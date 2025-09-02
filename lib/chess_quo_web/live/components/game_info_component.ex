@@ -34,7 +34,7 @@ defmodule ChessQuoWeb.GameInfoComponent do
             </button>
           </p>
         </div>
-        <p>You are: {String.capitalize(@player_color)}</p>
+        <p>You are: {Atom.to_string(@player_color) |> String.capitalize()}</p>
       </div>
     </div>
     """

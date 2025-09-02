@@ -18,7 +18,7 @@ defmodule ChessQuoWeb.GameLive do
             {:ok,
              socket
              |> assign(:game, game)
-             |> assign(:player_color, player_color)
+             |> assign(:player_color, String.to_existing_atom(player_color))
              |> assign(:game_link, link)}
 
           {:error, :invalid_credentials} ->
