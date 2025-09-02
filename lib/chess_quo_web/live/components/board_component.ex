@@ -49,8 +49,8 @@ defmodule ChessQuoWeb.BoardComponent do
             <% light? = rem(file - ?a + rank, 2) == 1 %>
             <% piece = find_piece_at(index, @game.board) %>
             <% selected? = @selected_square == index %>
-            <% selectable? = is_map(piece) and piece["color"] == @perspective %>
-            <% valid_move? = Enum.any?(@valid_moves, fn move -> move["to"]["position"] == index end) %>
+            <% selectable? = is_map(piece) and piece.color == @perspective %>
+            <% valid_move? = Enum.any?(@valid_moves, fn move -> move.to.position == index end) %>
 
             <GameComponents.square
               ruleset="chess"
@@ -76,7 +76,7 @@ defmodule ChessQuoWeb.BoardComponent do
 
     # Find the piece at the selected square
     piece = find_piece_at(index, socket.assigns[:game].board)
-    players_piece? = piece && piece["color"] == socket.assigns[:perspective]
+    players_piece? = piece && piece.color == socket.assigns[:perspective]
 
     if socket.assigns[:selected_square] == index or !players_piece? do
       handle_deselection(socket)
@@ -103,6 +103,6 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   defp find_piece_at(index, board_state) do
-    Enum.find(board_state, fn piece -> piece["position"] == index end)
+    Enum.find(board_state, fn piece -> piece.position == index end)
   end
 end
