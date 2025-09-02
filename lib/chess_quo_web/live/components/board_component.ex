@@ -84,8 +84,13 @@ defmodule ChessQuoWeb.BoardComponent do
   end
 
   def handle_event("on_move", %{"move" => move}, socket) do
-    IO.inspect(move, label: "Move event received")
-    {:noreply, socket}
+    case Games.apply_move(socket.assigns[:game], socket.assigns[:perspective], move) do
+      {:ok, game} ->
+        {:noreply, assign(socket, :game, game)}
+
+      {:error, :not_your_turn} ->
+        {:noreply, socket}
+    end
   end
 
   defp handle_selection(index, socket) do
