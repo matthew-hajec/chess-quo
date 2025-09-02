@@ -36,8 +36,10 @@ defmodule ChessQuoWeb.GameComponents do
   attr :ruleset, :string
   # Who receives events from this component
   attr :target, :any, required: true
-  # The event to trigger on click
-  attr :on_click, :string, required: true
+  # The event to trigger on selection/de-selection
+  attr :on_select, :string, required: true
+  # Event to trigger when the square is clicked while `valid_move?` is true
+  attr :on_move, :string, required: true
   attr :index, :integer, required: true
   attr :light?, :boolean, required: true
   # Type `ChessQuo.Games.Game.piece()`
@@ -45,6 +47,7 @@ defmodule ChessQuoWeb.GameComponents do
   attr :selected?, :boolean, default: false
   attr :selectable?, :boolean, default: false
   attr :valid_move?, :boolean, default: false
+  attr :move_source, :integer, default: nil
 
   def square(assigns) do
     ~H"""
@@ -58,9 +61,10 @@ defmodule ChessQuoWeb.GameComponents do
       ]}
       role="button"
       aria-pressed={to_string(@selected?)}
-      phx-click={@on_click}
+      phx-click={if @valid_move?, do: @on_move, else: @on_select}
       phx-target={@target}
       phx-value-index={@index}
+      phx-value-move_source={if @valid_move?, do: @move_source, else: nil}
     >
       <%= if @piece do %>
         <ChessQuoWeb.GameComponents.icon piece={@piece} ruleset={@ruleset} />

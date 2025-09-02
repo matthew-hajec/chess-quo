@@ -55,13 +55,15 @@ defmodule ChessQuoWeb.BoardComponent do
             <GameComponents.square
               ruleset="chess"
               target={@myself}
-              on_click="select_square"
+              on_select="on_select"
+              on_move="on_move"
               index={index}
               light?={light?}
               piece={piece}
               selected?={selected?}
               selectable?={selectable?}
               valid_move?={valid_move?}
+              move_source={@selected_square}
             />
           <% end %>
         <% end %>
@@ -70,7 +72,7 @@ defmodule ChessQuoWeb.BoardComponent do
     """
   end
 
-  def handle_event("select_square", %{"index" => index}, socket) do
+  def handle_event("on_select", %{"index" => index}, socket) do
     # Convert the index to an integer
     index = String.to_integer(index)
 
@@ -83,6 +85,11 @@ defmodule ChessQuoWeb.BoardComponent do
     else
       handle_selection(index, socket)
     end
+  end
+
+  def handle_event("on_move", %{"index" => index, "move_source" => move_source}, socket) do
+    IO.puts("Moving piece to #{index} from #{move_source}")
+    {:noreply, socket}
   end
 
   defp handle_selection(index, socket) do
