@@ -17,4 +17,11 @@ defmodule ChessQuo.Embeds.Move do
     |> cast_embed(:from, with: &Piece.changeset/2)
     |> cast_embed(:to, with: &Piece.changeset/2)
   end
+
+  def build!(%__MODULE__{} = m), do: m
+  def build!(attrs) when is_map(attrs) do
+    %__MODULE__{}
+    |> changeset(attrs)
+    |> Ecto.Changeset.apply_action!(:insert)
+  end
 end

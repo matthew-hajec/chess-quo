@@ -24,4 +24,11 @@ defmodule ChessQuo.Embeds.Piece do
     |> validate_inclusion(:position, 0..63)
     |> validate_required([:type, :color, :position])
   end
+
+  def build!(%__MODULE__{} = m), do: m
+  def build!(attrs) when is_map(attrs) do
+    %__MODULE__{}
+    |> changeset(attrs)
+    |> Ecto.Changeset.apply_action!(:insert)
+  end
 end
