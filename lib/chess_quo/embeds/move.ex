@@ -24,4 +24,11 @@ defmodule ChessQuo.Embeds.Move do
     |> changeset(attrs)
     |> Ecto.Changeset.apply_action!(:insert)
   end
+
+  def to_map(%__MODULE__{from: from, to: to}) do
+    %{
+      from: Piece.to_map(from),
+      to: Piece.to_map(to)
+    }
+  end
 end

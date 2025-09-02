@@ -31,4 +31,12 @@ defmodule ChessQuo.Embeds.Piece do
     |> changeset(attrs)
     |> Ecto.Changeset.apply_action!(:insert)
   end
+
+  def to_map(%__MODULE__{type: type, color: color, position: position}) do
+    %{
+      type: type,
+      color: color,
+      position: position
+    }
+  end
 end
