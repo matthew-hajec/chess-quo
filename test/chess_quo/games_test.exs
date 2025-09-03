@@ -29,6 +29,11 @@ defmodule ChessQuo.GamesTest do
       assert game == Repo.get(Game, game.id)
     end
 
+    test "create returns a Game struct" do
+      assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+      assert %Game{} = game
+    end
+
     test "games are initialized in the waiting state" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.state == "waiting"
