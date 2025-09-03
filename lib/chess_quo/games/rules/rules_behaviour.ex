@@ -36,6 +36,8 @@ defmodule ChessQuo.Games.RulesBehaviour do
 
   Any field can be left as-is if the implementation does not need to change them.
   Changes to any other fields are ignored.
+
+  Should check if the move is invalid, if so, should return {:error, :invalid_move}.
   """
   @callback apply_move(game :: Game.t(), move :: Move.t()) ::
               {:ok, Game.t()} | {:error, :invalid_move}
