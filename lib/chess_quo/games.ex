@@ -122,9 +122,14 @@ defmodule ChessQuo.Games do
   Returns all valid moves for a player in a game.
 
   If it is not the current player's turn, the valid moves should be returned as if it is.
+
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player requesting the valid moves. Can be :white or :black.
   """
-  def valid_moves(game, player_color) do
+  def valid_moves(game, player_color) when is_atom(player_color) do
     game = Game.build!(game)
+
     ruleset_impl = ruleset_mod!(game.ruleset)
 
     ruleset_impl.valid_moves(game, player_color)
