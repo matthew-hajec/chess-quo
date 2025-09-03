@@ -5,6 +5,7 @@ defmodule ChessQuo.Games do
 
   alias ChessQuo.Repo
   alias ChessQuo.Games.Game
+  alias ChessQuo.Embeds.Move
 
   # Map of rulesets to the implementation modules
   @ruleset_mods %{
@@ -123,6 +124,7 @@ defmodule ChessQuo.Games do
   If it is not the current player's turn, the valid moves should be returned as if it is.
   """
   def valid_moves(game, player_color) do
+    game = Game.build!(game)
     ruleset_impl = ruleset_mod!(game.ruleset)
 
     ruleset_impl.valid_moves(game, player_color)
@@ -142,22 +144,25 @@ defmodule ChessQuo.Games do
   - {:error, :invalid_move} if the move is not valid for the current game state.
   """
   def apply_move(game, player_color, move) when is_binary(player_color) do
+    game = get_game!(game.code)
+    move = Move.build!(move)
     ruleset_impl = ruleset_mod!(game.ruleset)
 
     if game.turn != player_color do
       {:error, :not_your_turn}
     else
       with {:ok, new_game} <- ruleset_impl.apply_move(game, move) do
-        attrs = %{
-          turn: new_game.turn,
-          board: new_game.board,
-          state: new_game.state,
-          winner: new_game.winner,
-          meta: new_game.meta,
-          moves: game.moves ++ [move]
-        }
-
-        Repo.update!(Game.changeset(game, attrs))
+        {:ok,
+         game
+         |> Game.changeset(%{
+           turn: new_game.turn,
+           state: new_game.state,
+           winner: new_game.winner,
+           meta: new_game.meta
+         })
+         |> Ecto.Changeset.put_embed(:board, new_game.board)
+         |> Ecto.Changeset.put_embed(:moves, game.moves ++ [move])
+         |> Repo.update!()}
       end
     end
   end
