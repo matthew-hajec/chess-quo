@@ -63,6 +63,7 @@ defmodule ChessQuoWeb.GameComponents do
       ]}
       role="button"
       data-piece-color={if @piece, do: @piece.color, else: "none"}
+      data-piece-type={if @piece, do: @piece.type, else: "none"}
       aria-pressed={to_string(@selected?)}
       phx-click={
         if @move do
