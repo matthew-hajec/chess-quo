@@ -73,6 +73,10 @@ defmodule ChessQuo.GamesTest do
     end
 
     test "games initialize with the host color as joined" do
+      ChessQuo.Games.MockTokens
+      |> expect(:game_code, fn -> "111111" end)
+      |> expect(:game_code, fn -> "222222" end)
+
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.white_joined
       refute game.black_joined
