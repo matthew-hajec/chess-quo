@@ -104,4 +104,39 @@ defmodule ChessQuo.GamesTest do
       assert game.meta == mock_meta
     end
   end
+
+  describe "get_game!" do
+    test "returns the game if it exists" do
+      game = GamesFixtures.game_fixture()
+      assert ChessQuo.Games.get_game!(game.code) == game
+    end
+
+    test "raises an error if the game does not exist" do
+      assert_raise Ecto.NoResultsError, fn ->
+        ChessQuo.Games.get_game!("nonexistent")
+      end
+    end
+
+    test "returns a game struct" do
+      game = GamesFixtures.game_fixture()
+      assert %Game{} = ChessQuo.Games.get_game!(game.code)
+    end
+  end
+
+  describe "get_game" do
+    test "returns {:ok, game} if it exists" do
+      game = GamesFixtures.game_fixture()
+      assert {:ok, fetched_game} = ChessQuo.Games.get_game(game.code)
+      assert fetched_game == game
+    end
+
+    test "returns {:error, :not_found} if the game does not exist" do
+      assert {:error, :not_found} = ChessQuo.Games.get_game("nonexistent")
+    end
+
+    test "returns a game struct in the ok tuple" do
+      game = GamesFixtures.game_fixture()
+      assert {:ok, %Game{}} = ChessQuo.Games.get_game(game.code)
+    end
+  end
 end
