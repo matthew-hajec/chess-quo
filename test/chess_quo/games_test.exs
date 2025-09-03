@@ -8,7 +8,7 @@ defmodule ChessQuo.GamesTest do
 
   setup :verify_on_exit!
 
-  # SSetup mock stubs
+  # Setup mock stubs
   setup do
     ChessQuo.Games.MockTokens
     |> stub(:game_code, fn -> "DEFAULTCODE" end)
@@ -24,32 +24,32 @@ defmodule ChessQuo.GamesTest do
   end
 
   describe "create_game" do
-    test "can insert and fetch a game" do
+    test "a new game can be created and retrieved" do
       game = GamesFixtures.game_fixture()
       assert game == Repo.get(Game, game.id)
     end
 
-    test "create_game initializes in the waiting state" do
+    test "games are initialized in the waiting state" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.state == "waiting"
     end
 
-    test "create_game initializes white as the current turn" do
+    test "white moves first" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.turn == "white"
     end
 
-    test "create_game initializes the winner as nil" do
+    test "games initialize without a winner" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.winner == nil
     end
 
-    test "create_game initializes started at as nil" do
+    test "the game does not immediately start" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.started_at == nil
     end
 
-    test "create_game sets code and secrets from tokens module" do
+    test "games generate codes and secrets using the Tokens module" do
       ChessQuo.Games.MockTokens
       |> expect(:game_code, fn -> "TESTCODE" end)
       |> expect(:secret, fn -> "SECRETONE" end)
@@ -61,7 +61,7 @@ defmodule ChessQuo.GamesTest do
       assert "SECRETTWO" in [game.white_secret, game.black_secret]
     end
 
-    test "create_game returns an error tuple when all attempts yield duplicate codes" do
+    test "games handle duplicate codes by retrying" do
       # Create a game with a duplicate code
       GamesFixtures.game_fixture(%{code: "COPY00"})
 
@@ -72,11 +72,7 @@ defmodule ChessQuo.GamesTest do
       assert {:error, _changeset} = ChessQuo.Games.create_game("mock", "white", "", 3)
     end
 
-    test "create_game sets the host color as joined" do
-      ChessQuo.Games.MockTokens
-      |> expect(:game_code, fn -> "111111" end)
-      |> expect(:game_code, fn -> "222222" end)
-
+    test "games initialize with the host color as joined" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", "white")
       assert game.white_joined
       refute game.black_joined
@@ -86,7 +82,7 @@ defmodule ChessQuo.GamesTest do
       refute game.white_joined
     end
 
-    test "create_game initializes the game using the provided ruleset" do
+    test "games initialize the board and metadata using the provided ruleset" do
       mock_board = [%{type: "pawn", color: :white, position: 1}]
       mock_meta = %{"initial" => "meta"}
 
