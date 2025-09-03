@@ -93,6 +93,7 @@ defmodule ChessQuo.Games.Game do
   end
 
   def build!(%__MODULE__{} = m), do: m
+
   def build!(attrs) when is_map(attrs) do
     %__MODULE__{}
     |> changeset(attrs)

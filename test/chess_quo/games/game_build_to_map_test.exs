@@ -20,7 +20,14 @@ defmodule ChessQuo.Games.GameBuildToMapTest do
     end
 
     test "accepts string-keyed map and returns a Game struct" do
-      attrs = %{"ruleset" => "mock", "code" => "CODE2", "white_secret" => "S1", "black_secret" => "S2", "password" => ""}
+      attrs = %{
+        "ruleset" => "mock",
+        "code" => "CODE2",
+        "white_secret" => "S1",
+        "black_secret" => "S2",
+        "password" => ""
+      }
+
       game = Game.build!(attrs)
 
       assert %Game{} = game
@@ -57,7 +64,9 @@ defmodule ChessQuo.Games.GameBuildToMapTest do
 
   describe "to_map/1" do
     test "returns an atom-keyed map of primitive fields" do
-      game = Game.build!(%{ruleset: "mock", code: "CODE5", white_secret: "S1", black_secret: "S2"})
+      game =
+        Game.build!(%{ruleset: "mock", code: "CODE5", white_secret: "S1", black_secret: "S2"})
+
       map = Game.to_map(game)
 
       assert is_map(map)
@@ -86,6 +95,7 @@ defmodule ChessQuo.Games.GameBuildToMapTest do
       map = Game.to_map(game)
 
       assert [%{type: "rook", color: :black, position: 0}] = map.board
+
       assert [
                %{
                  from: %{type: "pawn", color: :white, position: 12},
