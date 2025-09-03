@@ -77,15 +77,16 @@ defmodule ChessQuoWeb.BoardComponent do
     players_piece? = piece && piece.color == socket.assigns[:perspective]
 
     if socket.assigns[:selected_square] == index or !players_piece? do
-      handle_deselection(socket)
+      {:noreply, handle_deselection(socket)}
     else
-      handle_selection(index, socket)
+      {:noreply, handle_selection(index, socket)}
     end
   end
 
   def handle_event("on_move", %{"move" => move}, socket) do
     case Games.apply_move(socket.assigns[:game], socket.assigns[:perspective], move) do
       {:ok, game} ->
+        socket = handle_deselection(socket)
         {:noreply, assign(socket, :game, game)}
 
       {:error, :not_your_turn} ->
@@ -97,17 +98,15 @@ defmodule ChessQuoWeb.BoardComponent do
     valid_moves =
       Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
 
-    {:noreply,
      socket
      |> assign(:selected_square, index)
-     |> assign(:valid_moves, valid_moves)}
+     |> assign(:valid_moves, valid_moves)
   end
 
   defp handle_deselection(socket) do
-    {:noreply,
      socket
      |> assign(:selected_square, nil)
-     |> assign(:valid_moves, [])}
+     |> assign(:valid_moves, [])
   end
 
   defp find_piece_at(index, board_state) do
