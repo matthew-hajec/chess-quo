@@ -62,6 +62,7 @@ defmodule ChessQuoWeb.GameComponents do
         if(@selectable? or @valid_move?, do: "cursor-pointer hover:opacity-80")
       ]}
       role="button"
+      data-piece-color={if @piece, do: @piece.color, else: "none"}
       aria-pressed={to_string(@selected?)}
       phx-click={
         if @move do
