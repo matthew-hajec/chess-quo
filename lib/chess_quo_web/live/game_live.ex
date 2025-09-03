@@ -14,6 +14,9 @@ defmodule ChessQuoWeb.GameLive do
           {:ok, _} ->
             link = ChessQuoWeb.Endpoint.url() <> ~p"/play/#{code}"
 
+            # Subscribe the player to the game updates
+            Phoenix.PubSub.subscribe(ChessQuo.PubSub, "game:#{code}")
+
             # Assign the game to the socket
             {:ok,
              socket
@@ -33,6 +36,11 @@ defmodule ChessQuoWeb.GameLive do
          |> put_flash(:error, "Game not found.")
          |> redirect(to: ~p"/")}
     end
+  end
+
+  # Receive broadcasts from either player and refresh assigns
+  def handle_info({:game_updated, game}, socket) do
+    {:noreply, assign(socket, :game, game)}
   end
 
   # Triggered when the user clicks the "Copy Join Link" button

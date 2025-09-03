@@ -152,17 +152,26 @@ defmodule ChessQuo.Games do
       {:error, :not_your_turn}
     else
       with {:ok, new_game} <- ruleset_impl.apply_move(game, move) do
-        {:ok,
-         game
-         |> Game.changeset(%{
-           turn: new_game.turn,
-           state: new_game.state,
-           winner: new_game.winner,
-           meta: new_game.meta
-         })
-         |> Ecto.Changeset.put_embed(:board, new_game.board)
-         |> Ecto.Changeset.put_embed(:moves, game.moves ++ [move])
-         |> Repo.update!()}
+        game =          game
+        |> Game.changeset(%{
+          turn: new_game.turn,
+          state: new_game.state,
+          winner: new_game.winner,
+          meta: new_game.meta
+        })
+        |> Ecto.Changeset.put_embed(:board, new_game.board)
+        |> Ecto.Changeset.put_embed(:moves, game.moves ++ [move])
+
+        game = Repo.update!(game)
+
+        # Broadcast the game update
+        Phoenix.PubSub.broadcast(
+          ChessQuo.PubSub,
+          "game:#{game.code}",
+          {:game_updated, game}
+        )
+
+        {:ok, game}
       end
     end
   end

@@ -87,6 +87,7 @@ defmodule ChessQuoWeb.BoardComponent do
     case Games.apply_move(socket.assigns[:game], socket.assigns[:perspective], move) do
       {:ok, game} ->
         socket = handle_deselection(socket)
+
         {:noreply, assign(socket, :game, game)}
 
       {:error, :not_your_turn} ->
@@ -98,15 +99,15 @@ defmodule ChessQuoWeb.BoardComponent do
     valid_moves =
       Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
 
-     socket
-     |> assign(:selected_square, index)
-     |> assign(:valid_moves, valid_moves)
+    socket
+    |> assign(:selected_square, index)
+    |> assign(:valid_moves, valid_moves)
   end
 
   defp handle_deselection(socket) do
-     socket
-     |> assign(:selected_square, nil)
-     |> assign(:valid_moves, [])
+    socket
+    |> assign(:selected_square, nil)
+    |> assign(:valid_moves, [])
   end
 
   defp find_piece_at(index, board_state) do
