@@ -148,8 +148,11 @@ defmodule ChessQuo.Games.Rules.Chess do
 
   defp update_en_passant(game, move) do
     is_pawn? = move.from.type == "pawn"
-    on_start? = (move.from.color == :white and move.from.position in 8..15) or
-                (move.from.color == :black and move.from.position in 48..55)
+
+    on_start? =
+      (move.from.color == :white and move.from.position in 8..15) or
+        (move.from.color == :black and move.from.position in 48..55)
+
     double_step? = abs(move.to.position - move.from.position) == 16
 
     # If a pawn moves two squares forward, set the en-passant target square
