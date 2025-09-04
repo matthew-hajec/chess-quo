@@ -5,7 +5,7 @@ defmodule ChessQuo.Games do
 
   alias ChessQuo.Repo
   alias ChessQuo.Games.Game
-  alias ChessQuo.Embeds.Move
+  alias ChessQuo.Games.Embeds.Move
 
   # Map of rulesets to the implementation modules
   @ruleset_mods %{

@@ -4,8 +4,8 @@ defmodule ChessQuo.Games.RulesBehaviour do
   """
 
   alias ChessQuo.Games.Game
-  alias ChessQuo.Embeds.Move
-  alias ChessQuo.Embeds.Piece
+  alias ChessQuo.Games.Embeds.Move
+  alias ChessQuo.Games.Embeds.Piece
 
   @doc """
   Returns the initial board configuration for the game.

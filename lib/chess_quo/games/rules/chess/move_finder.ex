@@ -39,9 +39,9 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
   end
 
   defp to_chess_quo_move(%ChessLogic.Move{
-        from: %ChessLogic.Piece{type: from_type, color: from_color, square: from_sq},
-        to: %ChessLogic.Piece{type: to_type, color: to_color, square: to_sq}
-      }) do
+         from: %ChessLogic.Piece{type: from_type, color: from_color, square: from_sq},
+         to: %ChessLogic.Piece{type: to_type, color: to_color, square: to_sq}
+       }) do
     # Convert the move from chess_logic format to chess_quo format
     %{
       from: %{

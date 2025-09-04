@@ -1,4 +1,4 @@
-defmodule ChessQuo.Embeds.PieceTest do
+defmodule ChessQuo.Games.Embeds.PieceTest do
   use ExUnit.Case, async: true
-  doctest ChessQuo.Embeds.Piece
+  doctest ChessQuo.Games.Embeds.Piece
 end

@@ -1,4 +1,4 @@
-defmodule ChessQuo.Embeds.Piece do
+defmodule ChessQuo.Games.Embeds.Piece do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -29,14 +29,14 @@ defmodule ChessQuo.Embeds.Piece do
   Builds a piece from the given attributes.
 
   ## Examples
-    iex> ChessQuo.Embeds.Piece.build!(%{type: "pawn", color: :white, position: 12})
-    %ChessQuo.Embeds.Piece{type: "pawn", color: :white, position: 12}
+    iex> ChessQuo.Games.Embeds.Piece.build!(%{type: "pawn", color: :white, position: 12})
+    %ChessQuo.Games.Embeds.Piece{type: "pawn", color: :white, position: 12}
 
-    iex> ChessQuo.Embeds.Piece.build!(%ChessQuo.Embeds.Piece{type: "rook", color: :black, position: 0})
-    %ChessQuo.Embeds.Piece{type: "rook", color: :black, position: 0}
+    iex> ChessQuo.Games.Embeds.Piece.build!(%ChessQuo.Games.Embeds.Piece{type: "rook", color: :black, position: 0})
+    %ChessQuo.Games.Embeds.Piece{type: "rook", color: :black, position: 0}
 
-    iex> ChessQuo.Embeds.Piece.build!(%{"type" => "bishop", "color" => :white, "position" => 35})
-    %ChessQuo.Embeds.Piece{type: "bishop", color: :white, position: 35}
+    iex> ChessQuo.Games.Embeds.Piece.build!(%{"type" => "bishop", "color" => :white, "position" => 35})
+    %ChessQuo.Games.Embeds.Piece{type: "bishop", color: :white, position: 35}
   """
   def build!(%__MODULE__{} = m), do: m
 
@@ -50,8 +50,8 @@ defmodule ChessQuo.Embeds.Piece do
   Converts the piece to a map.
 
   ## Examples
-    iex> piece = %ChessQuo.Embeds.Piece{type: "queen", color: :black, position: 59}
-    iex> ChessQuo.Embeds.Piece.to_map(piece)
+    iex> piece = %ChessQuo.Games.Embeds.Piece{type: "queen", color: :black, position: 59}
+    iex> ChessQuo.Games.Embeds.Piece.to_map(piece)
     %{type: "queen", color: :black, position: 59}
   """
   def to_map(%__MODULE__{type: type, color: color, position: position}) do

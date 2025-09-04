@@ -4,7 +4,7 @@ defmodule ChessQuo.GamesTest do
 
   alias ChessQuo.GamesFixtures
   alias ChessQuo.Games.Game
-  alias ChessQuo.Embeds.Piece
+  alias ChessQuo.Games.Embeds.Piece
 
   setup :verify_on_exit!
 

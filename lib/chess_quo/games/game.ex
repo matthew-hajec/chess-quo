@@ -5,8 +5,8 @@ defmodule ChessQuo.Games.Game do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias ChessQuo.Embeds.Piece
-  alias ChessQuo.Embeds.Move
+  alias ChessQuo.Games.Embeds.Piece
+  alias ChessQuo.Games.Embeds.Move
 
   @type t :: %__MODULE__{
           ruleset: String.t(),

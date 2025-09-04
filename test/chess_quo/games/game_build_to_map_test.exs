@@ -2,7 +2,7 @@ defmodule ChessQuo.Games.GameBuildToMapTest do
   use ExUnit.Case, async: true
 
   alias ChessQuo.Games.Game
-  alias ChessQuo.Embeds.{Piece, Move}
+  alias ChessQuo.Games.Embeds.{Piece, Move}
 
   describe "build!/1" do
     test "accepts atom-keyed map and returns a Game struct" do
