@@ -117,6 +117,9 @@ defmodule ChessQuo.Games.Rules.Chess do
     # Delete the piece at `from`, and update the piece at `to`
     game = update_board(game, move)
 
+    # Update meta information (like en-passant target square)
+    game = update_meta(game, move)
+
     {:ok, game}
   end
 
@@ -136,5 +139,31 @@ defmodule ChessQuo.Games.Rules.Chess do
       game
       | board: board
     }
+  end
+
+  defp update_meta(game, move) do
+    game
+    |> update_en_passant(move)
+  end
+
+  defp update_en_passant(game, move) do
+    is_pawn? = move.from.type == "pawn"
+    on_start? = (move.from.color == :white and move.from.position in 8..15) or
+                (move.from.color == :black and move.from.position in 48..55)
+    double_step? = abs(move.to.position - move.from.position) == 16
+
+    # If a pawn moves two squares forward, set the en-passant target square
+    if is_pawn? and on_start? and double_step? do
+      en_passant_target =
+        if move.from.color == :white do
+          move.from.position + 8
+        else
+          move.from.position - 8
+        end
+
+      put_in(game.meta["en-passant"], en_passant_target)
+    else
+      put_in(game.meta["en-passant"], nil)
+    end
   end
 end
