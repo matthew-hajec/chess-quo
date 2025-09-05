@@ -23,7 +23,7 @@ defmodule ChessQuo.GamesTest do
     :ok
   end
 
-  describe "create_game" do
+  describe "initializing games with create_game/2" do
     test "a new game can be created and retrieved" do
       game = GamesFixtures.game_fixture()
       assert game == Repo.get(Game, game.id)
@@ -105,7 +105,7 @@ defmodule ChessQuo.GamesTest do
     end
   end
 
-  describe "get_game!" do
+  describe "fetching games with get_game!/1" do
     test "returns the game if it exists" do
       game = GamesFixtures.game_fixture()
       assert ChessQuo.Games.get_game!(game.code) == game
@@ -123,7 +123,7 @@ defmodule ChessQuo.GamesTest do
     end
   end
 
-  describe "get_game" do
+  describe "fetching games with get_game/1" do
     test "returns {:ok, game} if it exists" do
       game = GamesFixtures.game_fixture()
       assert {:ok, fetched_game} = ChessQuo.Games.get_game(game.code)
