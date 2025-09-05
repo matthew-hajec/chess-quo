@@ -3,21 +3,19 @@ defmodule ChessQuoWeb.GameLiveTest do
 
   import Mox
   import Phoenix.LiveViewTest
-  alias ChessQuo.GamesFixtures
   alias ChessQuo.Games
 
   setup do
-    game = GamesFixtures.game_fixture(%{ruleset: "chess"})
-
-    # Mocks
     ChessQuo.Games.MockTokens
     |> stub(:game_code, fn -> "DEFAULTCODE" end)
     |> stub(:secret, fn -> "DEFAULTSECRET" end)
 
-    {:ok, game: game}
+    :ok
   end
 
-  test "renders game when given valid params", %{conn: conn, game: game} do
+  test "renders game when given valid params", %{conn: conn} do
+    {:ok, game} = Games.create_game("chess", "white")
+
     conn =
       Plug.Test.init_test_session(conn, %{
         "player_color" => "white",

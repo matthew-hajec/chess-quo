@@ -2,7 +2,6 @@ defmodule ChessQuo.GamesTest do
   use ChessQuo.DataCase, async: true
   import Mox
 
-  alias ChessQuo.GamesFixtures
   alias ChessQuo.Games.Game
   alias ChessQuo.Games
   alias ChessQuo.Games.Embeds.Piece
@@ -26,8 +25,9 @@ defmodule ChessQuo.GamesTest do
 
   describe "initializing games with create_game/2" do
     test "a new game can be created and retrieved" do
-      game = GamesFixtures.game_fixture()
-      assert game == Repo.get(Game, game.id)
+      {:ok, game} = ChessQuo.Games.create_game("mock", "white")
+      assert {:ok, fetched_game} = ChessQuo.Games.get_game(game.code)
+      assert fetched_game == game
     end
 
     test "create returns a Game struct" do
@@ -68,11 +68,10 @@ defmodule ChessQuo.GamesTest do
     end
 
     test "games handle duplicate codes by retrying" do
-      # Create a game with a duplicate code
-      GamesFixtures.game_fixture(%{code: "COPY00"})
-
       ChessQuo.Games.MockTokens
-      |> expect(:game_code, 3, fn -> "COPY00" end)
+      |> expect(:game_code, 4, fn -> "COPY00" end)
+
+      {:ok, _game} = ChessQuo.Games.create_game("mock", "white")
 
       # Should return an error tuple
       assert {:error, _changeset} = ChessQuo.Games.create_game("mock", "white", "", 3)
@@ -108,7 +107,7 @@ defmodule ChessQuo.GamesTest do
 
   describe "fetching games with get_game!/1" do
     test "returns the game if it exists" do
-      game = GamesFixtures.game_fixture()
+      {:ok, game} = Games.create_game("mock", "white")
       assert ChessQuo.Games.get_game!(game.code) == game
     end
 
@@ -119,14 +118,14 @@ defmodule ChessQuo.GamesTest do
     end
 
     test "returns a game struct" do
-      game = GamesFixtures.game_fixture()
+      {:ok, game} = Games.create_game("mock", "white")
       assert %Game{} = ChessQuo.Games.get_game!(game.code)
     end
   end
 
   describe "fetching games with get_game/1" do
     test "returns {:ok, game} if it exists" do
-      game = GamesFixtures.game_fixture()
+      {:ok, game} = Games.create_game("mock", "white")
       assert {:ok, fetched_game} = ChessQuo.Games.get_game(game.code)
       assert fetched_game == game
     end
@@ -136,7 +135,7 @@ defmodule ChessQuo.GamesTest do
     end
 
     test "returns a game struct in the ok tuple" do
-      game = GamesFixtures.game_fixture()
+      {:ok, game} = Games.create_game("mock", "white")
       assert {:ok, %Game{}} = ChessQuo.Games.get_game(game.code)
     end
   end
