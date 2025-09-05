@@ -111,7 +111,7 @@ defmodule ChessQuo.Games do
   @doc """
   Validates a player's credentials by checking the provided color and secret against the game's secrets.
   """
-  def validate_secret(game, player_color, player_secret) do
+  def validate_secret(%Game{} = game, player_color, player_secret) do
     case player_color do
       "white" when game.white_secret == player_secret -> {:ok, "white"}
       "black" when game.black_secret == player_secret -> {:ok, "black"}
@@ -128,7 +128,7 @@ defmodule ChessQuo.Games do
   - `game`: The current game state.
   - `player_color`: The color of the player requesting the valid moves. Can be :white or :black.
   """
-  def valid_moves(game, player_color) when is_atom(player_color) do
+  def valid_moves(%Game{} = game, player_color) when is_atom(player_color) do
     game = Game.build!(game)
 
     ruleset_impl = ruleset_mod!(game.ruleset)
@@ -136,7 +136,7 @@ defmodule ChessQuo.Games do
     ruleset_impl.valid_moves(game, player_color)
   end
 
-  def valid_moves_from_position(game, player_color, position) do
+  def valid_moves_from_position(%Game{} = game, player_color, position) do
     valid_moves = valid_moves(game, player_color)
     Enum.filter(valid_moves, fn move -> move.from.position == position end)
   end
@@ -149,9 +149,9 @@ defmodule ChessQuo.Games do
   - {:error, :not_your_turn} if it's not the player's turn.
   - {:error, :invalid_move} if the move is not valid for the current game state.
   """
-  def apply_move(game, player_color, move) when is_binary(player_color) do
-    game = get_game!(game.code)
+  def apply_move(%Game{} = game, player_color, move) when is_binary(player_color) do
     move = Move.build!(move)
+
     ruleset_impl = ruleset_mod!(game.ruleset)
 
     if game.turn != player_color do
@@ -183,7 +183,7 @@ defmodule ChessQuo.Games do
     end
   end
 
-  def apply_move(game, player_color, move) when is_atom(player_color) do
+  def apply_move(%Game{} = game, player_color, move) when is_atom(player_color) do
     apply_move(game, Atom.to_string(player_color), move)
   end
 
