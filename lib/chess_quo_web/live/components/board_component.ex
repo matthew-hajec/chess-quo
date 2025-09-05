@@ -3,6 +3,7 @@ defmodule ChessQuoWeb.BoardComponent do
   use ChessQuoWeb, :live_component
 
   alias ChessQuo.Games
+  alias ChessQuo.Games.Embeds.Move
   alias ChessQuoWeb.GameComponents
 
   @doc """
@@ -62,7 +63,7 @@ defmodule ChessQuoWeb.BoardComponent do
               piece={piece}
               selected?={selected?}
               selectable?={selectable?}
-              move={valid_move}
+              move={if valid_move, do: Move.to_map(valid_move)}
             />
           <% end %>
         <% end %>
