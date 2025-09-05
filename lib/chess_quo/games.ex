@@ -41,7 +41,6 @@ defmodule ChessQuo.Games do
       password: password,
       white_secret: tokens_mod().secret(),
       black_secret: tokens_mod().secret(),
-      board: ruleset_impl.initial_board(),
       meta: ruleset_impl.initial_meta()
     }
 
@@ -53,7 +52,9 @@ defmodule ChessQuo.Games do
         Map.put(attrs, :black_joined, true)
       end
 
-    changeset = Game.changeset(%Game{}, attrs)
+    changeset =
+      Game.changeset(%Game{}, attrs)
+      |> Ecto.Changeset.put_embed(:board, ruleset_impl.initial_board())
 
     case Repo.insert(changeset) do
       {:ok, game} ->
@@ -132,9 +133,7 @@ defmodule ChessQuo.Games do
 
     ruleset_impl = ruleset_mod!(game.ruleset)
 
-    moves = ruleset_impl.valid_moves(game, player_color)
-
-    Enum.map(moves, &Move.build!/1)
+    ruleset_impl.valid_moves(game, player_color)
   end
 
   def valid_moves_from_position(game, player_color, position) do
