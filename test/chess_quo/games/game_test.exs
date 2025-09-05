@@ -1,4 +1,4 @@
-defmodule ChessQuo.Games.GameBuildToMapTest do
+defmodule ChessQuo.Games.GameTest do
   use ExUnit.Case, async: true
 
   alias ChessQuo.Games.Game
