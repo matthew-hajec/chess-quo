@@ -89,7 +89,6 @@ defmodule ChessQuoWeb.BoardComponent do
 
     case Games.apply_move(socket.assigns[:game], socket.assigns[:perspective], move) do
       {:ok, game} ->
-
         {:noreply, assign(socket, :game, game)}
 
       {:error, :not_your_turn} ->
