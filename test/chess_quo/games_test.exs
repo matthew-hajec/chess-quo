@@ -4,6 +4,7 @@ defmodule ChessQuo.GamesTest do
 
   alias ChessQuo.GamesFixtures
   alias ChessQuo.Games.Game
+  alias ChessQuo.Games
   alias ChessQuo.Games.Embeds.Piece
 
   setup :verify_on_exit!
@@ -137,6 +138,43 @@ defmodule ChessQuo.GamesTest do
     test "returns a game struct in the ok tuple" do
       game = GamesFixtures.game_fixture()
       assert {:ok, %Game{}} = ChessQuo.Games.get_game(game.code)
+    end
+  end
+
+  describe "enforce struct return types" do
+    test "create_game/2 returns {:ok, %Game{}}" do
+      assert {:ok, %Game{}} = Games.create_game("mock", "white")
+    end
+
+    test "get_game!/1 returns %Game{}" do
+      {:ok, game} = Games.create_game("mock", "white")
+      assert %Game{} = Games.get_game!(game.code)
+    end
+
+    test "get_game/1 returns {:ok, %Game{}}" do
+      {:ok, game} = Games.create_game("mock", "white")
+      assert {:ok, %Game{}} = Games.get_game(game.code)
+    end
+
+    test "valid_moves/2 returns a list of Move structs" do
+      {:ok, game} = Games.create_game("chess", "white")
+      assert {:ok, %Game{}} = Games.get_game(game.code)
+      assert is_list(Games.valid_moves(game, :white))
+
+      assert Enum.all?(Games.valid_moves(game, :white), fn move ->
+               match?(%Games.Embeds.Move{}, move)
+             end)
+    end
+
+    test "apply_move/3 returns {:ok, %Game{}} on success" do
+      {:ok, game} = Games.create_game("chess", "white")
+
+      move = %{
+        from: %{type: "pawn", color: :white, position: 8},
+        to: %{type: "pawn", color: :white, position: 16}
+      }
+
+      assert {:ok, %Game{}} = Games.apply_move(game, "white", move)
     end
   end
 end
