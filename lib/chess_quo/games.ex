@@ -132,7 +132,9 @@ defmodule ChessQuo.Games do
 
     ruleset_impl = ruleset_mod!(game.ruleset)
 
-    ruleset_impl.valid_moves(game, player_color)
+    moves = ruleset_impl.valid_moves(game, player_color)
+
+    Enum.map(moves, &Move.build!/1)
   end
 
   def valid_moves_from_position(game, player_color, position) do
