@@ -1,48 +1,20 @@
 defmodule ChessQuoWeb.BoardComponent do
-  alias ChessQuoWeb.GameComponents
-  use ChessQuoWeb, :live_component
-
-  alias ChessQuo.Games
+  # Refactored to pure function components; state & events handled in GameLive
+  use Phoenix.Component
   alias ChessQuo.Games.Embeds.Move
   alias ChessQuoWeb.GameComponents
 
-  @doc """
-  Renders a generic extensible board component.
+  attr :game, :any, required: true
+  attr :perspective, :atom, required: true
+  attr :selected_square, :integer, default: nil
+  attr :valid_moves, :list, default: []
 
-  Boarding indexing starts at a1=0, b1=1, and goes to h8=63.
-
-  Piece rendering logic can be extended by modifying the `render_piece/3` function.
-
-  ## Parameters
-    * `perspective` - The perspective from which to render the board (:white or :black).
-    * `game` - The game state, including the board and pieces.
-
-  ## System Managed Parameters
-    * `selected_square` - The currently selected square on the board, if any, otherwise `nil`.
-    * `valid_moves` - The list of valid moves for the currently selected piece, if any, otherwise an empty list.
-  """
-
-  def render(assigns) do
-    # Initialize system managed parameters
-    assigns = assign_new(assigns, :selected_square, fn -> nil end)
-    assigns = assign_new(assigns, :valid_moves, fn -> [] end)
-
-    # Index 0 = a1, index 1 = b1... index 8 = a2
+  def board(assigns) do
     ~H"""
     <div class="w-full mx-auto select-none">
       <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
-        <% rank_range =
-          if @perspective == :white do
-            1..8
-          else
-            8..1//-1
-          end %>
-        <% file_range =
-          if @perspective == :white do
-            ?a..?h
-          else
-            ?h..?a//-1
-          end %>
+        <% rank_range = if @perspective == :white, do: 1..8, else: 8..1//-1 %>
+        <% file_range = if @perspective == :white, do: ?a..?h, else: ?h..?a//-1 %>
 
         <%= for rank <- rank_range do %>
           <%= for file <- file_range do %>
@@ -55,9 +27,6 @@ defmodule ChessQuoWeb.BoardComponent do
 
             <GameComponents.square
               ruleset="chess"
-              target={@myself}
-              on_select="on_select"
-              on_move="on_move"
               index={index}
               light?={light?}
               piece={piece}
@@ -70,45 +39,6 @@ defmodule ChessQuoWeb.BoardComponent do
       </div>
     </div>
     """
-  end
-
-  def handle_event("on_select", %{"index" => index}, socket) do
-    # Find the piece at the selected square
-    piece = find_piece_at(index, socket.assigns[:game].board)
-    players_piece? = piece && piece.color == socket.assigns[:perspective]
-
-    if socket.assigns[:selected_square] == index or !players_piece? do
-      {:noreply, handle_deselection(socket)}
-    else
-      {:noreply, handle_selection(index, socket)}
-    end
-  end
-
-  def handle_event("on_move", %{"move" => move}, socket) do
-    socket = handle_deselection(socket)
-
-    case Games.apply_move(socket.assigns[:game], socket.assigns[:perspective], move) do
-      {:ok, game} ->
-        {:noreply, assign(socket, :game, game)}
-
-      {:error, :not_your_turn} ->
-        {:noreply, socket}
-    end
-  end
-
-  defp handle_selection(index, socket) do
-    valid_moves =
-      Games.valid_moves_from_position(socket.assigns[:game], socket.assigns[:perspective], index)
-
-    socket
-    |> assign(:selected_square, index)
-    |> assign(:valid_moves, valid_moves)
-  end
-
-  defp handle_deselection(socket) do
-    socket
-    |> assign(:selected_square, nil)
-    |> assign(:valid_moves, [])
   end
 
   defp find_piece_at(index, board_state) do

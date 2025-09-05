@@ -22,7 +22,9 @@ defmodule ChessQuoWeb.GameLive do
              socket
              |> assign(:game, game)
              |> assign(:player_color, String.to_existing_atom(player_color))
-             |> assign(:game_link, link)}
+             |> assign(:game_link, link)
+             |> assign(:selected_square, nil)
+             |> assign(:valid_moves, [])}
 
           {:error, :invalid_credentials} ->
             {:ok,
@@ -47,5 +49,44 @@ defmodule ChessQuoWeb.GameLive do
   def handle_info(:link_was_copied, socket) do
     # Show a flash message indicating the link was copied
     {:noreply, put_flash(socket, :info, "Game link copied to clipboard!")}
+  end
+
+  # User selected a square
+  def handle_event("select_square", %{"index" => index}, socket) do
+    game = socket.assigns.game
+    perspective = socket.assigns.player_color
+    index = String.to_integer(to_string(index))
+
+    piece = Enum.find(game.board, fn p -> p.position == index end)
+    players_piece? = piece && piece.color == perspective
+
+    cond do
+      socket.assigns.selected_square == index ->
+        {:noreply, deselect(socket)}
+
+      players_piece? ->
+        valid_moves = ChessQuo.Games.valid_moves_from_position(game, perspective, index)
+        {:noreply, socket |> assign(:selected_square, index) |> assign(:valid_moves, valid_moves)}
+
+      true ->
+        {:noreply, deselect(socket)}
+    end
+  end
+
+  def handle_event("make_move", %{"move" => move}, socket) do
+    perspective = socket.assigns.player_color
+    game = socket.assigns.game
+
+    case ChessQuo.Games.apply_move(game, perspective, move) do
+      {:ok, new_game} ->
+        {:noreply, socket |> assign(:game, new_game) |> deselect()}
+
+      {:error, :not_your_turn} ->
+        {:noreply, socket}
+    end
+  end
+
+  defp deselect(socket) do
+    socket |> assign(:selected_square, nil) |> assign(:valid_moves, [])
   end
 end

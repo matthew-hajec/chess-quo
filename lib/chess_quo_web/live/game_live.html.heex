@@ -1,14 +1,14 @@
 <ChessQuoWeb.Layouts.app flash={@flash}>
-  <div class="mx-auto px-4 w-4/5 lg:w-full">
+  <div id="game_live" class="mx-auto px-4 w-4/5 lg:w-full">
     <h1 class="text-3xl font-bold mb-6">Chess Game</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2">
-        <.live_component
-          module={ChessQuoWeb.BoardComponent}
-          id="chess_board"
+        <ChessQuoWeb.BoardComponent.board
           perspective={@player_color}
           game={@game}
+          selected_square={@selected_square}
+          valid_moves={@valid_moves}
         />
       </div>
 

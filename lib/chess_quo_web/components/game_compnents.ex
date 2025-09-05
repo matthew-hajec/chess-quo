@@ -35,12 +35,6 @@ defmodule ChessQuoWeb.GameComponents do
   end
 
   attr :ruleset, :string
-  # Who receives events from this component
-  attr :target, :any, required: true
-  # The event to trigger on selection/de-selection
-  attr :on_select, :string, required: true
-  # Event to trigger when the square is clicked while `valid_move?` is true
-  attr :on_move, :string, required: true
   attr :index, :integer, required: true
   attr :light?, :boolean, required: true
   # Type `ChessQuo.Games.Game.piece()`
@@ -66,13 +60,12 @@ defmodule ChessQuoWeb.GameComponents do
       data-piece-type={if @piece, do: @piece.type, else: "none"}
       aria-pressed={to_string(@selected?)}
       phx-click={
-        if @move do
-          JS.push("on_move", target: @target, value: %{move: @move, index: @index})
+        if @valid_move? do
+          JS.push("make_move", value: %{move: @move})
         else
-          JS.push("on_select", target: @target, value: %{index: @index})
+          JS.push("select_square", value: %{index: @index})
         end
       }
-      phx-target={@target}
     >
       <%= if @piece do %>
         <ChessQuoWeb.GameComponents.icon piece={@piece} ruleset={@ruleset} />
