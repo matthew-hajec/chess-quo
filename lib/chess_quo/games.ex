@@ -217,7 +217,14 @@ defmodule ChessQuo.Games do
           started_at: DateTime.utc_now()
         }
 
-        Repo.update!(Game.changeset(game, attrs))
+        game = Repo.update!(Game.changeset(game, attrs))
+
+        # Broadcast the game update
+        Phoenix.PubSub.broadcast(
+          ChessQuo.PubSub,
+          "game:#{game.code}",
+          {:game_updated, game}
+        )
 
         {:ok, color, secret}
 
