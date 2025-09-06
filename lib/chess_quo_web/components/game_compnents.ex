@@ -75,7 +75,6 @@ defmodule ChessQuoWeb.GameComponents do
     """
   end
 
-
   attr :game, :any, required: true
   attr :perspective, :atom, required: true
   attr :selected_square, :integer, default: nil
