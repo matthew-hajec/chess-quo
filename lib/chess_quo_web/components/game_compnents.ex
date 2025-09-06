@@ -20,6 +20,7 @@ defmodule ChessQuoWeb.GameComponents do
   attr :selected?, :boolean, default: false
   attr :selectable?, :boolean, default: false
   attr :move, :any, default: nil
+  attr :promotion_move?, :boolean, default: false
 
   def square(assigns) do
     assigns = Map.put_new(assigns, :valid_move?, assigns.move != nil)
@@ -34,14 +35,20 @@ defmodule ChessQuoWeb.GameComponents do
         if(@selectable? or @valid_move?, do: "cursor-pointer hover:opacity-80")
       ]}
       role="button"
+      data-index={@index}
       data-piece-color={if @piece, do: @piece.color, else: "none"}
       data-piece-type={if @piece, do: @piece.type, else: "none"}
       aria-pressed={to_string(@selected?)}
       phx-click={
-        if @valid_move? do
-          JS.push("make_move", value: %{move: @move})
-        else
-          JS.push("select_square", value: %{index: @index})
+        cond do
+          @promotion_move? and @valid_move? ->
+            JS.push("initiate_promotion", value: %{move: @move})
+
+          @valid_move? ->
+            JS.push("make_move", value: %{move: @move})
+
+          true ->
+            JS.push("select_square", value: %{index: @index})
         end
       }
     >
@@ -81,6 +88,7 @@ defmodule ChessQuoWeb.GameComponents do
               selected?={selected?}
               selectable?={selectable?}
               move={if valid_move, do: Move.to_map(valid_move)}
+              promotion_move?={length(@valid_moves) > 0}
             />
           <% end %>
         <% end %>
