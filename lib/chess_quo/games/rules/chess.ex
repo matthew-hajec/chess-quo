@@ -113,7 +113,7 @@ defmodule ChessQuo.Games.Rules.Chess do
 
   # Apply_move is incomplete, it only changes the turn and moves the piece, but doesn't handle captures or even validation.
   @impl true
-  def apply_move(game, move) do
+  def apply_move(game, %Move{} = move) do
     # Change the turn
     game = update_turn(game)
 
