@@ -118,4 +118,33 @@ defmodule ChessQuo.Games.Game do
       lock_version: game.lock_version
     }
   end
+
+  def debug_print_board(%__MODULE__{} = game) do
+    for i <- 0..63 do
+      piece = Enum.find(game.board, fn p -> p.position == i end)
+
+      char =
+        cond do
+          piece == nil -> "."
+          piece.type == "pawn" and piece.color == :white -> "P"
+          piece.type == "rook" and piece.color == :white -> "R"
+          piece.type == "knight" and piece.color == :white -> "N"
+          piece.type == "bishop" and piece.color == :white -> "B"
+          piece.type == "queen" and piece.color == :white -> "Q"
+          piece.type == "king" and piece.color == :white -> "K"
+          piece.type == "pawn" and piece.color == :black -> "p"
+          piece.type == "rook" and piece.color == :black -> "r"
+          piece.type == "knight" and piece.color == :black -> "n"
+          piece.type == "bishop" and piece.color == :black -> "b"
+          piece.type == "queen" and piece.color == :black -> "q"
+          piece.type == "king" and piece.color == :black -> "k"
+          true -> "?"
+        end
+
+      IO.write(char)
+      if rem(i + 1, 8) == 0, do: IO.puts("")
+    end
+
+    nil
+  end
 end
