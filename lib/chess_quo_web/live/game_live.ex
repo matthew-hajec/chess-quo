@@ -4,8 +4,6 @@ defmodule ChessQuoWeb.GameLive do
   alias ChessQuo.Games
 
   def mount(%{"code" => code}, session, socket) do
-    IO.inspect(code, label: "Mounting GameLive with code")
-    IO.inspect(session, label: "Session data")
     # Attempt to fetch the game by code
     case Games.get_game(code) do
       {:ok, game} ->
