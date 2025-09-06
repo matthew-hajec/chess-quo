@@ -85,6 +85,7 @@ defmodule ChessQuo.Games.Rules.Chess do
   @impl true
   def initial_meta do
     %{
+      "fen" => "rnnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
       # Defines whether the castling is available for each player
       "castling" => %{
         "white" => %{"kingside" => true, "queenside" => true},
