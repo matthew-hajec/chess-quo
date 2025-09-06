@@ -1,27 +1,19 @@
 defmodule ChessQuo.Games.Rules.Chess.FEN do
-  alias ChessQuo.Games.Rules.Chess.Notation
+  alias ChessQuo.Games.Game
+  alias ChessQuo.Games.Embeds.Piece
 
-  @doc """
-  Converts a game state to a FEN string.
-
-  Relies on the meta defining the following fields:
-  - Castling Rights: %{"white" => %{"kingside" => boolean, "queenside" => boolean}, "black" => %{"kingside" => boolean, "queenside" => boolean}}
-  - En Passant Target Square: 0..63 index or nil
-  - Halfmove Clock: 0..n integer
-  """
-  # A fen: "<Piece Placement> <Side to move> <Castling rights> <En passant> <Halfmove clock> <Fullmove number>"
-  def game_to_fen(game) do
-    piece_placement_string(game) <>
-      " " <>
-      side_to_move_string(game) <>
-      " " <>
-      castling_string(game) <>
-      " " <>
-      en_passant_string(game) <>
-      " " <>
-      half_move_clock_string(game) <>
-      " " <>
-      full_move_clock_string(game)
+  def breakdown_fen(fen) do
+    case String.split(fen, " ", parts: 6) do
+      [piece_placement, side_to_move, castling, en_passant, half_move_clock, full_move_number] ->
+        %{
+          piece_placement: piece_placement,
+          side_to_move: side_to_move,
+          castling: castling,
+          en_passant: en_passant,
+          half_move_clock: String.to_integer(half_move_clock),
+          full_move_number: String.to_integer(full_move_number)
+        }
+    end
   end
 
   @doc """
@@ -35,117 +27,105 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
     end
   end
 
-  # Generate the piece placement part of the FEN string
-  defp piece_placement_string(game) do
-    board = game.board
+  @doc """
+  Updates a Game struct to reflect the given FEN string.
+  """
+  def update_game_from_fen(game, fen) do
+    breakdown = breakdown_fen(fen)
 
-    fen_board =
-      Enum.reduce(board, List.duplicate(nil, 64), fn piece, acc ->
-        symbol = piece_to_fen_symbol(piece)
-        List.replace_at(acc, piece.position, symbol)
-      end)
-
-    8..1//-1
-    |> Enum.map(fn rank ->
-      row =
-        for file <- 0..7 do
-          idx = (rank - 1) * 8 + file
-          Enum.at(fen_board, idx)
-        end
-
-      compress_row(row)
-    end)
-    |> Enum.join("/")
-  end
-
-  # Generate the side to move part of the FEN string
-  defp side_to_move_string(game) do
-    if game.turn == :white, do: "w", else: "b"
-  end
-
-  defp castling_string(game) do
-    castling = game.meta["castling"]
-
-    wks = if castling["white"]["kingside"], do: "K", else: ""
-    wqs = if castling["white"]["queenside"], do: "Q", else: ""
-    bks = if castling["black"]["kingside"], do: "k", else: ""
-    bqs = if castling["black"]["queenside"], do: "q", else: ""
-
-    rights_string = wks <> wqs <> bks <> bqs
-    if rights_string == "", do: "-", else: rights_string
-  end
-
-  defp en_passant_string(game) do
-    en_passant = game.meta["en-passant"]
-
-    if en_passant do
-      Notation.index_to_algebraic(en_passant)
-    else
-      "-"
-    end
-  end
-
-  defp half_move_clock_string(game) do
-    half_move_clock = game.meta["half-move-clock"]
-    Integer.to_string(half_move_clock)
-  end
-
-  defp full_move_clock_string(game) do
-    Integer.to_string(div(length(game.moves), 2) + 1)
-  end
-
-  # Turn a row like ["P", nil, nil, "P", nil, "P", nil, nil]
-  # into "P2P1P2"
-  defp compress_row(squares) do
-    # Walk the row left-to-right.
-    # acc = list of output chunks (strings) built so far
-    # empties = running count of consecutive nils
-    {acc, empties} =
-      Enum.reduce(squares, {[], 0}, fn
-        # Case 1: Empty square -> just bump the empties counter
-        nil, {acc, e} ->
-          {acc, e + 1}
-
-        # Case 2: Piece with no empties pending -> add the piece
-        piece, {acc, 0} ->
-          {[piece | acc], 0}
-
-        # Case 3: Piece with empties pending -> flush the count first,
-        # then add the piece, reset empties to 0
-        piece, {acc, e} ->
-          {[piece, Integer.to_string(e) | acc], 0}
-      end)
-
-    # After the loop, if there are still empties, flush them
-    acc =
-      if empties > 0 do
-        [Integer.to_string(empties) | acc]
-      else
-        acc
-      end
-
-    # acc has been built in reverse order, so fix it and join into a string
-    acc
-    |> Enum.reverse()
-    |> Enum.join()
-  end
-
-  defp piece_to_fen_symbol(piece) do
-    map = %{
-      "pawn" => "p",
-      "rook" => "r",
-      "knight" => "n",
-      "bishop" => "b",
-      "queen" => "q",
-      "king" => "k"
+    %Game{
+      game
+      | meta: Map.put(game.meta, "fen", fen),
+        turn: to_turn(breakdown.side_to_move),
+        board: to_board(breakdown.piece_placement)
     }
-
-    symbol = Map.get(map, piece.type)
-
-    if piece.color == :white do
-      String.upcase(symbol)
-    else
-      symbol
-    end
   end
+
+  @doc """
+  Parses only the FEN piece placement field (first field) into the board list of %Piece{}.
+
+  Returns a flat list of pieces using internal indexing: a1=0..h1=7, a8=56..h8=63.
+  """
+  def parse_piece_placement(piece_placement), do: to_board(piece_placement)
+
+  defp to_turn("w"), do: :white
+  defp to_turn("b"), do: :black
+
+  defp to_board(piece_placement) do
+    # FEN lists ranks from 8 down to 1, files from 'a' to 'h'
+    ranks = String.split(piece_placement, "/", trim: true)
+
+    # Validate we have exactly 8 ranks
+    if length(ranks) != 8 do
+      raise ArgumentError, "invalid FEN piece placement: expected 8 ranks, got #{length(ranks)}"
+    end
+
+    {pieces, final_rank, final_file} =
+      Enum.reduce(ranks, {[], 8, 0}, fn rank_str, {acc, rank, _file} ->
+        {rank_pieces, file_after} = parse_rank(rank_str, rank)
+        {acc ++ rank_pieces, rank - 1, file_after}
+      end)
+
+    # After processing 8 ranks, we should be at rank 0 and file reset to 8 from the last processed rank
+    if final_rank != 0 do
+      raise ArgumentError, "invalid FEN piece placement: processed rank ended at #{final_rank}"
+    end
+
+    if final_file != 8 do
+      # Each rank must total 8 squares
+      raise ArgumentError, "invalid FEN piece placement: a rank did not sum to 8 squares"
+    end
+
+    pieces
+  end
+
+  defp parse_rank(rank_str, rank_num) do
+    # Iterate characters, build pieces for this rank; return {pieces, file_after}
+    {pieces, file} =
+      rank_str
+      |> String.graphemes()
+      |> Enum.reduce({[], 0}, fn ch, {acc, file} ->
+        cond do
+          ch =~ ~r/^[1-8]$/ ->
+            {acc, file + String.to_integer(ch)}
+
+          ch in ["P", "N", "B", "R", "Q", "K", "p", "n", "b", "r", "q", "k"] ->
+            {color, type} = piece_from_fen_char(ch)
+            # Internal index mapping: a1=0..h1=7, a8=56..h8=63
+            index = file + (rank_num - 1) * 8
+            piece = %Piece{type: type, color: color, position: index}
+            {[piece | acc], file + 1}
+
+          true ->
+            raise ArgumentError, "invalid FEN character in rank: #{inspect(ch)}"
+        end
+      end)
+
+    if file != 8 do
+      raise ArgumentError, "invalid FEN rank: does not sum to 8 squares"
+    end
+
+    {Enum.reverse(pieces), file}
+  end
+
+  defp piece_from_fen_char(<<c::utf8>>) when c in ?A..?Z do
+    {:white, piece_type(c)}
+  end
+
+  defp piece_from_fen_char(<<c::utf8>>) when c in ?a..?z do
+    {:black, piece_type(c)}
+  end
+
+  defp piece_type(?P), do: "pawn"
+  defp piece_type(?N), do: "knight"
+  defp piece_type(?B), do: "bishop"
+  defp piece_type(?R), do: "rook"
+  defp piece_type(?Q), do: "queen"
+  defp piece_type(?K), do: "king"
+  defp piece_type(?p), do: "pawn"
+  defp piece_type(?n), do: "knight"
+  defp piece_type(?b), do: "bishop"
+  defp piece_type(?r), do: "rook"
+  defp piece_type(?q), do: "queen"
+  defp piece_type(?k), do: "king"
 end
