@@ -14,11 +14,11 @@ defmodule ChessQuoWeb.GameLiveTest do
   end
 
   test "renders game when given valid params", %{conn: conn} do
-    {:ok, game} = Games.create_game("chess", "white")
+    {:ok, game} = Games.create_game("chess", :white)
 
     conn =
       Plug.Test.init_test_session(conn, %{
-        "player_color" => "white",
+        "player_color" => :white,
         "player_secret" => game.white_secret
       })
 

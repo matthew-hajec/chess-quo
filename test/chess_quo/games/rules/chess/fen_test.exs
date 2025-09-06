@@ -63,21 +63,21 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
   describe "game_to_fen/1" do
     test "initializes FEN correctly" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       assert FEN.game_to_fen(game) == "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     end
   end
 
   describe "game_to_fen/1 - piece placement" do
     test "empty board" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       game = %{game | board: []}
 
       assert FEN.game_to_fen(game) == "8/8/8/8/8/8/8/8 w KQkq - 0 1"
     end
 
     test "full board" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       game = %{
         game
@@ -92,7 +92,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     end
 
     test "gaps in piece placement" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       test_board = [
         %{type: "rook", color: :black, position: 0},
@@ -113,26 +113,26 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
   describe "game_to_fen/1 - side to move string" do
     test "white to move" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       assert FEN.game_to_fen(game) =~ ~r/ w /
     end
 
     test "black to move" do
-      {:ok, game} = Games.create_game("chess", "white")
-      game = %{game | turn: "black"}
+      {:ok, game} = Games.create_game("chess", :white)
+      game = %{game | turn: :black}
       assert FEN.game_to_fen(game) =~ ~r/ b /
     end
   end
 
   describe "game_to_fen/1 - castling string" do
     test "initial castling rights" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["castling"] == "KQkq"
     end
 
     test "loses white kingside castling rights" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       # Loses kingside castling rights
       game = %{game | meta: create_meta(false, true, true, true)}
       parts = fen_parts(FEN.game_to_fen(game))
@@ -140,7 +140,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     end
 
     test "loses white queenside castling rights" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       # Loses queenside castling rights
       game = %{game | meta: create_meta(true, false, true, true)}
       parts = fen_parts(FEN.game_to_fen(game))
@@ -148,7 +148,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     end
 
     test "loses black kingside castling rights" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       # Loses kingside castling rights
       game = %{game | meta: create_meta(true, true, false, true)}
       parts = fen_parts(FEN.game_to_fen(game))
@@ -156,7 +156,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     end
 
     test "loses black queenside castling rights" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       # Loses queenside castling rights
       game = %{game | meta: create_meta(true, true, true, false)}
       parts = fen_parts(FEN.game_to_fen(game))
@@ -164,7 +164,7 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
     end
 
     test "loses all castling rights" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       # Loses all castling rights
       game = %{game | meta: create_meta(false, false, false, false)}
       parts = fen_parts(FEN.game_to_fen(game))
@@ -174,13 +174,13 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
   describe "game_to_fen/1 - en passant string" do
     test "initializes with no en passant target square" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["en_passant"] == "-"
     end
 
     test "with en passant target square" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       game = %{game | meta: create_meta(false, false, false, false, 16)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["en_passant"] == "a3"
@@ -193,13 +193,13 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
   describe "game_to_fen/1 - half-move clock" do
     test "initializes with half-move clock of 0" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["halfmove"] == "0"
     end
 
     test "with non-zero half-move clock" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       game = %{game | meta: create_meta(false, false, false, false, nil, 17)}
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["halfmove"] == "17"
@@ -208,13 +208,13 @@ defmodule ChessQuo.Games.Rules.Chess.FENTest do
 
   describe "game_to_fen/1 - full-move clock" do
     test "initializes with full-move clock of 1" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
       parts = fen_parts(FEN.game_to_fen(game))
       assert parts["fullmove"] == "1"
     end
 
     test "doesn't increment on white's first move" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       game = %{
         game

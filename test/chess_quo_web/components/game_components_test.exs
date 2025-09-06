@@ -35,7 +35,7 @@ defmodule ChessQuoWeb.GameComponentsTest do
 
   describe "GameComponents.board/1" do
     test "an owned square responds to mouse hover" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       lazy = board_lazy(game, :white)
 
@@ -50,7 +50,7 @@ defmodule ChessQuoWeb.GameComponentsTest do
     end
 
     test "an unowned square does not respond to mouse hover" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       lazy = board_lazy(game, :black)
 
@@ -67,7 +67,7 @@ defmodule ChessQuoWeb.GameComponentsTest do
     end
 
     test "an opponent's piece square does not respond to mouse hover" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       lazy = board_lazy(game, :black)
 
@@ -84,7 +84,7 @@ defmodule ChessQuoWeb.GameComponentsTest do
     end
 
     test "the style of a selected square is different than the style of an unselected square" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       lazy = board_lazy(game, :white, 8)
 
@@ -111,7 +111,7 @@ defmodule ChessQuoWeb.GameComponentsTest do
     end
 
     test "the style of a valid move square is different than the style of an unselected square" do
-      {:ok, game} = Games.create_game("chess", "white")
+      {:ok, game} = Games.create_game("chess", :white)
 
       # The white pawn at position 8 can move to position 16 at the start of the game
       valid_move =

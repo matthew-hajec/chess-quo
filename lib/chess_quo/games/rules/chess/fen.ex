@@ -60,7 +60,7 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
 
   # Generate the side to move part of the FEN string
   defp side_to_move_string(game) do
-    if game.turn == "white", do: "w", else: "b"
+    if game.turn == :white, do: "w", else: "b"
   end
 
   defp castling_string(game) do

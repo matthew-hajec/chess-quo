@@ -4,6 +4,8 @@ defmodule ChessQuoWeb.GameLive do
   alias ChessQuo.Games
 
   def mount(%{"code" => code}, session, socket) do
+    IO.inspect(code, label: "Mounting GameLive with code")
+    IO.inspect(session, label: "Session data")
     # Attempt to fetch the game by code
     case Games.get_game(code) do
       {:ok, game} ->
@@ -21,7 +23,7 @@ defmodule ChessQuoWeb.GameLive do
             {:ok,
              socket
              |> assign(:game, game)
-             |> assign(:player_color, String.to_existing_atom(player_color))
+             |> assign(:player_color, player_color)
              |> assign(:game_link, link)
              |> assign(:selected_square, nil)
              |> assign(:valid_moves, [])}

@@ -32,7 +32,7 @@ defmodule ChessQuo.Games do
 
   Raises an error if the ruleset is invalid.
   """
-  def create_game(ruleset, host_color, password \\ "", attempts \\ 5) do
+  def create_game(ruleset, host_color, password \\ "", attempts \\ 5) when is_atom(host_color) do
     ruleset_impl = ruleset_mod!(ruleset)
 
     attrs = %{
@@ -46,7 +46,7 @@ defmodule ChessQuo.Games do
 
     # Add the joined property the attrs based on the host color
     attrs =
-      if host_color == "white" do
+      if host_color == :white do
         Map.put(attrs, :white_joined, true)
       else
         Map.put(attrs, :black_joined, true)
@@ -113,8 +113,8 @@ defmodule ChessQuo.Games do
   """
   def validate_secret(%Game{} = game, player_color, player_secret) do
     case player_color do
-      "white" when game.white_secret == player_secret -> {:ok, "white"}
-      "black" when game.black_secret == player_secret -> {:ok, "black"}
+      :white when game.white_secret == player_secret -> {:ok, :white}
+      :black when game.black_secret == player_secret -> {:ok, :black}
       _ -> {:error, :invalid_credentials}
     end
   end
@@ -149,7 +149,7 @@ defmodule ChessQuo.Games do
   - {:error, :not_your_turn} if it's not the player's turn.
   - {:error, :invalid_move} if the move is not valid for the current game state.
   """
-  def apply_move(%Game{} = game, player_color, move) when is_binary(player_color) do
+  def apply_move(%Game{} = game, player_color, move) when is_atom(player_color) do
     move = Move.build!(move)
 
     ruleset_impl = ruleset_mod!(game.ruleset)
@@ -183,10 +183,6 @@ defmodule ChessQuo.Games do
     end
   end
 
-  def apply_move(%Game{} = game, player_color, move) when is_atom(player_color) do
-    apply_move(game, Atom.to_string(player_color), move)
-  end
-
   @doc """
   Check if a game code is possibly valid. (correct length and character set)
   """
@@ -207,7 +203,7 @@ defmodule ChessQuo.Games do
   defp try_join(game) do
     case pick_slot(game) do
       {:ok, color} ->
-        secret = if color == "white", do: game.white_secret, else: game.black_secret
+        secret = if color == :white, do: game.white_secret, else: game.black_secret
 
         attrs = %{
           state: "playing",
@@ -234,6 +230,6 @@ defmodule ChessQuo.Games do
   end
 
   defp pick_slot(%{white_joined: true, black_joined: true}), do: {:error, :full}
-  defp pick_slot(%{white_joined: true}), do: {:ok, "black"}
-  defp pick_slot(%{black_joined: true}), do: {:ok, "white"}
+  defp pick_slot(%{white_joined: true}), do: {:ok, :black}
+  defp pick_slot(%{black_joined: true}), do: {:ok, :white}
 end

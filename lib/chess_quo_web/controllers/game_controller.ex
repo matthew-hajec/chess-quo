@@ -8,12 +8,16 @@ defmodule ChessQuoWeb.GameController do
   end
 
   def create(conn, %{"color_preference" => color}) when color in ["white", "black", "random"] do
-    color = if color == "random", do: Enum.random(["white", "black"]), else: color
+    color =
+      if color == "random",
+        do: Enum.random([:white, :black]),
+        else: String.to_existing_atom(color)
+
     password = Map.get(conn.params, "password", "") |> String.trim()
 
     case Games.create_game("chess", color, password) do
       {:ok, game} ->
-        player_secret = if color == "white", do: game.white_secret, else: game.black_secret
+        player_secret = if color == :white, do: game.white_secret, else: game.black_secret
 
         conn
         |> put_session(:player_secret, player_secret)

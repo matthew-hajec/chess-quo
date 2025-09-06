@@ -16,7 +16,7 @@ defmodule ChessQuo.Games.GameTest do
       assert game.black_secret == "S2"
       # defaults from schema
       assert game.state == "waiting"
-      assert game.turn == "white"
+      assert game.turn == :white
     end
 
     test "accepts string-keyed map and returns a Game struct" do

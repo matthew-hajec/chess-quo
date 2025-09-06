@@ -6,6 +6,7 @@ defmodule ChessQuo.Games.Rules.Chess do
   alias ChessQuo.Games.Embeds.{Piece, Move}
 
   @impl true
+  @spec initial_board() :: [ChessQuo.Games.Embeds.Piece.t(), ...]
   def initial_board do
     [
       # White pieces (back rank a1–h1, indices 0–7)
@@ -125,8 +126,8 @@ defmodule ChessQuo.Games.Rules.Chess do
     {:ok, game}
   end
 
-  defp update_turn(%Game{turn: "white"} = game), do: %Game{game | turn: "black"}
-  defp update_turn(%Game{turn: "black"} = game), do: %Game{game | turn: "white"}
+  defp update_turn(%Game{turn: :white} = game), do: %Game{game | turn: :black}
+  defp update_turn(%Game{turn: :black} = game), do: %Game{game | turn: :white}
 
   defp update_board(game, move) do
     board = game.board
