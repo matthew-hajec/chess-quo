@@ -86,6 +86,12 @@ defmodule ChessQuoWeb.GameLive do
     end
   end
 
+  def handle_event("initiate_promotion", %{"from_idx" => from_idx, "to_idx" => to_idx}, socket) do
+    IO.inspect({"initiate_promotion", from_idx, to_idx}, label: "initiate_promotion")
+
+    {:noreply, socket}
+  end
+
   defp deselect(socket) do
     socket |> assign(:selected_square, nil) |> assign(:valid_moves, [])
   end

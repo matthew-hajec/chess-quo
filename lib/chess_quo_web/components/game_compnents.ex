@@ -42,7 +42,9 @@ defmodule ChessQuoWeb.GameComponents do
       phx-click={
         cond do
           @promotion_move? and @valid_move? ->
-            JS.push("initiate_promotion", value: %{move: @move})
+            JS.push("initiate_promotion",
+              value: %{from_idx: @move.from.position, to_idx: @move.to.position}
+            )
 
           @valid_move? ->
             JS.push("make_move", value: %{move: @move})
@@ -78,7 +80,7 @@ defmodule ChessQuoWeb.GameComponents do
             <% piece = find_piece_at(index, @game.board) %>
             <% selected? = @selected_square == index %>
             <% selectable? = is_map(piece) and piece.color == @perspective %>
-            <% valid_move = Enum.find(@valid_moves, fn move -> move.to.position == index end) %>
+            <% valid_moves = Enum.filter(@valid_moves, fn move -> move.to.position == index end) %>
 
             <.square
               ruleset="chess"
@@ -87,8 +89,8 @@ defmodule ChessQuoWeb.GameComponents do
               piece={piece}
               selected?={selected?}
               selectable?={selectable?}
-              move={if valid_move, do: Move.to_map(valid_move)}
-              promotion_move?={length(@valid_moves) > 0}
+              move={if valid_moves != [], do: Move.to_map(hd(valid_moves))}
+              promotion_move?={length(valid_moves) > 1}
             />
           <% end %>
         <% end %>
