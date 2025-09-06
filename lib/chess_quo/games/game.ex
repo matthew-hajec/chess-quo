@@ -14,7 +14,7 @@ defmodule ChessQuo.Games.Game do
           password: String.t(),
           white_secret: String.t(),
           black_secret: String.t(),
-          turn: String.t(),
+          turn: :white | :black,
           state: String.t(),
           winner: String.t(),
           white_joined: boolean(),
