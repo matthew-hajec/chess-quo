@@ -8,7 +8,7 @@ defmodule ChessQuoWeb.GameComponents do
 
   def icon(%{ruleset: "chess"} = assigns) do
     ~H"""
-    <img src={piece_src(@piece)} class="w-3/4 h-3/4" draggable="false" />
+    <img src={piece_src(@ruleset, @piece)} class="w-3/4 h-3/4" draggable="false" />
     """
   end
 
@@ -89,7 +89,13 @@ defmodule ChessQuoWeb.GameComponents do
     """
   end
 
-  defp piece_src(piece) do
+  defp piece_src(ruleset, piece) do
+    case ruleset do
+      "chess" -> chess_piece_src(piece)
+    end
+  end
+
+  defp chess_piece_src(piece) do
     "/images/chess-pieces/" <>
       case {piece.type, piece.color} do
         {"pawn", :white} -> "wikimedia/pawn-white.svg"
