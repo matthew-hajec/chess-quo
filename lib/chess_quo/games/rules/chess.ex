@@ -132,6 +132,9 @@ defmodule ChessQuo.Games.Rules.Chess do
   defp update_board(game, move) do
     board = game.board
 
+    # Delete the piece at `to` (if any)
+    board = List.delete(board, Enum.find(board, fn p -> p.position == move.to.position end))
+
     # Delete the piece `from`
     board = List.delete(board, move.from)
 
