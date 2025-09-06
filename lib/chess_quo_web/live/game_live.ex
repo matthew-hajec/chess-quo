@@ -82,7 +82,7 @@ defmodule ChessQuoWeb.GameLive do
         {:noreply, socket |> assign(:game, new_game) |> deselect()}
 
       {:error, :not_your_turn} ->
-        {:noreply, socket}
+        {:noreply, deselect(socket)}
     end
   end
 
