@@ -15,8 +15,8 @@ defmodule ChessQuo.Games.Game do
           white_secret: String.t(),
           black_secret: String.t(),
           turn: :white | :black,
-          state: String.t(),
-          winner: String.t(),
+          state: :waiting | :playing | :finished,
+          winner: :white | :black | nil,
           white_joined: boolean(),
           black_joined: boolean(),
           moves: [Move.t()],
@@ -41,9 +41,9 @@ defmodule ChessQuo.Games.Game do
 
     field :turn, Ecto.Enum, values: [:white, :black], default: :white
     # Possible states: waiting, playing, finished
-    field :state, :string, default: "waiting"
+    field :state, Ecto.Enum, values: [:waiting, :playing, :finished], default: :waiting
     # Possible values: :white, :black, or nil if no winner yet
-    field :winner, :string, default: nil
+    field :winner, Ecto.Enum, values: [:white, :black], default: nil
     field :white_joined, :boolean, default: false
     field :black_joined, :boolean, default: false
 
@@ -85,7 +85,6 @@ defmodule ChessQuo.Games.Game do
     |> validate_required([:ruleset, :code, :white_secret, :black_secret])
     # Basic validations
     |> validate_length(:password, max: 30)
-    |> validate_inclusion(:state, ["waiting", "playing", "finished"])
     |> unique_constraint(:code)
     # Optimistic locking
     |> optimistic_lock(:lock_version)

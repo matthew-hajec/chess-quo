@@ -1,7 +1,6 @@
 defmodule ChessQuo.Games.Rules.Chess do
   @behaviour ChessQuo.Games.RulesBehaviour
 
-  alias ChessQuo.Games.Game
   alias ChessQuo.Games.Rules.Chess.MoveFinder
   alias ChessQuo.Games.Embeds.{Piece, Move}
 
@@ -86,16 +85,7 @@ defmodule ChessQuo.Games.Rules.Chess do
   @impl true
   def initial_meta do
     %{
-      "fen" => "rnnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-      # Defines whether the castling is available for each player
-      "castling" => %{
-        "white" => %{"kingside" => true, "queenside" => true},
-        "black" => %{"kingside" => true, "queenside" => true}
-      },
-      # Defines the en-passant target square index (0-63)
-      "en-passant" => nil,
-      # Defines the half-move clock (for fifty-move rule)
-      "half-move-clock" => 0
+      "fen" => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     }
   end
 
@@ -114,65 +104,6 @@ defmodule ChessQuo.Games.Rules.Chess do
   # Apply_move is incomplete, it only changes the turn and moves the piece, but doesn't handle captures or even validation.
   @impl true
   def apply_move(game, %Move{} = move) do
-    # Change the turn
-    game = update_turn(game)
-
-    # Delete the piece at `from`, and update the piece at `to`
-    game = update_board(game, move)
-
-    # Update meta information (like en-passant target square)
-    game = update_meta(game, move)
-
-    {:ok, game}
-  end
-
-  defp update_turn(%Game{turn: :white} = game), do: %Game{game | turn: :black}
-  defp update_turn(%Game{turn: :black} = game), do: %Game{game | turn: :white}
-
-  defp update_board(game, move) do
-    board = game.board
-
-    # Delete the piece at `to` (if any)
-    board = List.delete(board, Enum.find(board, fn p -> p.position == move.to.position end))
-
-    # Delete the piece `from`
-    board = List.delete(board, move.from)
-
-    # Append the piece at `to`
-    board = board ++ [move.to]
-
-    %Game{
-      game
-      | board: board
-    }
-  end
-
-  defp update_meta(game, move) do
-    game
-    |> update_en_passant(move)
-  end
-
-  defp update_en_passant(game, move) do
-    is_pawn? = move.from.type == "pawn"
-
-    on_start? =
-      (move.from.color == :white and move.from.position in 8..15) or
-        (move.from.color == :black and move.from.position in 48..55)
-
-    double_step? = abs(move.to.position - move.from.position) == 16
-
-    # If a pawn moves two squares forward, set the en-passant target square
-    if is_pawn? and on_start? and double_step? do
-      en_passant_target =
-        if move.from.color == :white do
-          move.from.position + 8
-        else
-          move.from.position - 8
-        end
-
-      put_in(game.meta["en-passant"], en_passant_target)
-    else
-      put_in(game.meta["en-passant"], nil)
-    end
+    MoveFinder.apply_move(game, move)
   end
 end

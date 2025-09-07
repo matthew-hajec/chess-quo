@@ -123,14 +123,13 @@ defmodule ChessQuoWeb.GameComponentsTest do
 
       valid_move_square =
         lazy
-        |> DOM.all("div[role='button'][data-piece-color='none'][data-piece-type='none']")
-        |> Enum.filter(fn el -> DOM.attribute(el, "phx-click") =~ "make_move" end)
+        |> DOM.all("div[data-index='16']")
         |> Enum.at(0)
 
+      # Index 44 isn't our valid move square, so should be unselected
       unselected_square =
         lazy
-        |> DOM.all("div[role='button'][data-piece-color='none'][data-piece-type='none']")
-        |> Enum.filter(fn el -> DOM.attribute(el, "phx-click") =~ "select_square" end)
+        |> DOM.all("div[data-index='44']")
         |> Enum.at(0)
 
       refute is_nil(valid_move_square),

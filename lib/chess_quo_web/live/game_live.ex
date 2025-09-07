@@ -4,8 +4,6 @@ defmodule ChessQuoWeb.GameLive do
   alias ChessQuo.Games
 
   def mount(%{"code" => code}, session, socket) do
-    IO.inspect(code, label: "Mounting GameLive with code")
-    IO.inspect(session, label: "Session data")
     # Attempt to fetch the game by code
     case Games.get_game(code) do
       {:ok, game} ->
@@ -27,6 +25,7 @@ defmodule ChessQuoWeb.GameLive do
              |> assign(:game_link, link)
              |> assign(:selected_square, nil)
              |> assign(:valid_moves, [])}
+
 
           {:error, :invalid_credentials} ->
             {:ok,
@@ -86,6 +85,12 @@ defmodule ChessQuoWeb.GameLive do
       {:error, :not_your_turn} ->
         {:noreply, deselect(socket)}
     end
+  end
+
+  def handle_event("initiate_promotion", %{"from_idx" => from_idx, "to_idx" => to_idx}, socket) do
+    IO.inspect({"initiate_promotion", from_idx, to_idx}, label: "initiate_promotion")
+
+    {:noreply, socket}
   end
 
   defp deselect(socket) do

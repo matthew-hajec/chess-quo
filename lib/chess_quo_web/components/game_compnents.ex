@@ -20,6 +20,7 @@ defmodule ChessQuoWeb.GameComponents do
   attr :selected?, :boolean, default: false
   attr :selectable?, :boolean, default: false
   attr :move, :any, default: nil
+  attr :promotion_move?, :boolean, default: false
 
   def square(assigns) do
     assigns = Map.put_new(assigns, :valid_move?, assigns.move != nil)
@@ -34,14 +35,22 @@ defmodule ChessQuoWeb.GameComponents do
         if(@selectable? or @valid_move?, do: "cursor-pointer hover:opacity-80")
       ]}
       role="button"
+      data-index={@index}
       data-piece-color={if @piece, do: @piece.color, else: "none"}
       data-piece-type={if @piece, do: @piece.type, else: "none"}
       aria-pressed={to_string(@selected?)}
       phx-click={
-        if @valid_move? do
-          JS.push("make_move", value: %{move: @move})
-        else
-          JS.push("select_square", value: %{index: @index})
+        cond do
+          @promotion_move? and @valid_move? ->
+            JS.push("initiate_promotion",
+              value: %{from_idx: @move.from.position, to_idx: @move.to.position}
+            )
+
+          @valid_move? ->
+            JS.push("make_move", value: %{move: @move})
+
+          true ->
+            JS.push("select_square", value: %{index: @index})
         end
       }
     >
@@ -59,7 +68,7 @@ defmodule ChessQuoWeb.GameComponents do
 
   def board(assigns) do
     ~H"""
-    <div class="w-full mx-auto select-none">
+    <div class="relative w-full mx-auto select-none">
       <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
         <% rank_range = if @perspective == :white, do: 1..8, else: 8..1//-1 %>
         <% file_range = if @perspective == :white, do: ?a..?h, else: ?h..?a//-1 %>
@@ -71,7 +80,7 @@ defmodule ChessQuoWeb.GameComponents do
             <% piece = find_piece_at(index, @game.board) %>
             <% selected? = @selected_square == index %>
             <% selectable? = is_map(piece) and piece.color == @perspective %>
-            <% valid_move = Enum.find(@valid_moves, fn move -> move.to.position == index end) %>
+            <% valid_moves = Enum.filter(@valid_moves, fn move -> move.to.position == index end) %>
 
             <.square
               ruleset="chess"
@@ -80,10 +89,54 @@ defmodule ChessQuoWeb.GameComponents do
               piece={piece}
               selected?={selected?}
               selectable?={selectable?}
-              move={if valid_move, do: Move.to_map(valid_move)}
+              move={if valid_moves != [], do: Move.to_map(hd(valid_moves))}
+              promotion_move?={length(valid_moves) > 1}
             />
           <% end %>
         <% end %>
+      </div>
+
+      <%= if @game.state == :waiting do %>
+        <.board_overlay>
+          <:title>Waiting for opponent...</:title>
+          <:body>Send them the game link or have them enter the game code to join.</:body>
+        </.board_overlay>
+      <% end %>
+
+      <%= if @game.state == :finished do %>
+        <%= case @game.winner do %>
+          <% :white ->  %>
+          <.board_overlay>
+            <:title>White Wins!</:title>
+            <:body>White has won the game.</:body>
+          </.board_overlay>
+          <% :black -> %>
+          <.board_overlay>
+            <:title>Black Wins!</:title>
+            <:body>Black has won the game.</:body>
+          </.board_overlay>
+          <% nil -> %>
+          <.board_overlay>
+            <:title>It's a Draw!</:title>
+            <:body>The game has ended in a draw.</:body>
+          </.board_overlay>
+          <% end %>
+      <% end %>
+    </div>
+    """
+  end
+
+  slot :title
+  slot :body
+
+  defp board_overlay(assigns) do
+    ~H"""
+    <div class="absolute inset-0 flex items-center justify-center bg-gray-700/90">
+      <div class="m-4 card bg-base-200 shadow-2xl">
+        <div class="card-body">
+          <h2 class="card-title flex items-center justify-center"><%= render_slot(@title) %></h2>
+          <p><%= render_slot(@body) %></p>
+        </div>
       </div>
     </div>
     """
