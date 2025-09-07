@@ -163,7 +163,6 @@ defmodule ChessQuoWeb.GameComponents do
         <h2 class="card-title">Move History</h2>
         <div>
           <%= for move <- @game.moves do %>
-          <p>Hello</p>
           <% end %>
         </div>
       </div>
