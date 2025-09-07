@@ -3,17 +3,18 @@ defmodule ChessQuo.Games.Embeds.Move do
   import Ecto.Changeset
   alias ChessQuo.Games.Embeds.Piece
 
-  @type t :: %__MODULE__{from: Piece.t(), to: Piece.t()}
+  @type t :: %__MODULE__{from: Piece.t(), to: Piece.t(), notation: String.t()}
 
   @primary_key false
   embedded_schema do
     embeds_one :from, Piece
     embeds_one :to, Piece
+    field :notation, :string
   end
 
   def changeset(move, attrs) do
     move
-    |> cast(attrs, [])
+    |> cast(attrs, [:notation])
     |> cast_embed(:from, with: &Piece.changeset/2)
     |> cast_embed(:to, with: &Piece.changeset/2)
   end

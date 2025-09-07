@@ -155,12 +155,18 @@ defmodule ChessQuoWeb.GameComponents do
   attr :game, :any, required: true
 
   def move_history(assigns) do
+    IO.inspect(assigns.game.moves, label: "Move history")
+
     ~H"""
     <div class="card bg-base-200 shadow-2xl flex-grow">
       <div class="card-body">
         <h2 class="card-title">Move History</h2>
         <div>
           <%= for move <- @game.moves do %>
+            <p class="font-mono">
+              hero
+              <%= move.notation %>
+            </p>
           <% end %>
         </div>
       </div>
