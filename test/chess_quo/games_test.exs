@@ -197,4 +197,68 @@ defmodule ChessQuo.GamesTest do
                Games.validate_secret(game, :white, game.black_secret)
     end
   end
+
+  describe "generating valid moves with valid_moves/2" do
+    test "returns the correct number of valid moves for white in the chess starting position" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      moves = Games.valid_moves(game, :white)
+
+      # 20 is the number of moves white can make from the starting position in chess
+      assert length(moves) == 20
+    end
+
+    test "there are no valid moves if the game is waiting for the other player" do
+      {:ok, game} = Games.create_game("chess", :white)
+      moves = Games.valid_moves(game, :black)
+      assert length(moves) == 0
+    end
+  end
+
+  describe "generating valid moves from a position with valid_moves_from_position/3" do
+    test "returns the correct moves for a piece in the chess starting position" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # The white knight at position 1 (b1) can move to positions 18 (a3) and 20 (c3)
+      moves = Games.valid_moves_from_position(game, :white, 1)
+      assert length(moves) == 2
+
+      destinations = Enum.map(moves, fn move -> move.to.position end)
+      assert Enum.sort(destinations) == [16, 18]
+    end
+
+    test "returns an empty list if there are no valid moves from that position" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # a1 has a blocked rook at the start of the game
+      moves = Games.valid_moves_from_position(game, :white, 0)
+      assert length(moves) == 0
+    end
+
+    test "returns an empty list if the piece at that position belongs to the opponent" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Position 57 (b7) has a black pawn at the start of the game
+      moves = Games.valid_moves_from_position(game, :white, 57)
+      assert length(moves) == 0
+    end
+
+    test "returns an empty list if there is no piece at that position" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Position 27 (d4) is empty at the start of the game
+      moves = Games.valid_moves_from_position(game, :white, 27)
+      assert length(moves) == 0
+    end
+  end
 end
