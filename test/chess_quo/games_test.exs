@@ -261,4 +261,25 @@ defmodule ChessQuo.GamesTest do
       assert length(moves) == 0
     end
   end
+
+  describe "applying moves with apply_move/3" do
+    test "a valid move is applied successfully" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Move the knight from b1 (position 1) to c3 (position 18)
+      move = %{
+        from: %{type: "knight", color: :white, position: 1},
+        to: %{type: "knight", color: :white, position: 18}
+      }
+
+      assert {:ok, updated_game} = Games.apply_move(game, :white, move)
+      assert updated_game.turn == :black
+
+      # Verify the knight has moved
+      knight = Enum.find(updated_game.board, fn p -> p.type == "knight" and p.color == :white end)
+      assert knight.position == 18
+    end
+  end
 end
