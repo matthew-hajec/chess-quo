@@ -86,10 +86,17 @@ defmodule ChessQuoWeb.GameLive do
     end
   end
 
-  def handle_event("initiate_promotion", %{"from_idx" => from_idx, "to_idx" => to_idx}, socket) do
-    IO.inspect({"initiate_promotion", from_idx, to_idx}, label: "initiate_promotion")
+  def handle_event("initiate_promotion", %{"from_idx" => _from_idx, "to_idx" => _to_idx}, socket) do
+    # Put flash
+    {:noreply, put_flash(socket, :error, "Promotion not yet implemented.")}
+  end
 
-    {:noreply, socket}
+  def handle_event("resign", _, socket) do
+    {:noreply, put_flash(socket, :error, "Resignation not yet implemented.")}
+  end
+
+  def handle_event("offer_draw", _, socket) do
+    {:noreply, put_flash(socket, :error, "Draw offers not yet implemented.")}
   end
 
   defp deselect(socket) do
