@@ -156,7 +156,7 @@ defmodule ChessQuoWeb.GameComponents do
 
   def move_history(assigns) do
     ~H"""
-    <div class="card bg-base-200 shadow-2xl flex-grow">
+    <div class="card bg-base-200 shadow-2xl h-full">
       <div class="card-body">
         <h2 class="card-title">Move History</h2>
         <div>
