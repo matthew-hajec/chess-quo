@@ -111,7 +111,10 @@ defmodule ChessQuoWeb.GameComponentsTest do
     end
 
     test "the style of a valid move square is different than the style of an unselected square" do
+      # The opponent needs to join so that the game is in play (moves are valid only when in play)
       {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
 
       # The white pawn at position 8 can move to position 16 at the start of the game
       valid_move =
@@ -119,8 +122,10 @@ defmodule ChessQuoWeb.GameComponentsTest do
           m.to.position == 16
         end)
 
+      # Act
       lazy = board_lazy(game, :white, nil, [valid_move])
 
+      # Assert
       valid_move_square =
         lazy
         |> DOM.all("div[data-index='16']")
