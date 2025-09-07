@@ -152,6 +152,36 @@ defmodule ChessQuoWeb.GameComponents do
     """
   end
 
+  attr :game, :any, required: true
+
+  def move_history(assigns) do
+
+    IO.inspect(assigns.game.moves, label: "Move History")
+    ~H"""
+    <div class="card bg-base-200 shadow-2xl">
+      <div class="card-body">
+        <h2 class="card-title">Move History</h2>
+        <div>
+          <%= for move <- @game.moves do %>
+          <p>Hello</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  def controls(assigns) do
+    ~H"""
+    <div class="card bg-base-200 shadow-xl">
+      <div class="card-body lg:p-4 p-3 flex flex-row items-center gap-3">
+        <button class="btn btn-primary btn-sm flex-grow" phx-click="resign">Resign</button>
+        <button class="btn btn-secondary btn-sm flex-grow" phx-click="offer_draw">Offer Draw</button>
+      </div>
+    </div>
+    """
+  end
+
   slot :title
   slot :body
 

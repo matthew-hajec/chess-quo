@@ -31,12 +31,11 @@
           player_color={@player_color}
         />
 
-        <div class="card bg-base-200 shadow-2xl">
-          <div class="card-body">
-            <h2 class="card-title">Move History</h2>
-            <!-- Move list here -->
-          </div>
-        </div>
+        <ChessQuoWeb.GameComponents.move_history
+          game={@game}
+        />
+
+        <ChessQuoWeb.GameComponents.controls />
       </div>
     </div>
   </div>
