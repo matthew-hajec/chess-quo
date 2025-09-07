@@ -135,15 +135,15 @@ defmodule ChessQuoWeb.GameComponents do
     <% turn_color = if @game.turn == :white, do: "White", else: "Black" %>
 
     <div class="card bg-base-200 shadow-xl">
-      <div class="card-body p-4 flex flex-row items-center gap-3">
-        <div class="w-12 h-12 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold text-lg">
+      <div class="card-body lg:p-4 p-3 flex flex-row items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold text-lg">
           {if @player_color == :white, do: "W", else: "B"}
         </div>
         <div>
-          <h2 class="font-semibold text-lg">
+          <h2 class="font-semibold text-md">
             {if @player_color == :white, do: "White", else: "Black"} Player
           </h2>
-          <p class={if is_turn?, do: "font-bold text-green-600/80", else: "text-gray-600"}>
+          <p class={"text-md " <> if is_turn?, do: "font-bold text-green-600/80", else: "text-gray-600"}>
             {if is_turn?, do: "#{turn_color}'s turn", else: "Waiting for opponent..."}
           </p>
         </div>
