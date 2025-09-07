@@ -105,22 +105,22 @@ defmodule ChessQuoWeb.GameComponents do
 
       <%= if @game.state == :finished do %>
         <%= case @game.winner do %>
-          <% :white ->  %>
-          <.board_overlay>
-            <:title>White Wins!</:title>
-            <:body>White has won the game.</:body>
-          </.board_overlay>
+          <% :white -> %>
+            <.board_overlay>
+              <:title>White Wins!</:title>
+              <:body>White has won the game.</:body>
+            </.board_overlay>
           <% :black -> %>
-          <.board_overlay>
-            <:title>Black Wins!</:title>
-            <:body>Black has won the game.</:body>
-          </.board_overlay>
+            <.board_overlay>
+              <:title>Black Wins!</:title>
+              <:body>Black has won the game.</:body>
+            </.board_overlay>
           <% nil -> %>
-          <.board_overlay>
-            <:title>It's a Draw!</:title>
-            <:body>The game has ended in a draw.</:body>
-          </.board_overlay>
-          <% end %>
+            <.board_overlay>
+              <:title>It's a Draw!</:title>
+              <:body>The game has ended in a draw.</:body>
+            </.board_overlay>
+        <% end %>
       <% end %>
     </div>
     """
@@ -134,8 +134,8 @@ defmodule ChessQuoWeb.GameComponents do
     <div class="absolute inset-0 flex items-center justify-center bg-gray-700/90">
       <div class="m-4 card bg-base-200 shadow-2xl">
         <div class="card-body">
-          <h2 class="card-title flex items-center justify-center"><%= render_slot(@title) %></h2>
-          <p><%= render_slot(@body) %></p>
+          <h2 class="card-title flex items-center justify-center">{render_slot(@title)}</h2>
+          <p>{render_slot(@body)}</p>
         </div>
       </div>
     </div>

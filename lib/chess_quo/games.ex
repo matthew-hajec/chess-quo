@@ -138,7 +138,6 @@ defmodule ChessQuo.Games do
 
       ruleset_impl.valid_moves(game, player_color)
     end
-
   end
 
   def valid_moves_from_position(%Game{} = game, player_color, position) do

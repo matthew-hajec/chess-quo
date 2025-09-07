@@ -26,7 +26,6 @@ defmodule ChessQuoWeb.GameLive do
              |> assign(:selected_square, nil)
              |> assign(:valid_moves, [])}
 
-
           {:error, :invalid_credentials} ->
             {:ok,
              socket

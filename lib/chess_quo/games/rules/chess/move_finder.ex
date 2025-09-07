@@ -77,7 +77,6 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
     end)
   end
 
-
   defp update_game_state(game, :checkmate) do
     # The winner is the player who just moved (i.e., not the current turn)
     winner = if game.turn == :white, do: :black, else: :white
