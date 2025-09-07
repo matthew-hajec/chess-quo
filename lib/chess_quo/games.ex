@@ -131,9 +131,14 @@ defmodule ChessQuo.Games do
   def valid_moves(%Game{} = game, player_color) when is_atom(player_color) do
     game = Game.build!(game)
 
-    ruleset_impl = ruleset_mod!(game.ruleset)
+    if game.state != :playing do
+      []
+    else
+      ruleset_impl = ruleset_mod!(game.ruleset)
 
-    ruleset_impl.valid_moves(game, player_color)
+      ruleset_impl.valid_moves(game, player_color)
+    end
+
   end
 
   def valid_moves_from_position(%Game{} = game, player_color, position) do

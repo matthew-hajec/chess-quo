@@ -50,8 +50,14 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
         new_cl_position = cl_move.new_position
 
         new_fen = Position.to_fen(new_cl_position)
+        status = Position.status(new_cl_position)
 
         game = FEN.update_game_from_fen(game, new_fen)
+
+        game = update_game_state(game, status)
+
+        IO.inspect(game.state, label: "game state after move")
+        IO.inspect(game.winner, label: "game winner after move")
 
         {:ok, game}
     end
@@ -69,6 +75,21 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
         cl_move.from.color == move.from.color and
         cl_move.to.color == move.to.color
     end)
+  end
+
+
+  defp update_game_state(game, :checkmate) do
+    # The winner is the player who just moved (i.e., not the current turn)
+    winner = if game.turn == :white, do: :black, else: :white
+    %{game | state: :finished, winner: winner}
+  end
+
+  defp update_game_state(game, :in_progress) do
+    %{game | state: :playing, winner: nil}
+  end
+
+  defp update_game_state(game, :draw) do
+    %{game | state: :finished, winner: nil}
   end
 
   defp to_chess_quo_move(%ChessLogic.Move{

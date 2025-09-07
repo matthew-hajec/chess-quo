@@ -21,6 +21,8 @@ defmodule ChessQuo.Games.RulesBehaviour do
   Returns a list of valid moves for the given game state and player color.
 
   If it is not the current player's turn, the valid moves should be returned as if it is.
+
+  Will not be called if the game is in a finished state.
   """
   @callback valid_moves(game :: Game.t(), color :: String.t()) :: [Move.t()]
 
