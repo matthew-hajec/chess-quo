@@ -2,7 +2,6 @@ defmodule ChessQuo.GamesTest do
   use ChessQuo.DataCase, async: true
   import Mox
 
-  alias ChessQuo.Games.Game
   alias ChessQuo.Games
   alias ChessQuo.Games.Embeds.Piece
 
