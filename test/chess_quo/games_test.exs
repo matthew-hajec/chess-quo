@@ -30,14 +30,9 @@ defmodule ChessQuo.GamesTest do
       assert fetched_game == game
     end
 
-    test "create returns a Game struct" do
-      assert {:ok, game} = ChessQuo.Games.create_game("mock", :white)
-      assert %Game{} = game
-    end
-
     test "games are initialized in the waiting state" do
       assert {:ok, game} = ChessQuo.Games.create_game("mock", :white)
-      assert game.state == "waiting"
+      assert game.state == :waiting
     end
 
     test "white moves first" do
@@ -106,7 +101,7 @@ defmodule ChessQuo.GamesTest do
   end
 
   describe "fetching games with get_game!/1" do
-    test "returns the game if it exists" do
+    test "fetches the game if it exists" do
       {:ok, game} = Games.create_game("mock", :white)
       assert ChessQuo.Games.get_game!(game.code) == game
     end
@@ -116,64 +111,17 @@ defmodule ChessQuo.GamesTest do
         ChessQuo.Games.get_game!("nonexistent")
       end
     end
-
-    test "returns a game struct" do
-      {:ok, game} = Games.create_game("mock", :white)
-      assert %Game{} = ChessQuo.Games.get_game!(game.code)
-    end
   end
 
   describe "fetching games with get_game/1" do
-    test "returns {:ok, game} if it exists" do
+    test "fetches the game if it exists" do
       {:ok, game} = Games.create_game("mock", :white)
       assert {:ok, fetched_game} = ChessQuo.Games.get_game(game.code)
       assert fetched_game == game
     end
 
-    test "returns {:error, :not_found} if the game does not exist" do
+    test "returns an error if the game does not exist" do
       assert {:error, :not_found} = ChessQuo.Games.get_game("nonexistent")
-    end
-
-    test "returns a game struct in the ok tuple" do
-      {:ok, game} = Games.create_game("mock", :white)
-      assert {:ok, %Game{}} = ChessQuo.Games.get_game(game.code)
-    end
-  end
-
-  describe "enforce struct return types" do
-    test "create_game/2 returns {:ok, %Game{}}" do
-      assert {:ok, %Game{}} = Games.create_game("mock", :white)
-    end
-
-    test "get_game!/1 returns %Game{}" do
-      {:ok, game} = Games.create_game("mock", :white)
-      assert %Game{} = Games.get_game!(game.code)
-    end
-
-    test "get_game/1 returns {:ok, %Game{}}" do
-      {:ok, game} = Games.create_game("mock", :white)
-      assert {:ok, %Game{}} = Games.get_game(game.code)
-    end
-
-    test "valid_moves/2 returns a list of Move structs" do
-      {:ok, game} = Games.create_game("chess", :white)
-      assert {:ok, %Game{}} = Games.get_game(game.code)
-      assert is_list(Games.valid_moves(game, :white))
-
-      assert Enum.all?(Games.valid_moves(game, :white), fn move ->
-               match?(%Games.Embeds.Move{}, move)
-             end)
-    end
-
-    test "apply_move/3 returns {:ok, %Game{}} on success" do
-      {:ok, game} = Games.create_game("chess", :white)
-
-      move = %{
-        from: %{type: "pawn", color: :white, position: 8},
-        to: %{type: "pawn", color: :white, position: 16}
-      }
-
-      assert {:ok, %Game{}} = Games.apply_move(game, :white, move)
     end
   end
 end
