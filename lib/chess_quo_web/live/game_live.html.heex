@@ -1,14 +1,24 @@
 <ChessQuoWeb.Layouts.app flash={@flash}>
-  <div id="game_live" class="mx-auto px-4 md:w-4/5 sm:w-full lg:w-full">
-    <h1 class="text-3xl font-bold mb-6">Chess Game</h1>
-
+  <div id="game_live" class="mx-auto md:w-4/5 sm:w-full lg:w-full">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2">
-        <ChessQuoWeb.GameComponents.board
-          perspective={@player_color}
+      <div class="flex flex-col lg:col-span-2 gap-4">
+        <ChessQuoWeb.GameComponents.player_bar
           game={@game}
-          selected_square={@selected_square}
-          valid_moves={@valid_moves}
+          player_color={if @player_color == :white, do: :black, else: :white}
+        />
+
+        <div class="lg:col-span-2">
+          <ChessQuoWeb.GameComponents.board
+            perspective={@player_color}
+            game={@game}
+            selected_square={@selected_square}
+            valid_moves={@valid_moves}
+          />
+        </div>
+
+        <ChessQuoWeb.GameComponents.player_bar
+          game={@game}
+          player_color={@player_color}
         />
       </div>
 
