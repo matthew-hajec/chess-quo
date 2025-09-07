@@ -68,7 +68,7 @@ defmodule ChessQuoWeb.GameComponents do
 
   def board(assigns) do
     ~H"""
-    <div class="w-full mx-auto select-none">
+    <div class="relative w-full mx-auto select-none">
       <div class="grid grid-cols-8 gap-0 aspect-square w-full border-2 border-gray-800">
         <% rank_range = if @perspective == :white, do: 1..8, else: 8..1//-1 %>
         <% file_range = if @perspective == :white, do: ?a..?h, else: ?h..?a//-1 %>
@@ -94,6 +94,49 @@ defmodule ChessQuoWeb.GameComponents do
             />
           <% end %>
         <% end %>
+      </div>
+
+      <%= if @game.state == :waiting do %>
+        <.board_overlay>
+          <:title>Waiting for opponent...</:title>
+          <:body>Send them the game link or have them enter the game code to join.</:body>
+        </.board_overlay>
+      <% end %>
+
+      <%= if @game.state == :finished do %>
+        <%= case @game.winner do %>
+          <% :white ->  %>
+          <.board_overlay>
+            <:title>White Wins!</:title>
+            <:body>White has won the game.</:body>
+          </.board_overlay>
+          <% :black -> %>
+          <.board_overlay>
+            <:title>Black Wins!</:title>
+            <:body>Black has won the game.</:body>
+          </.board_overlay>
+          <% nil -> %>
+          <.board_overlay>
+            <:title>It's a Draw!</:title>
+            <:body>The game has ended in a draw.</:body>
+          </.board_overlay>
+          <% end %>
+      <% end %>
+    </div>
+    """
+  end
+
+  slot :title
+  slot :body
+
+  defp board_overlay(assigns) do
+    ~H"""
+    <div class="absolute inset-0 flex items-center justify-center bg-gray-700/90">
+      <div class="m-4 card bg-base-200 shadow-2xl">
+        <div class="card-body">
+          <h2 class="card-title flex items-center justify-center"><%= render_slot(@title) %></h2>
+          <p><%= render_slot(@body) %></p>
+        </div>
       </div>
     </div>
     """
