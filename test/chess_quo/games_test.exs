@@ -281,5 +281,62 @@ defmodule ChessQuo.GamesTest do
       knight = Enum.find(updated_game.board, fn p -> p.type == "knight" and p.color == :white end)
       assert knight.position == 18
     end
+
+    test "an invalid move is rejected" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Attempt to move the knight from b1 (position 1) to b3 (position 17), which is invalid
+      move = %{
+        from: %{type: "knight", color: :white, position: 1},
+        to: %{type: "knight", color: :white, position: 17}
+      }
+
+      assert {:error, :invalid_move} = Games.apply_move(game, :white, move)
+    end
+
+    test "a player cannot move when it's not their turn" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Attempt to move black
+      move = %{
+        from: %{type: "knight", color: :black, position: 57},
+        to: %{type: "knight", color: :black, position: 42}
+      }
+
+      assert {:error, :not_your_turn} = Games.apply_move(game, :black, move)
+    end
+
+    test "a player cannot move when the opponent has not joined yet" do
+      {:ok, game} = Games.create_game("chess", :white)
+      game = Games.get_game!(game.code)
+
+      # Attempt to move white before black has joined
+      move = %{
+        from: %{type: "knight", color: :white, position: 1},
+        to: %{type: "knight", color: :white, position: 18}
+      }
+
+      assert {:error, :invalid_move} = Games.apply_move(game, :white, move)
+    end
+
+    test "a player cannot move when the game is in the finished state" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Manually set the game state to finished
+      game = %{game | state: :finished}
+
+      move = %{
+        from: %{type: "knight", color: :white, position: 1},
+        to: %{type: "knight", color: :white, position: 18}
+      }
+
+      assert {:error, :invalid_move} = Games.apply_move(game, :white, move)
+    end
   end
 end

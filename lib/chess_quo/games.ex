@@ -158,32 +158,37 @@ defmodule ChessQuo.Games do
 
     ruleset_impl = ruleset_mod!(game.ruleset)
 
-    if game.turn != player_color do
-      {:error, :not_your_turn}
-    else
-      with {:ok, new_game} <- ruleset_impl.apply_move(game, move) do
-        game =
-          game
-          |> Game.changeset(%{
-            turn: new_game.turn,
-            state: new_game.state,
-            winner: new_game.winner,
-            meta: new_game.meta
-          })
-          |> Ecto.Changeset.put_embed(:board, new_game.board)
-          |> Ecto.Changeset.put_embed(:moves, game.moves ++ [move])
+    cond do
+      !game.black_joined or !game.white_joined or game.state != :playing ->
+        {:error, :invalid_move}
 
-        game = Repo.update!(game)
+      game.turn != player_color ->
+        {:error, :not_your_turn}
 
-        # Broadcast the game update
-        Phoenix.PubSub.broadcast(
-          ChessQuo.PubSub,
-          "game:#{game.code}",
-          {:game_updated, game}
-        )
+      true ->
+        with {:ok, new_game} <- ruleset_impl.apply_move(game, move) do
+          game =
+            game
+            |> Game.changeset(%{
+              turn: new_game.turn,
+              state: new_game.state,
+              winner: new_game.winner,
+              meta: new_game.meta
+            })
+            |> Ecto.Changeset.put_embed(:board, new_game.board)
+            |> Ecto.Changeset.put_embed(:moves, game.moves ++ [move])
 
-        {:ok, game}
-      end
+          game = Repo.update!(game)
+
+          # Broadcast the game update
+          Phoenix.PubSub.broadcast(
+            ChessQuo.PubSub,
+            "game:#{game.code}",
+            {:game_updated, game}
+          )
+
+          {:ok, game}
+        end
     end
   end
 
