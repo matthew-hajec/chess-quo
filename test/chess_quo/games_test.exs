@@ -123,4 +123,78 @@ defmodule ChessQuo.GamesTest do
       assert {:error, :not_found} = ChessQuo.Games.get_game("nonexistent")
     end
   end
+
+  describe "joining a game with join_by_password/2" do
+    test "a player can join a game with the correct password" do
+      {:ok, game} = Games.create_game("mock", :white, "mypassword")
+      assert {:ok, _color, _secret} = Games.join_by_password(game.code, "mypassword")
+    end
+
+    test "a player can not join a nonexistent game" do
+      assert {:error, :not_found} = Games.join_by_password("NOEXIST", "mypassword")
+    end
+
+    test "a player can not join a game with an incorrect password" do
+      {:ok, game} = Games.create_game("mock", :white, "mypassword")
+      assert {:error, :invalid_password} = Games.join_by_password(game.code, "wrongpassword")
+    end
+
+    test "a player can not join a game that is already full" do
+      {:ok, game} = Games.create_game("mock", :white)
+      assert {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      assert {:error, :full} = Games.join_by_password(game.code, "")
+    end
+  end
+
+  describe "validating player secrets with validate_secret/3" do
+    test "validates correct secrets for white" do
+      ChessQuo.Games.MockTokens
+      |> expect(:secret, fn -> "SECRETONE" end)
+      |> expect(:secret, fn -> "SECRETTWO" end)
+
+      {:ok, game} = Games.create_game("mock", :white)
+      assert {:ok, :white} = Games.validate_secret(game, :white, game.white_secret)
+    end
+
+    test "validates correct secrets for black" do
+      ChessQuo.Games.MockTokens
+      |> expect(:secret, fn -> "SECRETONE" end)
+      |> expect(:secret, fn -> "SECRETTWO" end)
+
+      {:ok, game} = Games.create_game("mock", :white)
+      assert {:ok, :black} = Games.validate_secret(game, :black, game.black_secret)
+    end
+
+    test "rejects incorrect secrets" do
+      ChessQuo.Games.MockTokens
+      |> expect(:secret, fn -> "SECRETONE" end)
+      |> expect(:secret, fn -> "SECRETTWO" end)
+
+      {:ok, game} = Games.create_game("mock", :white)
+      assert {:error, :invalid_credentials} = Games.validate_secret(game, :white, "wrong")
+      assert {:error, :invalid_credentials} = Games.validate_secret(game, :black, "wrong")
+    end
+
+    test "black can not validate using white's secret" do
+      ChessQuo.Games.MockTokens
+      |> expect(:secret, fn -> "SECRETONE" end)
+      |> expect(:secret, fn -> "SECRETTWO" end)
+
+      {:ok, game} = Games.create_game("mock", :white)
+
+      assert {:error, :invalid_credentials} =
+               Games.validate_secret(game, :black, game.white_secret)
+    end
+
+    test "white can not validate using black's secret" do
+      ChessQuo.Games.MockTokens
+      |> expect(:secret, fn -> "SECRETONE" end)
+      |> expect(:secret, fn -> "SECRETTWO" end)
+
+      {:ok, game} = Games.create_game("mock", :white)
+
+      assert {:error, :invalid_credentials} =
+               Games.validate_secret(game, :white, game.black_secret)
+    end
+  end
 end
