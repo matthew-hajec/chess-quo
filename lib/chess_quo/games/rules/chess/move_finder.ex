@@ -56,9 +56,6 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
 
         game = update_game_state(game, status)
 
-        IO.inspect(game.state, label: "game state after move")
-        IO.inspect(game.winner, label: "game winner after move")
-
         {:ok, game}
     end
   end
