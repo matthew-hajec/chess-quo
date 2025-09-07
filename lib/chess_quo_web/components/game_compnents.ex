@@ -155,19 +155,64 @@ defmodule ChessQuoWeb.GameComponents do
   attr :game, :any, required: true
 
   def move_history(assigns) do
+    moves = assigns.game.moves
+    # Group moves by turn: [{turn_number, [white_move, black_move]}]
+    grouped = Enum.chunk_every(moves, 2)
+    # Get the last move for highlighting
+    last_move = List.last(moves)
+
+    assigns = assign(assigns, :grouped_moves, grouped)
+    assigns = assign(assigns, :last_move, last_move)
+
     ~H"""
-    <div class="card bg-base-200 shadow-2xl h-full">
-      <div class="card-body">
-        <h2 class="card-title">Move History</h2>
-        <div>
-          <%= for move <- @game.moves do %>
-            <p class="font-mono">
-              {move.notation}
-            </p>
-          <% end %>
+    <div class="card bg-base-200 shadow-2xl h-full flex flex-col">
+      <div class="card-body p-4 flex flex-col h-full">
+        <div class="border-b border-base-300 pb-2">
+          <h2 class="card-title">Move History</h2>
         </div>
+        <ol class="overflow-y-auto flex-grow space-y-1 pt-2">
+          <%= for {pair, idx} <- Enum.with_index(@grouped_moves), turn = idx + 1 do %>
+            <li class={"flex items-center rounded-lg mb-1 " <> if rem(turn,2)==1, do: "bg-base-100", else: "bg-base-300/40"}>
+              <span class="text-xs text-base-content/70 px-2 w-8 shrink-0">{turn}.</span>
+              <div class="flex gap-2 w-full">
+                <%= for {move, color_idx} <- Enum.with_index(pair) do %>
+                  <ChessQuoWeb.GameComponents.move_notation
+                    move={move}
+                    color={if color_idx == 0, do: :white, else: :black}
+                    latest={move == @last_move}
+                  />
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ol>
       </div>
     </div>
+    """
+  end
+
+  attr :move, :map, required: true
+  attr :color, :atom, required: true
+  attr :latest, :boolean, default: false
+
+  def move_notation(assigns) do
+    ~H"""
+    <span
+      class={[
+        "font-mono text-sm px-2 py-1 rounded transition",
+        if(@color == :white,
+          do: "text-primary",
+          else: "text-base-content/70"
+        ),
+        if(@latest,
+          do: "bg-primary/20 font-bold ring-2 ring-primary/40",
+          else: "hover:bg-base-300/60"
+        )
+      ]}
+      title={@move.notation}
+    >
+      {@move.notation}
+    </span>
     """
   end
 
