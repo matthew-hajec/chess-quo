@@ -162,7 +162,7 @@ defmodule ChessQuoWeb.GameComponents do
         <div>
           <%= for move <- @game.moves do %>
             <p class="font-mono">
-              <%= move.notation %>
+              {move.notation}
             </p>
           <% end %>
         </div>

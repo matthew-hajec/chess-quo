@@ -88,10 +88,12 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
     %{game | state: :finished, winner: nil}
   end
 
-  defp to_chess_quo_move(%ChessLogic.Move{
-         from: %ChessLogic.Piece{type: from_type, color: from_color, square: from_sq},
-         to: %ChessLogic.Piece{type: to_type, color: to_color, square: to_sq}
-       }) do
+  defp to_chess_quo_move(
+         %ChessLogic.Move{
+           from: %ChessLogic.Piece{type: from_type, color: from_color, square: from_sq},
+           to: %ChessLogic.Piece{type: to_type, color: to_color, square: to_sq}
+         } = cl_move
+       ) do
     # Convert the move from chess_logic format to chess_quo format
     %{
       from: %{
@@ -103,7 +105,8 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
         type: Atom.to_string(to_type),
         color: to_color,
         position: Notation.hex_0x88_to_index(to_sq)
-      }
+      },
+      notation: ChessLogic.Move.move_to_string(cl_move)
     }
   end
 end

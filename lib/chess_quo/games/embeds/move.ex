@@ -53,25 +53,31 @@ defmodule ChessQuo.Games.Embeds.Move do
   Converts a move to a map.
 
   ## Examples
-    iex> move = %ChessQuo.Games.Embeds.Move{from: %ChessQuo.Games.Embeds.Piece{type: "pawn", color: :white, position: 12}, to: %ChessQuo.Games.Embeds.Piece{type: "pawn", color: :white, position: 20}}
+    iex> move = %ChessQuo.Games.Embeds.Move{
+    ...>   from: %ChessQuo.Games.Embeds.Piece{type: "pawn", color: :white, position: 12},
+    ...>  to: %ChessQuo.Games.Embeds.Piece{type: "pawn", color: :white, position: 20},
+    ...>  notation: "e3"
+    ...> }
     iex> ChessQuo.Games.Embeds.Move.to_map(move)
     %{
       from: %{
         type: "pawn",
         color: :white,
-        position: 12
+        position: 12,
       },
       to: %{
         type: "pawn",
         color: :white,
         position: 20
-      }
+      },
+      notation: "e3"
     }
   """
-  def to_map(%__MODULE__{from: from, to: to}) do
+  def to_map(%__MODULE__{from: from, to: to, notation: notation}) do
     %{
       from: Piece.to_map(from),
-      to: Piece.to_map(to)
+      to: Piece.to_map(to),
+      notation: notation
     }
   end
 end
