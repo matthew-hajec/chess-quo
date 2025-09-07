@@ -30,6 +30,7 @@ defmodule ChessQuoWeb.Layouts do
   attr :current_scope, :map,
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
+  attr :thin, :boolean, default: false, doc: "whether to use the thin layout variant (y padding = x padding)"
 
   slot :inner_block, required: true
 
@@ -58,7 +59,9 @@ defmodule ChessQuoWeb.Layouts do
 
     <hr class="opacity-10" />
 
-    <main class="flex-1 px-4 py-20 sm:px-6 lg:px-8">
+
+    <% main_padding_classes = if @thin, do: "p-4", else: "px-4 py-20 sm:px-6 lg:px-8" %>
+    <main class={"flex-1" <> " " <> main_padding_classes}>
       <div class="mx-auto max-w-4xl space-y-4">
         {render_slot(@inner_block)}
       </div>
