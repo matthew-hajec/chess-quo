@@ -12,17 +12,22 @@ defmodule ChessQuo.Games do
     "chess" => ChessQuo.Games.Rules.Chess
   }
 
+  # Fetch the ruleset modules from the application environment.
+  # Uses the default @ruleset_mods if not set.
+  # If the ruleset is not found, raises an error.
   defp ruleset_mod!(ruleset) do
     mods = Application.get_env(:chess_quo, :ruleset_mods, @ruleset_mods)
     rs = Map.get(mods, ruleset)
 
     if is_nil(rs) do
-      raise "Unknown ruleset: #{inspect(ruleset)}"
+      raise ArgumentError, "Unknown ruleset: #{inspect(ruleset)}"
     end
 
     rs
   end
 
+  # Fetch the tokens module from the application environment.
+  # Uses the default ChessQuo.Games.Tokens if not set. (This is the implementation intended for production use.)
   defp tokens_mod, do: Application.get_env(:chess_quo, :tokens, ChessQuo.Games.Tokens)
 
   @doc """
