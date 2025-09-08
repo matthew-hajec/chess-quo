@@ -17,6 +17,7 @@ defmodule ChessQuo.Games.Game do
           turn: :white | :black,
           state: :waiting | :playing | :finished,
           winner: :white | :black | nil,
+          is_resignation: boolean(),
           white_joined: boolean(),
           black_joined: boolean(),
           moves: [Move.t()],
@@ -44,6 +45,8 @@ defmodule ChessQuo.Games.Game do
     field :state, Ecto.Enum, values: [:waiting, :playing, :finished], default: :waiting
     # Possible values: :white, :black, or nil if no winner yet
     field :winner, Ecto.Enum, values: [:white, :black], default: nil
+    field :is_resignation, :boolean, default: false
+
     field :white_joined, :boolean, default: false
     field :black_joined, :boolean, default: false
 
@@ -73,6 +76,7 @@ defmodule ChessQuo.Games.Game do
       :turn,
       :state,
       :winner,
+      :is_resignation,
       :white_joined,
       :black_joined,
       :meta,
@@ -108,6 +112,7 @@ defmodule ChessQuo.Games.Game do
       turn: game.turn,
       state: game.state,
       winner: game.winner,
+      is_resignation: game.is_resignation,
       white_joined: game.white_joined,
       black_joined: game.black_joined,
       moves: Enum.map(game.moves, &Move.to_map/1),
