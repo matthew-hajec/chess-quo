@@ -40,8 +40,8 @@ defmodule ChessQuo.Games do
   - `attempts`: The number of attempts to create a game with a unique code (default is 5).
 
   ## Returns
-  - `{:ok, game}` if the game is created successfully.
-  - `{:error, changeset}` if the schema validation fails, or if a unique code could not be generated after the specified number of attempts.
+  - `{:ok, game}`: If the game is created successfully.
+  - `{:error, changeset}`: If the schema validation fails, or if a unique code could not be generated after the specified number of attempts.
   """
   def create_game(ruleset, host_color, password \\ "", attempts \\ 5) when is_atom(host_color) do
     ruleset_impl = ruleset_mod!(ruleset)
@@ -88,16 +88,23 @@ defmodule ChessQuo.Games do
 
   ## Returns
   - `%Game{}`: The game if found.
-  - Raises `Ecto.NoResultsError` if no game with the given code exists.
+
+  ## Raises
+  - `Ecto.NoResultsError`: If no game with the given code exists.
   """
   def get_game!(code) do
     Repo.get_by!(Game, code: code)
   end
 
   @doc """
-  Gets a game by its code, returning {:ok, game} if found or {:error, :not_found} if not found.
+  Attempts to get a game by its code.
 
-  Raises an error if the database query fails.
+  ## Parameters
+  - `code`: The unique code of the game.
+
+  ## Returns
+  - `{:ok, %Game{}}`: The game if found.
+  - `{:error, :not_found}`: If no game with the given code exists.
   """
   def get_game(code) do
     case Repo.get_by(Game, code: code) do
@@ -109,12 +116,15 @@ defmodule ChessQuo.Games do
   @doc """
   Allows a player to join a game by providing the game code and password.
 
-  Returns {:error, :not_found} is the lobby isn't found.
-  Returns {:error, :invalid_password} if the password is incorrect.
-  Returns {:error, :full} if the lobby is full.
-  Returns {:ok, color, secret} if the player successfully joins the game, where color is the player's color and secret is the player's secret.
+  ## Parameters
+  - `code`: The unique code of the game to join.
+  - `password`: The password for the game.
 
-  Raises an error if database queries fail.
+  ## Returns
+  - `{:ok, color, secret}`: If the player successfully joins the game, where `color` is the player's color (:white or :black) and `secret` is the player's secret.
+  - `{:error, :not_found}`: If no game with the given code exists
+  - `{:error, :invalid_password}`: If the provided password is incorrect.
+  - `{:error, :full}`: If the game is already full (both players have joined).
   """
   def join_by_password(code, password) do
     # Returns {:error, :not_found} if not found
@@ -128,8 +138,17 @@ defmodule ChessQuo.Games do
 
   @doc """
   Validates a player's credentials by checking the provided color and secret against the game's secrets.
+
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player (:white or :black).
+  - `player_secret`: The secret provided by the player.
+
+  ## Returns
+  - `{:ok, player_color}`: If the credentials are valid. The returned `player_color` is the same as the input.
+  - `{:error, :invalid_credentials}`: If the credentials are invalid.
   """
-  def validate_secret(%Game{} = game, player_color, player_secret) do
+  def validate_secret(%Game{} = game, player_color, player_secret) when is_atom(player_color) and is_binary(player_secret) do
     case player_color do
       :white when game.white_secret == player_secret -> {:ok, :white}
       :black when game.black_secret == player_secret -> {:ok, :black}
@@ -140,11 +159,15 @@ defmodule ChessQuo.Games do
   @doc """
   Returns all valid moves for a player in a game.
 
-  If it is not the current player's turn, the valid moves should be returned as if it is.
+  If it is not the current player's turn, the valid moves are returned as if it is.
 
   ## Parameters
   - `game`: The current game state.
   - `player_color`: The color of the player requesting the valid moves. Can be :white or :black.
+
+  ## Returns
+  - `[]`: If the game is not in the :playing state.
+  - `[%Move{}, ...]`: If the game is in the :playing state, a list of valid moves for the player.
   """
   def valid_moves(%Game{} = game, player_color) when is_atom(player_color) do
     game = Game.build!(game)
@@ -158,18 +181,36 @@ defmodule ChessQuo.Games do
     end
   end
 
+  @doc """
+  Returns all valid moves for a player from a specific position in a game.
+  If it is not the current player's turn, the valid moves are returned as if it is.
+
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player requesting the valid moves. Can be :white or :black.
+  - `position`: The index of the position from which to get valid moves. (0..63)
+
+  ## Returns
+  - `[]`: If the game is not in the :playing state.
+  - `[%Move{}, ...]`: If the game is in the :playing state, a list of valid moves for the player.
+  """
   def valid_moves_from_position(%Game{} = game, player_color, position) do
     valid_moves = valid_moves(game, player_color)
     Enum.filter(valid_moves, fn move -> move.from.position == position end)
   end
 
   @doc """
-  Validates and applies a move to the game state.
+  Attempts to apply a move to the game state.
 
-  Returns:
-  - {:ok, game} if the move is valid and applied successfully
-  - {:error, :not_your_turn} if it's not the player's turn.
-  - {:error, :invalid_move} if the move is not valid for the current game state.
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player making the move (:white or :black).
+  - `move`: The move to be applied. Can be a `%Move{}` struct or a map with the same fields.
+
+  ## Returns
+  - `{:ok, game}`: If the move is valid and applied successfully, where `game` is the updated game state.
+  - `{:error, :not_your_turn}`: If it's not the player's turn
+  - `{:error, :invalid_move}`: If the move is not valid for the current game state.
   """
   def apply_move(%Game{} = game, player_color, move) when is_atom(player_color) do
     move = Move.build!(move)
@@ -211,7 +252,14 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Check if a game code is possibly valid. (correct length and character set)
+  Checks if a game code is possibly valid. (i.e., it matches the expected format).
+
+  ## Parameters
+  - `code`: The game code to validate.
+
+  ## Returns
+  - `true`: If the code is possibly valid.
+  - `false`: If the code is definitely invalid.
   """
   def possible_code?(code) do
     tokens_mod().possible_code?(code)
