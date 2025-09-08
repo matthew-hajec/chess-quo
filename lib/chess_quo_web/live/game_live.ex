@@ -2,6 +2,7 @@ defmodule ChessQuoWeb.GameLive do
   use ChessQuoWeb, :live_view
 
   alias ChessQuo.Games
+  alias ChessQuo.Games.Embeds.{Move, Piece}
 
   def mount(%{"code" => code}, session, socket) do
     # Attempt to fetch the game by code
@@ -24,7 +25,8 @@ defmodule ChessQuoWeb.GameLive do
              |> assign(:player_color, player_color)
              |> assign(:game_link, link)
              |> assign(:selected_square, nil)
-             |> assign(:valid_moves, [])}
+             |> assign(:valid_moves, [])
+             |> assign(:promoting, nil)}
 
           {:error, :invalid_credentials} ->
             {:ok,
@@ -86,9 +88,20 @@ defmodule ChessQuoWeb.GameLive do
     end
   end
 
-  def handle_event("initiate_promotion", %{"from_idx" => _from_idx, "to_idx" => _to_idx}, socket) do
-    # Put flash
-    {:noreply, put_flash(socket, :error, "Promotion not yet implemented.")}
+  def handle_event("initiate_promotion", %{"from_idx" => from_idx, "to_idx" => to_idx}, socket) do
+    {:noreply, assign(socket, :promoting, %{from_idx: from_idx, to_idx: to_idx})}
+  end
+
+  def handle_event("complete_promotion", %{"piece-type" => piece_type, "from-idx" => from_idx, "to-idx" => to_idx}, socket) do
+    move = %Move{
+      from: %Piece{position: String.to_integer(from_idx), color: socket.assigns.player_color, type: "pawn"},
+      to: %Piece{position: String.to_integer(to_idx), color: socket.assigns.player_color, type: piece_type},
+      notation: "promotion buddy" # Not used currently
+    }
+
+    # Send to handle_event("make_move", ...)
+    socket = assign(socket, :promoting, nil)
+    handle_event("make_move", %{"move" => move}, socket)
   end
 
   def handle_event("resign", _, socket) do

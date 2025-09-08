@@ -65,6 +65,7 @@ defmodule ChessQuoWeb.GameComponents do
   attr :perspective, :atom, required: true
   attr :selected_square, :integer, default: nil
   attr :valid_moves, :list, default: []
+  attr :promoting, :map, default: nil
 
   def board(assigns) do
     ~H"""
@@ -118,6 +119,14 @@ defmodule ChessQuoWeb.GameComponents do
         </.board_overlay>
       <% end %>
 
+      <%= if @promoting != nil and @game.draw_requested_by == nil and @game.state == :playing do %>
+        <.promotion_selector
+          promoting={@promoting}
+          on_select="complete_promotion"
+          player_color={@perspective}
+        />
+      <% end %>
+
       <%= if @game.draw_requested_by != nil and @game.state == :playing do %>
         <%= if @game.draw_requested_by == @perspective do %>
           <.board_overlay>
@@ -146,6 +155,36 @@ defmodule ChessQuoWeb.GameComponents do
         <% end %>
       <% end %>
     </div>
+    """
+  end
+
+  attr :promoting, :any, required: true
+  attr :on_select, :string, required: true
+  attr :player_color, :atom, required: true
+
+  def promotion_selector(assigns) do
+    ~H"""
+    <.board_overlay>
+      <:title>Promote Pawn</:title>
+      <:body>
+        Select a piece to promote your pawn to:
+        <div class="mt-4 grid grid-cols-2 gap-4">
+          <%= for piece_type <- ["queen", "rook", "bishop", "knight"] do %>
+            <% piece = %{type: piece_type, color: @player_color} %>
+            <div
+              class="cursor-pointer p-2 border-2 border-gray-800 rounded hover:bg-base-300 flex items-center justify-center"
+              role="button"
+              phx-click={@on_select}
+              phx-value-piece-type={piece_type}
+              phx-value-from-idx={@promoting.from_idx}
+              phx-value-to-idx={@promoting.to_idx}
+            >
+              <ChessQuoWeb.GameComponents.icon piece={piece} ruleset="chess" />
+            </div>
+          <% end %>
+        </div>
+      </:body>
+    </.board_overlay>
     """
   end
 
