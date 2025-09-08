@@ -31,7 +31,7 @@ defmodule ChessQuo.Games do
   defp tokens_mod, do: Application.get_env(:chess_quo, :tokens, ChessQuo.Games.Tokens)
 
   @doc """
-  Creates and persists a new game with a unique code and secrets for both players.
+  Creates and persists a new game in the database with a unique code and secrets for both players.
 
   ## Parameters
   - `ruleset`: The ruleset to use for the game (e.g., "chess").
@@ -114,7 +114,7 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Allows a player to join a game by providing the game code and password. Updates the game state if successful.
+  Allows a player to join a game by providing the game code and password. Updates the game state in the database if successful.
 
   ## Parameters
   - `code`: The unique code of the game to join.
@@ -200,7 +200,7 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Attempts to apply a move to the game state. Updates the game state if the move is valid.
+  Attempts to apply a move to the game state. Updates the game state in the database if the move is valid.
 
   ## Parameters
   - `game`: The current game state.
