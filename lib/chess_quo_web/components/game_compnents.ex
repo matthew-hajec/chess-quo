@@ -104,23 +104,18 @@ defmodule ChessQuoWeb.GameComponents do
       <% end %>
 
       <%= if @game.state == :finished do %>
-        <%= case @game.winner do %>
-          <% :white -> %>
-            <.board_overlay>
-              <:title>White Wins!</:title>
-              <:body>White has won the game.</:body>
-            </.board_overlay>
-          <% :black -> %>
-            <.board_overlay>
-              <:title>Black Wins!</:title>
-              <:body>Black has won the game.</:body>
-            </.board_overlay>
-          <% nil -> %>
-            <.board_overlay>
-              <:title>It's a Draw!</:title>
-              <:body>The game has ended in a draw.</:body>
-            </.board_overlay>
-        <% end %>
+        <% {end_title, end_body} = case {@game.winner, @game.is_resignation} do
+          {:white, true} -> {"White Wins!", "Black has resigned."}
+          {:black, true} -> {"Black Wins!", "White has resigned."}
+          {:white, false} -> {"White Wins!", "White has won the game."}
+          {:black, false} -> {"Black Wins!", "Black has won the game."}
+          {nil, _} -> {"It's a Draw!", "The game ended in a stalemate."}
+        end %>
+
+        <.board_overlay>
+          <:title><%= end_title %></:title>
+          <:body><%= end_body %></:body>
+        </.board_overlay>
       <% end %>
     </div>
     """
