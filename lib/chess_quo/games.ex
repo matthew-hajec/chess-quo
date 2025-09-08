@@ -114,7 +114,7 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Allows a player to join a game by providing the game code and password.
+  Allows a player to join a game by providing the game code and password. Updates the game state if successful.
 
   ## Parameters
   - `code`: The unique code of the game to join.
@@ -200,7 +200,7 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Attempts to apply a move to the game state.
+  Attempts to apply a move to the game state. Updates the game state if the move is valid.
 
   ## Parameters
   - `game`: The current game state.
