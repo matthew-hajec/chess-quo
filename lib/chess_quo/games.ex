@@ -336,6 +336,63 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
+  Responds to a draw request from the opposing player. Updates the game state in the database.
+
+  If the draw is accepted, the game state is updated to:
+  - `state` is set to `:finished`
+  - `winner` is set to `nil`
+
+  If the draw is declined, the game state is updated to:
+  - `draw_requested_by` is set to `nil`
+
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player responding to the draw request (:white or :black).
+  - `accept`: A boolean indicating whether the draw is accepted (`true`) or declined (`false`).
+
+  ## Returns
+  - `{:ok, game}`: If the response is successful, where `game` is the updated game state.
+  - `{:error, :not_in_play}`: If the game state is not in-play.
+  - `{:error, :no_draw_requested}`: If there is no draw request to respond to.
+  - `{:error, :cannot_respond_to_own_request}`: If the player attempts to respond to their own draw request.
+  """
+  def respond_to_draw(%Game{} = game, player_color, accept) when is_atom(player_color) and is_boolean(accept) do
+    cond do
+      game.state != :playing ->
+        {:error, :not_in_play}
+
+      game.draw_requested_by == nil ->
+        {:error, :no_draw_request}
+
+      game.draw_requested_by == player_color ->
+        {:error, :cannot_respond_to_own_request}
+
+      true ->
+        attrs = if accept do
+          %{
+            state: :finished,
+            winner: nil,
+          }
+        else
+          %{
+            draw_requested_by: nil
+          }
+        end
+
+        game = Repo.update!(Game.changeset(game, attrs))
+
+        # Broadcast the game update
+        Phoenix.PubSub.broadcast(
+          ChessQuo.PubSub,
+          "game:#{game.code}",
+          {:game_updated, game}
+        )
+
+        {:ok, game}
+    end
+  end
+
+  @doc """
   Checks if a game code is possibly valid. (i.e., it matches the expected format).
 
   ## Parameters

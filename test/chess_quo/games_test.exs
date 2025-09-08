@@ -408,4 +408,64 @@ defmodule ChessQuo.GamesTest do
       assert {:error, :not_in_play} = Games.request_draw(game, :white)
     end
   end
+
+  describe "responding to a draw request with respond_to_draw/2" do
+    test "a player can accept a draw request" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      {:ok, game} = Games.request_draw(game, :white)
+      assert {:ok, updated_game} = Games.respond_to_draw(game, :black, true)
+      assert updated_game.state == :finished
+      assert updated_game.winner == nil
+    end
+
+    test "a player can decline a draw request" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      {:ok, game} = Games.request_draw(game, :white)
+      assert {:ok, updated_game} = Games.respond_to_draw(game, :black, false)
+      assert updated_game.state == :playing
+      assert updated_game.winner == nil
+    end
+
+    test "a player cannot respond to a draw request if there is none" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      assert {:error, :no_draw_request} = Games.respond_to_draw(game, :black, true)
+    end
+
+    test "a player cannot respond to a draw request in a finished game" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      {:ok, game} = Games.request_draw(game, :white)
+      game = %{game | state: :finished}
+
+      assert {:error, :not_in_play} = Games.respond_to_draw(game, :black, true)
+    end
+
+    test "a player cannot respond to a draw request in a waiting game" do
+      {:ok, game} = Games.create_game("chess", :white)
+      game = Games.get_game!(game.code)
+
+      assert {:error, :not_in_play} = Games.respond_to_draw(game, :black, true)
+    end
+
+    test "a player cannot respond to their own draw request" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      {:ok, game} = Games.request_draw(game, :white)
+
+      assert {:error, :cannot_respond_to_own_request} = Games.respond_to_draw(game, :white, true)
+    end
+  end
 end
