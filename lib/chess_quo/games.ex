@@ -296,6 +296,46 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
+  Requests a draw from the specified player. Updates the game state in the database.
+
+  Returns an updated Game struct where:
+  - `draw_requested_by` is set to the requesting player (:white or :black)
+
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player requesting the draw (:white or :black).
+
+  ## Returns
+  - `{:ok, game}`: If the draw request is successful, where `game` is the updated game state.
+  - `{:error, :not_in_play}`: If the game state is not in-play.
+  - `{:error, :draw_already_requested}`: If a draw has already been requested by either player.
+  """
+  def request_draw(%Game{} = game, player_color) when is_atom(player_color) do
+    if game.state != :playing do
+      {:error, :not_in_play}
+    else
+      if game.draw_requested_by != nil do
+        {:error, :draw_already_requested}
+      else
+        attrs = %{
+          draw_requested_by: player_color
+        }
+
+        game = Repo.update!(Game.changeset(game, attrs))
+
+        # Broadcast the game update
+        Phoenix.PubSub.broadcast(
+          ChessQuo.PubSub,
+          "game:#{game.code}",
+          {:game_updated, game}
+        )
+
+        {:ok, game}
+      end
+    end
+  end
+
+  @doc """
   Checks if a game code is possibly valid. (i.e., it matches the expected format).
 
   ## Parameters

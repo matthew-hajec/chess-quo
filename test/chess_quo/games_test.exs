@@ -370,4 +370,42 @@ defmodule ChessQuo.GamesTest do
       assert {:error, :not_in_play} = Games.resign(game, :white)
     end
   end
+
+  describe "requesting a draw with request_draw/2" do
+    test "a player can request a draw in an ongoing game" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      assert {:ok, updated_game} = Games.request_draw(game, :white)
+      assert updated_game.draw_requested_by == :white
+    end
+
+    test "a player cannot request a draw if the opponent has already requested one" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      {:ok, game} = Games.request_draw(game, :white)
+      assert {:error, :draw_already_requested} = Games.request_draw(game, :black)
+    end
+
+    test "a player cannot request a draw in a finished game" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Manually set the game state to finished
+      game = %{game | state: :finished}
+
+      assert {:error, :not_in_play} = Games.request_draw(game, :white)
+    end
+
+    test "a player cannot request a draw in a waiting game" do
+      {:ok, game} = Games.create_game("chess", :white)
+      game = Games.get_game!(game.code)
+
+      assert {:error, :not_in_play} = Games.request_draw(game, :white)
+    end
+  end
 end
