@@ -156,6 +156,8 @@ defmodule ChessQuo.Games do
     end
   end
 
+  def validate_secret(_, _, _), do: {:error, :invalid_credentials}
+
   @doc """
   Returns all valid moves for a player in a game.
 
