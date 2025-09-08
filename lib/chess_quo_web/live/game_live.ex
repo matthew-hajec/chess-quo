@@ -92,7 +92,9 @@ defmodule ChessQuoWeb.GameLive do
   end
 
   def handle_event("resign", _, socket) do
-    {:noreply, put_flash(socket, :error, "Resignation not yet implemented.")}
+    Games.resign(socket.assigns.game, socket.assigns.player_color)
+
+    {:noreply, socket}
   end
 
   def handle_event("offer_draw", _, socket) do
