@@ -31,11 +31,17 @@ defmodule ChessQuo.Games do
   defp tokens_mod, do: Application.get_env(:chess_quo, :tokens, ChessQuo.Games.Tokens)
 
   @doc """
-  Creates a new game with a unique code and secrets for both players.
+  Creates and persists a new game with a unique code and secrets for both players.
 
-  Transparently retries up to `attempts` times if the only error is a unique constraint violation on the game code.
+  ## Parameters
+  - `ruleset`: The ruleset to use for the game (e.g., "chess").
+  - `host_color`: The color chosen by the host player (:white or :black).
+  - `password`: An optional password for the game (default is an empty string).
+  - `attempts`: The number of attempts to create a game with a unique code (default is 5).
 
-  Raises an error if the ruleset is invalid.
+  ## Returns
+  - `{:ok, game}` if the game is created successfully.
+  - `{:error, changeset}` if the schema validation fails, or if a unique code could not be generated after the specified number of attempts.
   """
   def create_game(ruleset, host_color, password \\ "", attempts \\ 5) when is_atom(host_color) do
     ruleset_impl = ruleset_mod!(ruleset)
@@ -75,7 +81,14 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Retrieves a game by its code, raising an error if not found.
+  Attempts to get a game by its code.
+
+  ## Parameters
+  - `code`: The unique code of the game.
+
+  ## Returns
+  - `%Game{}`: The game if found.
+  - Raises `Ecto.NoResultsError` if no game with the given code exists.
   """
   def get_game!(code) do
     Repo.get_by!(Game, code: code)
