@@ -81,7 +81,7 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Attempts to get a game by its code.
+  Attempts to get a game by its code from the database.
 
   ## Parameters
   - `code`: The unique code of the game.
@@ -97,7 +97,7 @@ defmodule ChessQuo.Games do
   end
 
   @doc """
-  Attempts to get a game by its code.
+  Attempts to get a game by its code from the database.
 
   ## Parameters
   - `code`: The unique code of the game.
@@ -248,6 +248,48 @@ defmodule ChessQuo.Games do
 
           {:ok, game}
         end
+    end
+  end
+
+  @doc """
+  Resigns the specified player from the game. Updates the game state in the database.
+
+  Returns an update Game struct where:
+  - `state` is set to `:finished`
+  - `winner` is set to the opposing player
+  - `is_resignation` is set to `true`
+
+
+  ## Parameters
+  - `game`: The current game state.
+  - `player_color`: The color of the player resigning (:white or :black).\
+
+  ## Returns
+  - `{:ok, game}`: If the resignation is successful, where `game` is the updated game state.
+  - `{:error, :not_in_play}`: If the game state is not in-play.
+  """
+  def resign(%Game{} = game, player_color) when is_atom(player_color) do
+    if game.state != :playing do
+      {:error, :not_in_play}
+    else
+      winner = if player_color == :white, do: :black, else: :white
+
+      attrs = %{
+        state: :finished,
+        winner: winner,
+        is_resignation: true
+      }
+
+      game = Repo.update!(Game.changeset(game, attrs))
+
+      # Broadcast the game update
+      Phoenix.PubSub.broadcast(
+        ChessQuo.PubSub,
+        "game:#{game.code}",
+        {:game_updated, game}
+      )
+
+      {:ok, game}
     end
   end
 

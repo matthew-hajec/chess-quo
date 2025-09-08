@@ -339,4 +339,35 @@ defmodule ChessQuo.GamesTest do
       assert {:error, :invalid_move} = Games.apply_move(game, :white, move)
     end
   end
+
+  describe "resigning a game with resign/2" do
+    test "a player can resign an ongoing game" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      assert {:ok, updated_game} = Games.resign(game, :white)
+      assert updated_game.state == :finished
+      assert updated_game.winner == :black
+      assert updated_game.is_resignation == true
+    end
+
+    test "a player cannot resign a game that is already finished" do
+      {:ok, game} = Games.create_game("chess", :white)
+      {:ok, _color, _secret} = Games.join_by_password(game.code, "")
+      game = Games.get_game!(game.code)
+
+      # Manually set the game state to finished
+      game = %{game | state: :finished}
+
+      assert {:error, :not_in_play} = Games.resign(game, :white)
+    end
+
+    test "a player cannot resign a game that is waiting for an opponent" do
+      {:ok, game} = Games.create_game("chess", :white)
+      game = Games.get_game!(game.code)
+
+      assert {:error, :not_in_play} = Games.resign(game, :white)
+    end
+  end
 end
