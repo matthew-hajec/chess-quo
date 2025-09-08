@@ -98,7 +98,17 @@ defmodule ChessQuoWeb.GameLive do
   end
 
   def handle_event("offer_draw", _, socket) do
-    {:noreply, put_flash(socket, :error, "Draw offers not yet implemented.")}
+    Games.request_draw(socket.assigns.game, socket.assigns.player_color)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("accept_draw", _, socket) do
+    {:noreply, put_flash(socket, :error, "Draw acceptance not implemented.")}
+  end
+
+  def handle_event("decline_draw", _, socket) do
+    {:noreply, put_flash(socket, :error, "Draw decline not implemented.")}
   end
 
   defp deselect(socket) do

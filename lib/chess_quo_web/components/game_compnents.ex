@@ -117,6 +117,34 @@ defmodule ChessQuoWeb.GameComponents do
           <:body><%= end_body %></:body>
         </.board_overlay>
       <% end %>
+
+      <%= if @game.draw_requested_by != nil and @game.state == :playing do %>
+        <%= if @game.draw_requested_by == @perspective do %>
+          <.board_overlay>
+            <:title>Draw Offered</:title>
+            <:body>
+              You have offered a draw. Waiting for opponent to respond.
+            </:body>
+          </.board_overlay>
+        <% else %>
+          <.board_overlay>
+            <:title>Draw Offered</:title>
+            <:body>
+              <%= if @game.draw_requested_by == :white do %>
+                White has offered a draw.
+              <% else %>
+                Black has offered a draw.
+              <% end %>
+              <br />
+              Do you accept the draw?
+              <div class="mt-4 flex justify-center gap-4">
+                <button class="btn btn-primary" phx-click="accept_draw" phx-value-response="accept">Accept</button>
+                <button class="btn btn-secondary" phx-click="decline_draw" phx-value-response="decline">Decline</button>
+              </div>
+            </:body>
+          </.board_overlay>
+        <% end %>
+      <% end %>
     </div>
     """
   end
