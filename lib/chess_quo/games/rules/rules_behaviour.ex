@@ -42,5 +42,5 @@ defmodule ChessQuo.Games.RulesBehaviour do
   Should check if the move is invalid, if so, should return {:error, :invalid_move}.
   """
   @callback apply_move(game :: Game.t(), move :: Move.t()) ::
-              {:ok, Game.t()} | {:error, :invalid_move}
+              {:ok, Game.t(), Move.t()} | {:error, :invalid_move}
 end

@@ -56,7 +56,7 @@ defmodule ChessQuo.Games.Rules.Chess.MoveFinder do
 
         game = update_game_state(game, status)
 
-        {:ok, game}
+        {:ok, game, to_chess_quo_move(cl_move)}
     end
   end
 

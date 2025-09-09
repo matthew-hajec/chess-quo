@@ -227,7 +227,7 @@ defmodule ChessQuo.Games do
         {:error, :not_your_turn}
 
       true ->
-        with {:ok, new_game} <- ruleset_impl.apply_move(game, move) do
+        with {:ok, new_game, move} <- ruleset_impl.apply_move(game, move) do
           game =
             game
             |> Game.changeset(%{
