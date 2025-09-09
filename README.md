@@ -1,18 +1,19 @@
-# ChessQuo
+# Deployment
 
-To start your Phoenix server:
+## Environment Variables
 
-* Run `mix setup` to install and setup dependencies
-* Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+The following environment variables are expected to be set:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### `DATABASE_URL`
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+The URL of the database
 
-## Learn more
+Example:
+- `postgres://postgres:postgres@localhost/cq
 
-* Official website: https://www.phoenixframework.org/
-* Guides: https://hexdocs.pm/phoenix/overview.html
-* Docs: https://hexdocs.pm/phoenix
-* Forum: https://elixirforum.com/c/phoenix-forum
-* Source: https://github.com/phoenixframework/phoenix
+### `SECRET_KEY_BASE`
+
+Generated using `mix phx.gen.secret`
+
+Example:
+- `qLpvhKrH82RPWzOgo7H1Q7G+VYxYdAfRz6DoPFTyO2ae08MDxxaIH1ajP1Z0vMh0`
