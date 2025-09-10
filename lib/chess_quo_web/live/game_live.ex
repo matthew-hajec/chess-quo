@@ -92,11 +92,24 @@ defmodule ChessQuoWeb.GameLive do
     {:noreply, assign(socket, :promoting, %{from_idx: from_idx, to_idx: to_idx})}
   end
 
-  def handle_event("complete_promotion", %{"piece-type" => piece_type, "from-idx" => from_idx, "to-idx" => to_idx}, socket) do
+  def handle_event(
+        "complete_promotion",
+        %{"piece-type" => piece_type, "from-idx" => from_idx, "to-idx" => to_idx},
+        socket
+      ) do
     move = %Move{
-      from: %Piece{position: String.to_integer(from_idx), color: socket.assigns.player_color, type: "pawn"},
-      to: %Piece{position: String.to_integer(to_idx), color: socket.assigns.player_color, type: piece_type},
-      notation: "promotion buddy" # Not used currently
+      from: %Piece{
+        position: String.to_integer(from_idx),
+        color: socket.assigns.player_color,
+        type: "pawn"
+      },
+      to: %Piece{
+        position: String.to_integer(to_idx),
+        color: socket.assigns.player_color,
+        type: piece_type
+      },
+      # Not used currently
+      notation: "promotion buddy"
     }
 
     # Send to handle_event("make_move", ...)

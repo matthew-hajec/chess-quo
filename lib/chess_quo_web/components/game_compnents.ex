@@ -105,17 +105,18 @@ defmodule ChessQuoWeb.GameComponents do
       <% end %>
 
       <%= if @game.state == :finished do %>
-        <% {end_title, end_body} = case {@game.winner, @game.is_resignation} do
-          {:white, true} -> {"White Wins!", "Black has resigned."}
-          {:black, true} -> {"Black Wins!", "White has resigned."}
-          {:white, false} -> {"White Wins!", "White has won the game."}
-          {:black, false} -> {"Black Wins!", "Black has won the game."}
-          {nil, _} -> {"It's a Draw!", "The game ended in a stalemate."}
-        end %>
+        <% {end_title, end_body} =
+          case {@game.winner, @game.is_resignation} do
+            {:white, true} -> {"White Wins!", "Black has resigned."}
+            {:black, true} -> {"Black Wins!", "White has resigned."}
+            {:white, false} -> {"White Wins!", "White has won the game."}
+            {:black, false} -> {"Black Wins!", "Black has won the game."}
+            {nil, _} -> {"It's a Draw!", "The game ended in a stalemate."}
+          end %>
 
         <.board_overlay>
-          <:title><%= end_title %></:title>
-          <:body><%= end_body %></:body>
+          <:title>{end_title}</:title>
+          <:body>{end_body}</:body>
         </.board_overlay>
       <% end %>
 
@@ -144,11 +145,18 @@ defmodule ChessQuoWeb.GameComponents do
               <% else %>
                 Black has offered a draw.
               <% end %>
-              <br />
-              Do you accept the draw?
+              <br /> Do you accept the draw?
               <div class="mt-4 flex justify-center gap-4">
-                <button class="btn btn-primary" phx-click="accept_draw" phx-value-response="accept">Accept</button>
-                <button class="btn btn-secondary" phx-click="decline_draw" phx-value-response="decline">Decline</button>
+                <button class="btn btn-primary" phx-click="accept_draw" phx-value-response="accept">
+                  Accept
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  phx-click="decline_draw"
+                  phx-value-response="decline"
+                >
+                  Decline
+                </button>
               </div>
             </:body>
           </.board_overlay>

@@ -148,7 +148,8 @@ defmodule ChessQuo.Games do
   - `{:ok, player_color}`: If the credentials are valid. The returned `player_color` is the same as the input.
   - `{:error, :invalid_credentials}`: If the credentials are invalid.
   """
-  def validate_secret(%Game{} = game, player_color, player_secret) when is_atom(player_color) and is_binary(player_secret) do
+  def validate_secret(%Game{} = game, player_color, player_secret)
+      when is_atom(player_color) and is_binary(player_secret) do
     case player_color do
       :white when game.white_secret == player_secret -> {:ok, :white}
       :black when game.black_secret == player_secret -> {:ok, :black}
@@ -356,7 +357,8 @@ defmodule ChessQuo.Games do
   - `{:error, :no_draw_requested}`: If there is no draw request to respond to.
   - `{:error, :cannot_respond_to_own_request}`: If the player attempts to respond to their own draw request.
   """
-  def respond_to_draw(%Game{} = game, player_color, accept) when is_atom(player_color) and is_boolean(accept) do
+  def respond_to_draw(%Game{} = game, player_color, accept)
+      when is_atom(player_color) and is_boolean(accept) do
     cond do
       game.state != :playing ->
         {:error, :not_in_play}
@@ -368,16 +370,17 @@ defmodule ChessQuo.Games do
         {:error, :cannot_respond_to_own_request}
 
       true ->
-        attrs = if accept do
-          %{
-            state: :finished,
-            winner: nil,
-          }
-        else
-          %{
-            draw_requested_by: nil
-          }
-        end
+        attrs =
+          if accept do
+            %{
+              state: :finished,
+              winner: nil
+            }
+          else
+            %{
+              draw_requested_by: nil
+            }
+          end
 
         game = Repo.update!(Game.changeset(game, attrs))
 
