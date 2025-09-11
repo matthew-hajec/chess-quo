@@ -9,7 +9,7 @@ The following environment variables are expected to be set:
 The URL of the database
 
 Example:
-- `ecto://postgres:postgres@localhost/cq
+- `ecto://postgres:postgres@localhost/cq`
 
 ### `SECRET_KEY_BASE`
 
