@@ -1,0 +1,58 @@
+defmodule ChessQuoWeb.GamePage do
+  use Phoenix.Component
+
+  # Shared page component for rendering a game screen
+  attr :flash, :map, default: %{}
+  attr :game, :any, required: true
+  attr :player_color, :atom, required: true
+  attr :selected_square, :integer, default: nil
+  attr :valid_moves, :list, default: []
+  attr :game_link, :string, default: nil
+
+  def page(assigns) do
+    ~H"""
+    <ChessQuoWeb.Layouts.app flash={@flash} thin={true}>
+      <div id="game_live" class="mx-auto xs:w-full sm:w-5/6 md:w-2/3 lg:w-full min-h-screen">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
+          <!-- LEFT -->
+          <div class="lg:col-span-2 flex flex-col gap-4">
+            <ChessQuoWeb.GameComponents.player_bar
+              game={@game}
+              player_color={if @player_color == :white, do: :black, else: :white}
+            />
+
+            <ChessQuoWeb.GameComponents.board
+              perspective={@player_color}
+              game={@game}
+              selected_square={@selected_square}
+              valid_moves={@valid_moves}
+            />
+
+            <ChessQuoWeb.GameComponents.player_bar
+              game={@game}
+              player_color={@player_color}
+            />
+          </div>
+
+    <!-- RIGHT -->
+          <div class="flex flex-col gap-4">
+            <.live_component
+              module={ChessQuoWeb.GameInfoComponent}
+              id="game_info"
+              game={@game}
+              game_link={@game_link}
+              player_color={@player_color}
+            />
+
+            <ChessQuoWeb.GameComponents.controls />
+
+            <div class="h-[400px] lg:h-[538px]">
+              <ChessQuoWeb.GameComponents.move_history game={@game} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </ChessQuoWeb.Layouts.app>
+    """
+  end
+end

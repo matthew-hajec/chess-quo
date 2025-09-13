@@ -1,4 +1,4 @@
-defmodule ChessQuoWeb.GameLive do
+defmodule ChessQuoWeb.MultiplayerLive do
   use ChessQuoWeb, :live_view
 
   alias ChessQuo.Games
@@ -38,6 +38,19 @@ defmodule ChessQuoWeb.GameLive do
          |> put_flash(:error, "Game not found.")
          |> redirect(to: ~p"/")}
     end
+  end
+
+  def render(assigns) do
+    ~H"""
+    <ChessQuoWeb.GamePage.page
+      flash={@flash}
+      game={@game}
+      player_color={@player_color}
+      selected_square={@selected_square}
+      valid_moves={@valid_moves}
+      game_link={@game_link}
+    />
+    """
   end
 
   # Receive broadcasts from either player and refresh assigns
