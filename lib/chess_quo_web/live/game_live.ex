@@ -13,7 +13,7 @@ defmodule ChessQuoWeb.GameLive do
 
         case Games.validate_secret(game, player_color, player_secret) do
           {:ok, _} ->
-            link = ChessQuoWeb.Endpoint.url() <> ~p"/play/#{code}"
+            link = ChessQuoWeb.Endpoint.url() <> ~p"/online/#{code}"
 
             # Subscribe the player to the game updates
             Phoenix.PubSub.subscribe(ChessQuo.PubSub, "game:#{code}")
