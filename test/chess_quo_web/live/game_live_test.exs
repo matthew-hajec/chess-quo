@@ -1,4 +1,4 @@
-defmodule ChessQuoWeb.GameLiveTest do
+defmodule ChessQuoWeb.OnlineGameLiveTest do
   use ChessQuoWeb.ConnCase, async: true
 
   import Mox

@@ -25,7 +25,7 @@ defmodule ChessQuoWeb.Router do
     get "/lobby/join/:code", GameController, :join
     post "/lobby/join/:code", GameController, :post_join
 
-    live "/online/:code", GameLive, :show
+    live "/online/:code", OnlineGameLive, :show
   end
 
   # Other scopes may use custom stacks.

@@ -1,8 +1,13 @@
-defmodule ChessQuoWeb.GameLive do
+defmodule ChessQuoWeb.OnlineGameLive do
   use ChessQuoWeb, :live_view
 
   alias ChessQuo.Games
   alias ChessQuo.Games.Embeds.{Move, Piece}
+  alias ChessQuoWeb.GameLiveHTML
+
+  def render(assigns) do
+    GameLiveHTML.online(assigns)
+  end
 
   def mount(%{"code" => code}, session, socket) do
     # Attempt to fetch the game by code
