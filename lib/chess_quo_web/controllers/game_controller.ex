@@ -22,7 +22,7 @@ defmodule ChessQuoWeb.GameController do
         conn
         |> put_session(:player_secret, player_secret)
         |> put_session(:player_color, color)
-        |> redirect(to: ~p"/play/#{game.code}")
+        |> redirect(to: ~p"/online/#{game.code}")
 
       {:error, _changeset} ->
         conn
@@ -54,7 +54,7 @@ defmodule ChessQuoWeb.GameController do
           conn
           |> put_session(:player_secret, secret)
           |> put_session(:player_color, color)
-          |> redirect(to: ~p"/play/#{code}")
+          |> redirect(to: ~p"/online/#{code}")
 
         {:error, :not_found} ->
           conn

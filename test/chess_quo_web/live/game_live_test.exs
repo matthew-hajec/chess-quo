@@ -1,4 +1,4 @@
-defmodule ChessQuoWeb.GameLiveTest do
+defmodule ChessQuoWeb.OnlineGameLiveTest do
   use ChessQuoWeb.ConnCase, async: true
 
   import Mox
@@ -22,6 +22,6 @@ defmodule ChessQuoWeb.GameLiveTest do
         "player_secret" => game.white_secret
       })
 
-    assert {:ok, _lv, _html} = live(conn, ~p"/play/#{game.code}")
+    assert {:ok, _lv, _html} = live(conn, ~p"/online/#{game.code}")
   end
 end
