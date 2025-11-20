@@ -2,13 +2,12 @@
   <div class="max-w-md mx-auto">
 
     <.card class="p-8">
-      <h2 class="text-2xl font-bold text-center mb-8">Create a New Game</h2>
+      <h2 class="text-2xl font-bold text-center mb-8">Create a New Online Game</h2>
+
+      <input type="hidden" name="is_singleplayer" value="false" />
 
       <form action={~p"/lobby/create"} method="post">
         <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
-
-        <label>Singleplayer Mode</label>
-        <input type="checkbox" name="is_singleplayer" value="true" checked />
 
         <h3 class="font-medium text-center mb-6">Choose your side</h3>
 
