@@ -20,6 +20,12 @@ if System.get_env("PHX_SERVER") do
   config :chess_quo, ChessQuoWeb.Endpoint, server: true
 end
 
+# If provided, set the database host via the DATABASE_HOST environment variable.
+# For CI/CD and containerized testing.
+if host = System.get_env("DATABASE_HOST") do
+  config :chess_quo, ChessQuo.Repo, hostname: host
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
