@@ -10,6 +10,12 @@ defmodule ChessQuoWeb.OnlineGameLive do
   end
 
   def mount(%{"code" => code}, session, socket) do
+    # On mount:
+    # 1. Attempt to fetch the game by code
+    # 2. Fetch player color and secret from session
+    # 3. Validate the player's secret
+    # 4. If valid, subscribe to game updates and assign game to socket
+
     # Attempt to fetch the game by code
     case Games.get_game(code) do
       {:ok, game} ->
