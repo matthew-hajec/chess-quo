@@ -10,8 +10,8 @@
           Start a game in seconds. Share a 6‑character code or a link to play.
         </p>
         <div class="mt-4 flex gap-3 justify-center md:justify-start">
-          <a href={~p"/lobby/create"} class="btn btn-primary">Create Game</a>
-          <a id="hero-join" href="#join" class="btn btn-ghost">Join with code</a>
+          <a id="hero-create-btn" href="#create" class="btn btn-primary">Create Game</a>
+          <a id="hero-join-btn" href="#join" class="btn btn-ghost">Join with code</a>
         </div>
       </div>
     </.card>
@@ -46,46 +46,51 @@
       </.card>
       
 <!-- Create -->
-      <.card>
+      <.card id="create">
         <h2 class="card-title">Create a Game</h2>
-        <p class="text-sm opacity-80">Pick your color, and a password, and share the code.</p>
-        <a href={~p"/lobby/create"} class="btn btn-primary w-full mt-2">Create Game</a>
+        <p class="text-sm opacity-80 mb-2">Pick your color, and a password, and share the code.</p>
+        <a href={~p"/lobby/create"} class="btn btn-primary w-full mb-4">Play Online</a>
+        <form action={~p"/lobby/create"} method="post">
+          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+          
+          <input type="hidden" name="is_singleplayer" value="true" />
+          <input type="hidden" name="color_preference" value="white" />
+          <input type="hidden" name="password" value="" />
+
+          
+          <.button type="submit" class="w-full" variant="primary">Play Locally</.button>
+        </form>
       </.card>
     </section>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const form = document.getElementById("join-form");
-      const input = form?.querySelector('input[name="code"]');
-      const heroJoin = document.getElementById("hero-join");
-      const joinCard = document.getElementById("join");
-
-      // Remove the input-error class when the input changes
-      input?.addEventListener("input", () => {
-        input.value = (input.value || "").toUpperCase().replace(/\s+/g, "");
-        input.classList.remove("input-error");
-      });
-
-      // Do basic validation and submit the form if the input is valid
-      form?.addEventListener("submit", function (e) {
+    function setupHighlightButton(buttonElement, elementToHighlight) {
+      buttonElement.addEventListener("click", function (e) {
         e.preventDefault();
-        let code = (input.value || "").toUpperCase().replace(/\s+/g, "");
-        if (!/^[A-Z0-9]{6}$/.test(code)) {
-          input.classList.add("input-error");
-          return;
-        }
-        window.location.href = `/lobby/join/${code}`;
-      });
-
-      // If heroJoin is clicked, focus the input and flash the border of the join card
-      heroJoin?.addEventListener("click", function (e) {
-        e.preventDefault();
-        input?.focus();
-        joinCard?.classList.add("ring-2", "ring-primary");
+        elementToHighlight.classList.add("ring-2", "ring-primary");
         setTimeout(() => {
-          joinCard?.classList.remove("ring-2", "ring-primary");
+          elementToHighlight.classList.remove("ring-2", "ring-primary");
         }, 300);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const heroCreateBtn = document.getElementById("hero-create-btn");
+      const heroJoinBtn = document.getElementById("hero-join-btn");
+      const createCard = document.getElementById("create");
+      const joinCard = document.getElementById("join");
+      setupHighlightButton(heroCreateBtn, createCard);
+      setupHighlightButton(heroJoinBtn, joinCard);
+
+      const joinForm = document.getElementById("join-form");
+  
+      // Do basic validation and submit the form if the input is valid
+      joinForm?.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const input = joinForm.querySelector('input[name="code"]');
+        let code = (input.value || "A").toUpperCase().replace(/\s+/g, "");
+        window.location.href = `/lobby/join/${code}`;
       });
     });
   </script>
