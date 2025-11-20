@@ -7,6 +7,9 @@
       <form action={~p"/lobby/create"} method="post">
         <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
 
+        <label>Singleplayer Mode</label>
+        <input type="checkbox" name="is_singleplayer" value="true" checked />
+
         <h3 class="font-medium text-center mb-6">Choose your side</h3>
 
         <div class="grid grid-cols-3 gap-4">

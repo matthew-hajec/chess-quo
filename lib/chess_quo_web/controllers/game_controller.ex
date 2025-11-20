@@ -14,8 +14,9 @@ defmodule ChessQuoWeb.GameController do
         else: String.to_existing_atom(color)
 
     password = Map.get(conn.params, "password", "") |> String.trim()
+    is_singleplayer = Map.get(conn.params, "is_singleplayer", "false") == "true"
 
-    case Games.create_game("chess", color, password) do
+    case Games.create_game("chess", color, password, is_singleplayer) do
       {:ok, game} ->
         player_secret = if color == :white, do: game.white_secret, else: game.black_secret
 

@@ -36,6 +36,7 @@ defmodule ChessQuo.Games do
   ## Parameters
   - `ruleset`: The ruleset to use for the game (e.g., "chess").
   - `host_color`: The color chosen by the host player (:white or :black).
+  - `is_singleplayer`: A boolean indicating if the game is singleplayer.
   - `password`: An optional password for the game (default is an empty string).
   - `attempts`: The number of attempts to create a game with a unique code (default is 5).
 
@@ -43,10 +44,11 @@ defmodule ChessQuo.Games do
   - `{:ok, game}`: If the game is created successfully.
   - `{:error, changeset}`: If the schema validation fails, or if a unique code could not be generated after the specified number of attempts.
   """
-  def create_game(ruleset, host_color, password \\ "", attempts \\ 5) when is_atom(host_color) do
+  def create_game(ruleset, host_color, password \\ "", is_singleplayer \\ false, attempts \\ 5) when is_atom(host_color) do
     ruleset_impl = ruleset_mod!(ruleset)
 
     attrs = %{
+      is_singleplayer: is_singleplayer,
       ruleset: ruleset,
       code: tokens_mod().game_code(),
       password: password,

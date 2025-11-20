@@ -35,6 +35,7 @@ defmodule ChessQuoWeb.GameInfoComponent do
           </p>
         </div>
         <p>You are: {Atom.to_string(@player_color) |> String.capitalize()}</p>
+        <p>{if @game.is_singleplayer, do: "Local Play", else: "Online Play"}</p>
       </div>
     </div>
     """
