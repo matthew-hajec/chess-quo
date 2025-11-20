@@ -111,10 +111,11 @@ defmodule ChessQuoWeb.CoreComponents do
   def button(%{rest: rest} = assigns) do
     variants = %{"primary" => "btn-primary", nil => "btn-primary btn-soft"}
 
-    assigns =
-      assign_new(assigns, :class, fn ->
-        ["btn", Map.fetch!(variants, assigns[:variant])]
-      end)
+    # Merge classes
+    class = ["btn", Map.fetch!(variants, assigns[:variant]), assigns[:class]]
+
+    assigns = assign(assigns, :class, class)
+
 
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
