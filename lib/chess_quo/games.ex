@@ -65,6 +65,17 @@ defmodule ChessQuo.Games do
         Map.put(attrs, :black_joined, true)
       end
 
+    # If singleplayer, set both players as joined AND immediately start the game
+    attrs =
+      if is_singleplayer do
+        attrs
+        |> Map.put(:white_joined, true)
+        |> Map.put(:black_joined, true)
+        |> Map.put(:state, :playing)
+      else
+        attrs
+      end
+
     changeset =
       Game.changeset(%Game{}, attrs)
       |> Ecto.Changeset.put_embed(:board, ruleset_impl.initial_board())

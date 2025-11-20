@@ -92,6 +92,17 @@ defmodule ChessQuoWeb.OnlineGameLive do
 
     case ChessQuo.Games.apply_move(game, perspective, move) do
       {:ok, new_game} ->
+        # If game.is_singleplayer is true, change the player_color to the opposite color and the player_secret accordingly
+        socket = if new_game.is_singleplayer do
+          new_color = if perspective == :white, do: :black, else: :white
+          new_secret = if new_color == :white, do: new_game.white_secret, else: new_game.black_secret
+          socket
+          |> assign(:player_color, new_color)
+          |> assign(:player_secret, new_secret)
+        else
+          socket
+        end
+
         {:noreply, socket |> assign(:game, new_game) |> deselect()}
 
       {:error, :not_your_turn} ->
