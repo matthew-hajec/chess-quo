@@ -30,7 +30,7 @@ defmodule ChessQuo.Games.Rules.Chess.FEN do
   @doc """
   Updates a Game struct to reflect the given FEN string.
   """
-  def update_game_from_fen(game, fen) do
+  def update_game_from_fen(game = %Game{}, fen) do
     breakdown = breakdown_fen(fen)
 
     %Game{
