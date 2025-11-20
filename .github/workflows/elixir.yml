@@ -39,3 +39,30 @@ jobs:
         run: mix ecto.create && mix ecto.migrate
       - name: Run tests
         run: mix test
+
+  build_and_push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    
+    # Run after tests pass
+    needs: test
+
+    permissions:
+      contents: read
+      packages: write # Needed to push to GitHub Container Registry
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/chess-quo:latest
