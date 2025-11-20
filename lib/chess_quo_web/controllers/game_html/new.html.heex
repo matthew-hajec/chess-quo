@@ -1,77 +1,76 @@
 <Layouts.app flash={@flash}>
   <div class="max-w-md mx-auto">
-    <h2 class="text-2xl font-bold text-center mb-8">Create a New Game</h2>
 
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body">
-        <form action={~p"/lobby/create"} method="post">
-          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+    <.card class="p-8">
+      <h2 class="text-2xl font-bold text-center mb-8">Create a New Game</h2>
 
-          <h3 class="font-medium text-center mb-6">Choose your side</h3>
+      <form action={~p"/lobby/create"} method="post">
+        <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
 
-          <div class="grid grid-cols-3 gap-4">
-            <div class="form-control">
-              <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
-                <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">♔</div>
-                <input
-                  type="radio"
-                  name="color_preference"
-                  value="white"
-                  class="radio radio-primary"
-                  checked
-                />
-                <span class="label-text mt-2">White</span>
-              </label>
-            </div>
+        <h3 class="font-medium text-center mb-6">Choose your side</h3>
 
-            <div class="form-control">
-              <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
-                <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">♚</div>
-                <input
-                  type="radio"
-                  name="color_preference"
-                  value="black"
-                  class="radio radio-primary"
-                />
-                <span class="label-text mt-2">Black</span>
-              </label>
-            </div>
-
-            <div class="form-control">
-              <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
-                <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">⚄</div>
-                <input
-                  type="radio"
-                  name="color_preference"
-                  value="random"
-                  class="radio radio-primary"
-                />
-                <span class="label-text mt-2">Random</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="form-control mt-6">
-            <label class="label">
-              <span class="label-text">Join password</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              maxlength="30"
-              placeholder="Password"
-              class="input input-bordered w-full focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/60"
-            />
-            <label class="label">
-              <span class="label-text-alt text-base-content/70">Up to 30 characters</span>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="form-control">
+            <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
+              <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">♔</div>
+              <input
+                type="radio"
+                name="color_preference"
+                value="white"
+                class="radio radio-primary"
+                checked
+              />
+              <span class="label-text mt-2">White</span>
             </label>
           </div>
 
-          <div class="mt-6">
-            <button class="btn btn-primary w-full">Create Game</button>
+          <div class="form-control">
+            <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
+              <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">♚</div>
+              <input
+                type="radio"
+                name="color_preference"
+                value="black"
+                class="radio radio-primary"
+              />
+              <span class="label-text mt-2">Black</span>
+            </label>
           </div>
-        </form>
-      </div>
-    </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer flex flex-col items-center p-4 bg-base-100 rounded-lg hover:bg-base-300 transition-all">
+              <div class="w-12 h-12 flex items-center justify-center mb-2 text-3xl">⚄</div>
+              <input
+                type="radio"
+                name="color_preference"
+                value="random"
+                class="radio radio-primary"
+              />
+              <span class="label-text mt-2">Random</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-control mt-6">
+          <label class="label">
+            <span class="label-text">Join password</span>
+          </label>
+          <input
+            type="password"
+            name="password"
+            maxlength="30"
+            placeholder="Password"
+            class="input input-bordered w-full focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/60"
+          />
+          <label class="label">
+            <span class="label-text-alt text-base-content/70">Up to 30 characters</span>
+          </label>
+        </div>
+
+        <div class="mt-6">
+          <.button class="w-full" variant="primary">Create Game</.button>
+        </div>
+      </form>
+    </.card>
   </div>
 </Layouts.app>
