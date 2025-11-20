@@ -109,7 +109,10 @@ defmodule ChessQuoWeb.CoreComponents do
   slot :inner_block, required: true
 
   def button(%{rest: rest} = assigns) do
-    variants = %{"primary" => "btn-primary", nil => "btn-primary btn-soft"}
+    variants = %{
+      "primary" => "btn-primary",
+      "secondary" => "btn-secondary",
+      nil => "btn-primary btn-soft"}
 
     # Merge classes
     class = ["btn", Map.fetch!(variants, assigns[:variant]), assigns[:class]]
