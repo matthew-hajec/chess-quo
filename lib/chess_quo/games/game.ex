@@ -9,6 +9,7 @@ defmodule ChessQuo.Games.Game do
   alias ChessQuo.Games.Embeds.Move
 
   @type t :: %__MODULE__{
+          is_singleplayer: boolean(),
           ruleset: String.t(),
           code: String.t(),
           password: String.t(),
@@ -29,6 +30,7 @@ defmodule ChessQuo.Games.Game do
         }
 
   schema "games" do
+    field :is_singleplayer, :boolean, default: false
     field :ruleset, :string
 
     # Ruleset to use, check `ChessQuo.Games.Rules` (can be `chess`, `checkers`, etc., if there is a valid implementation)
@@ -69,6 +71,7 @@ defmodule ChessQuo.Games.Game do
   def changeset(game, attrs) do
     game
     |> cast(attrs, [
+      :is_singleplayer,
       :ruleset,
       :code,
       :password,
@@ -106,6 +109,7 @@ defmodule ChessQuo.Games.Game do
 
   def to_map(%__MODULE__{} = game) do
     %{
+      is_singleplayer: game.is_singleplayer,
       ruleset: game.ruleset,
       code: game.code,
       password: game.password,
