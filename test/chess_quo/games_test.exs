@@ -63,12 +63,12 @@ defmodule ChessQuo.GamesTest do
 
     test "games handle duplicate codes by retrying" do
       ChessQuo.Games.MockTokens
-      |> expect(:game_code, 4, fn -> "COPY00" end)
+      |> expect(:game_code, 3, fn -> "COPY00" end)
 
       {:ok, _game} = ChessQuo.Games.create_game("mock", :white)
 
       # Should return an error tuple
-      assert {:error, _changeset} = ChessQuo.Games.create_game("mock", :white, "", 3)
+      assert {:error, _changeset} = ChessQuo.Games.create_game("mock", :white, "", false, 3)
     end
 
     test "games initialize with the host color as joined" do
