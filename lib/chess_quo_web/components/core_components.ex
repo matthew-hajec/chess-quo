@@ -32,6 +32,21 @@ defmodule ChessQuoWeb.CoreComponents do
   alias Phoenix.LiveView.JS
 
   @doc """
+  Renders a card container.
+  """
+  attr :class, :string, default: nil, doc: "additional classes to add to the card"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the card"
+  slot :inner_block, required: true, doc: "the inner block that renders the card content"
+
+  def card(assigns) do
+    ~H"""
+    <div class={["card p-6 shadow-md bg-base-200", @class]} {@rest}>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
   Renders flash notices.
 
   ## Examples
