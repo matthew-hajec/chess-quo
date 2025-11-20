@@ -1,62 +1,56 @@
 <Layouts.app flash={@flash}>
   <div class="max-w-5xl mx-auto">
     <!-- Hero -->
-    <section class="hero bg-base-200/60 rounded-xl p-6 md:p-8 mb-6">
-      <div class="hero-content flex-col md:flex-row gap-6 md:gap-10 w-full">
-        <div class="text-center md:text-left flex-1">
-          <h1 class="text-3xl md:text-4xl font-bold">
-            ♞ Chess Quo
-          </h1>
-          <p class="mt-2 opacity-80">
-            Start a game in seconds. Share a 6‑character code or a link to play.
-          </p>
-          <div class="mt-4 flex gap-3 justify-center md:justify-start">
-            <a href={~p"/lobby/create"} class="btn btn-primary">Create Game</a>
-            <a id="hero-join" href="#join" class="btn btn-ghost">Join with code</a>
-          </div>
+    <.card class="mb-6">
+      <div class="text-center md:text-left">
+        <h1 class="text-3xl md:text-4xl font-bold">
+          ♞ Chess Quo
+        </h1>
+        <p class="mt-2 opacity-80">
+          Start a game in seconds. Share a 6‑character code or a link to play.
+        </p>
+        <div class="mt-4 flex gap-3 justify-center md:justify-start">
+          <a href={~p"/lobby/create"} class="btn btn-primary">Create Game</a>
+          <a id="hero-join" href="#join" class="btn btn-ghost">Join with code</a>
         </div>
       </div>
-    </section>
+    </.card>
     
 <!-- Main -->
     <section class="grid gap-4 md:gap-6 md:grid-cols-3">
       <!-- Join -->
-      <div id="join" class="md:col-span-2 card bg-base-200 shadow-xl transition duration-300">
-        <div class="card-body">
-          <h2 class="card-title">Join a Game</h2>
-          <form id="join-form" class="space-y-3" autocomplete="off">
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Enter Code</span>
-              </label>
-              <div class="join w-full">
-                <input
-                  type="text"
-                  name="code"
-                  placeholder="ABC123"
-                  maxlength="6"
-                  class="input input-bordered join-item w-full font-mono uppercase tracking-widest focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/60"
-                />
-                <button type="submit" class="btn btn-primary join-item">Join</button>
-              </div>
-              <label class="label">
-                <span class="label-text-alt text-base-content/70">
-                  6 letters/numbers (A–Z, 0–9)
-                </span>
-              </label>
+      <.card id="join" class="md:col-span-2">
+        <h2>Join a Game</h2>
+        <form id="join-form" class="space-y-3" autocomplete="off">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Enter Code</span>
+            </label>
+            <div class="join w-full">
+              <input
+                type="text"
+                name="code"
+                placeholder="ABC123"
+                maxlength="6"
+                class="input input-bordered join-item w-full font-mono uppercase tracking-widest focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/60"
+              />
+              <button type="submit" class="btn btn-primary join-item">Join</button>
             </div>
-          </form>
-        </div>
-      </div>
+            <label class="label">
+              <span class="label-text-alt text-base-content/70">
+                6 letters/numbers (A–Z, 0–9)
+              </span>
+            </label>
+          </div>
+        </form>
+      </.card>
       
 <!-- Create -->
-      <div class="card bg-base-200 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">Create a Game</h2>
-          <p class="text-sm opacity-80">Pick your color, and a password, and share the code.</p>
-          <a href={~p"/lobby/create"} class="btn btn-primary w-full mt-2">Create Game</a>
-        </div>
-      </div>
+      <.card>
+        <h2 class="card-title">Create a Game</h2>
+        <p class="text-sm opacity-80">Pick your color, and a password, and share the code.</p>
+        <a href={~p"/lobby/create"} class="btn btn-primary w-full mt-2">Create Game</a>
+      </.card>
     </section>
   </div>
 
