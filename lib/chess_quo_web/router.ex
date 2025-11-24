@@ -14,6 +14,25 @@ defmodule ChessQuoWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :admin do
+    plug :admin_auth
+  end
+
+  def admin_auth(conn, _opts) do
+    # Simple basic auth for demonstration purposes
+    username = System.get_env("ADMIN_USERNAME")
+    password = System.get_env("ADMIN_PASSWORD")
+
+    if is_nil(username) or is_nil(password) do
+      # Send an unauthorized response if credentials are not set
+      conn
+      |> Plug.Conn.send_resp(401, "Unauthorized")
+      |> Plug.Conn.halt()
+    else
+      Plug.BasicAuth.basic_auth(conn, username: username, password: password)
+    end
+  end
+
   scope "/", ChessQuoWeb do
     pipe_through :browser
 
@@ -28,6 +47,14 @@ defmodule ChessQuoWeb.Router do
     live "/online/:code", OnlineGameLive, :show
   end
 
+  scope "/admin", ChessQuoWeb.Admin do
+    import Phoenix.LiveDashboard.Router
+
+    pipe_through [:browser, :admin]
+
+    live_dashboard "/dashboard", metrics: ChessQuoWeb.Telemetry
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", ChessQuoWeb do
   #   pipe_through :api
@@ -40,12 +67,9 @@ defmodule ChessQuoWeb.Router do
     # If your application does not have an admins-only section yet,
     # you can use Plug.BasicAuth to set up some basic authentication
     # as long as you are also using SSL (which you should anyway).
-    import Phoenix.LiveDashboard.Router
-
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: ChessQuoWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
