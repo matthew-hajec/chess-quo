@@ -286,12 +286,15 @@ defmodule ChessQuoWeb.GameComponents do
     """
   end
 
+  attr :show_draw_offer?, :boolean, default: true
   def controls(assigns) do
     ~H"""
     <div class="card bg-base-200 shadow-xl">
       <div class="card-body p-4 flex flex-row items-center gap-3">
         <button class="btn btn-primary flex-grow" phx-click="resign">Resign</button>
-        <button class="btn btn-primary flex-grow" phx-click="offer_draw">Offer Draw</button>
+        <%= if @show_draw_offer? do %>
+          <button class="btn btn-primary flex-grow" phx-click="offer_draw">Offer Draw</button>
+        <% end %>
       </div>
     </div>
     """

@@ -42,7 +42,7 @@
           player_color={@player_color}
         />
 
-        <ChessQuoWeb.GameComponents.controls />
+        <ChessQuoWeb.GameComponents.controls show_draw_offer?={!@game.is_local} />
 
         <div class="h-[400px] lg:h-[538px]">
           <ChessQuoWeb.GameComponents.move_history game={@game} />
