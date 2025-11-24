@@ -53,7 +53,7 @@
         <form action={~p"/lobby/create"} method="post">
           <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
           
-          <input type="hidden" name="is_singleplayer" value="true" />
+          <input type="hidden" name="is_local" value="true" />
           <input type="hidden" name="color_preference" value="white" />
           <input type="hidden" name="password" value="" />
 

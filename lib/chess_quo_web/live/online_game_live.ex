@@ -92,8 +92,8 @@ defmodule ChessQuoWeb.OnlineGameLive do
 
     case ChessQuo.Games.apply_move(game, perspective, move) do
       {:ok, new_game} ->
-        # If game.is_singleplayer is true, change the player_color to the opposite color and the player_secret accordingly
-        socket = if new_game.is_singleplayer do
+        # If game.is_local is true, change the player_color to the opposite color and the player_secret accordingly
+        socket = if new_game.is_local do
           new_color = if perspective == :white, do: :black, else: :white
           new_secret = if new_color == :white, do: new_game.white_secret, else: new_game.black_secret
           socket

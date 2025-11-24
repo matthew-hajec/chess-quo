@@ -4,7 +4,7 @@
     <.card class="p-8">
       <h2 class="text-2xl font-bold text-center mb-8">Create a New Online Game</h2>
 
-      <input type="hidden" name="is_singleplayer" value="false" />
+      <input type="hidden" name="is_local" value="false" />
 
       <form action={~p"/lobby/create"} method="post">
         <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
